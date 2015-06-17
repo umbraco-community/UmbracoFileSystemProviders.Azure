@@ -111,7 +111,7 @@ Be sure to install the [AzureBlobCache](http://imageprocessor.org/imageprocessor
 
  - James Jackson-South
  - Dirk Seefield
- - Lars Lars-Erik Aabech
+ - Lars-Erik Aabech
 
 ## Thanks
  - Elijah Glover for writing the [Umbraco S3 Provider](https://github.com/ElijahGlover/Umbraco-S3-Provider) which provided inspiration and some snazzy unit testing code for this project.
