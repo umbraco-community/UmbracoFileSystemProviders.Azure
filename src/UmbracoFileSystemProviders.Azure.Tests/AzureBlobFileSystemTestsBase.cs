@@ -8,6 +8,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Threading;
+
 namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 {
     using System;
@@ -418,6 +420,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 
             // Assert
             Assert.AreNotEqual(original, DateTimeOffset.MinValue);
+
+            Thread.Sleep(TimeSpan.FromSeconds(1.1));
 
             // Act
             provider.AddFile("1010/media.jpg", Stream.Null);
