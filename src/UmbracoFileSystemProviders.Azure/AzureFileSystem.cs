@@ -58,11 +58,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private readonly string containerName;
 
         /// <summary>
-        /// The maximum number of days to cache blob items for in the browser.
-        /// </summary>
-        private readonly int maxDays;
-
-        /// <summary>
         /// The root url.
         /// </summary>
         private readonly string rootUrl;
@@ -118,7 +113,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             this.rootUrl = rootUrl + containerName + "/";
             this.containerName = containerName;
-            this.maxDays = maxDays;
+            this.MaxDays = maxDays;
 
             this.LogHelper = new WrappedLogHelper();
             this.MimeTypeResolver = new MimeTypeResolver();
@@ -138,6 +133,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// Gets or sets a value indicating whether to disable the virtual path provider.
         /// </summary>
         public bool DisableVirtualPathProvider { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum number of days to cache blob items for in the browser.
+        /// </summary>
+        public int MaxDays { get; set; }
 
         /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
@@ -207,7 +207,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     blockBlob.Properties.ContentType = contentType;
                 }
 
-                blockBlob.Properties.CacheControl = string.Format("public, max-age={0}", this.maxDays * 86400);
+                blockBlob.Properties.CacheControl = string.Format("public, max-age={0}", this.MaxDays * 86400);
                 blockBlob.SetProperties();
 
                 if (created == DateTimeOffset.MinValue)

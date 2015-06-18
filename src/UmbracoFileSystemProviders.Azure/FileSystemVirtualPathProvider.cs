@@ -142,9 +142,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             string fileSystemPath = this.RemovePathPrefix(path);
-            return new FileSystemVirtualFile(virtualPath, () => this.fileSystem.Value.OpenFile(fileSystemPath));
-        }
 
+            return new FileSystemVirtualFile(virtualPath, this.fileSystem, fileSystemPath);
+        }
+        
         /// <summary>
         /// Correctly formats the virtual path prefix.
         /// </summary>

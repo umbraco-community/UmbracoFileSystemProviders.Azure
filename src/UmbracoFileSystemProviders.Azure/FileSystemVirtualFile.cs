@@ -12,7 +12,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
     using System.IO;
+    using System.Web;
     using System.Web.Hosting;
+
+    using global::Umbraco.Core.IO;
 
     /// <summary>
     /// Represents a file object in a virtual file.
@@ -27,24 +30,21 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// Initializes a new instance of the <see cref="FileSystemVirtualFile"/> class.
         /// </summary>
-        /// <param name="virtualPath">
-        /// The virtual path.
-        /// </param>
-        /// <param name="stream">
-        /// The stream.
-        /// </param>
+        /// <param name="virtualPath">The virtual path.</param>
+        /// <param name="fileSystem">The lazy file system implementation.</param>
+        /// <param name="fileSystemPath">The modified file system path.</param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="stream"/> is null.
+        /// Thrown if <paramref name="fileSystem"/> is null.
         /// </exception>
-        public FileSystemVirtualFile(string virtualPath, Func<Stream> stream)
+        public FileSystemVirtualFile(string virtualPath, Lazy<IFileSystem> fileSystem, string fileSystemPath)
             : base(virtualPath)
         {
-            if (stream == null)
+            if (fileSystem == null)
             {
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException("fileSystem");
             }
 
-            this.stream = stream;
+            this.stream = () => fileSystem.Value.OpenFile(fileSystemPath);
         }
 
         /// <summary>
@@ -66,6 +66,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public override Stream Open()
         {
+            // Set the response headers here. It's a bit hacky.
+            HttpCachePolicy cache = HttpContext.Current.Response.Cache;
+            cache.SetCacheability(HttpCacheability.Public);
+            cache.VaryByHeaders["Accept-Encoding"] = true;
+
+            IFileSystem azureBlobFileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider("media");
+            int maxDays = ((AzureBlobFileSystem)azureBlobFileSystem).FileSystem.MaxDays;
+
+            cache.SetExpires(DateTime.Now.ToUniversalTime().AddDays(maxDays));
+            cache.SetMaxAge(new TimeSpan(maxDays, 0, 0, 0));
+            cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+
             return this.stream();
         }
     }
