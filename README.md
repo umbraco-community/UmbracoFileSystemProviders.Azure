@@ -3,7 +3,7 @@
 An [Azure Blob Storage](http://azure.microsoft.com/en-gb/develop/net/) IFileSystem provider for Umbraco 6.25+. 
 Used to offload static files in the media section to the cloud.
 
-Designed to supersede [UmbracoAzureBlobStorage](https://github.com/idseefeld/UmbracoAzureBlobStorage) by [Dirk SeeField](https://twitter.com/dseefeld65) (With his blessing) this package allows the storage and retrieval of media items using Azure Blob Storage while retaining the relative paths to the files expected in the back office.
+Designed to supersede [UmbracoAzureBlobStorage](https://github.com/idseefeld/UmbracoAzureBlobStorage) by [Dirk Seefeld](https://twitter.com/dseefeld65) (With his blessing) this package allows the storage and retrieval of media items using Azure Blob Storage while retaining the relative paths to the files expected in the back office.
 
 ## Installation
 At present the code is pre-release but when ready it will be available on [Nuget](http://www.nuget.org), also maybe as a package on [Our Umbraco](https://our.umbraco.org/). 
@@ -110,7 +110,7 @@ Be sure to install the [AzureBlobCache](http://imageprocessor.org/imageprocessor
 ## Authors
 
  - James Jackson-South
- - Dirk Seefield
+ - Dirk Seefeld
  - Lars-Erik Aabech
 
 ## Thanks
