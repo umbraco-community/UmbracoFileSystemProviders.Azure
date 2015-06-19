@@ -1,5 +1,7 @@
 # UmbracoFileSystemProviders.Azure
 
+![Image Alt](build/assets/logo/azure-logo-256.png)
+
 An [Azure Blob Storage](http://azure.microsoft.com/en-gb/develop/net/) IFileSystem provider for Umbraco 6.25+. 
 Used to offload static files in the media section to the cloud.
 
