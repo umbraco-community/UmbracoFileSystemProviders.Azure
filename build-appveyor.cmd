@@ -5,5 +5,3 @@ ECHO APPVEYOR_BUILD_VERSION : %APPVEYOR_BUILD_VERSION%
 
 CALL src\.nuget\NuGet.exe restore src\UmbracoFileSystemProviders.Azure.sln
 CALL "%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe" build\package.proj
-
-pause
