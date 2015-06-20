@@ -4,7 +4,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/mn5hxj5ijurwih7q?svg=true)](https://ci.appveyor.com/project/JamesSouth/umbracofilesystemproviders-azure)
 
-An [Azure Blob Storage](http://azure.microsoft.com/en-gb/develop/net/) IFileSystem provider for Umbraco 6.25+. 
+An [Azure Blob Storage](http://azure.microsoft.com/en-gb/develop/net/) IFileSystem provider for [Umbraco](https://umbraco.com) 6.25+. 
 Used to offload static files in the media section to the cloud.
 
 Designed to supersede [UmbracoAzureBlobStorage](https://github.com/idseefeld/UmbracoAzureBlobStorage) by [Dirk Seefeld](https://twitter.com/dseefeld65) (With his blessing) this package allows the storage and retrieval of media items using Azure Blob Storage while retaining the relative paths to the files expected in the back office.
@@ -12,7 +12,23 @@ Designed to supersede [UmbracoAzureBlobStorage](https://github.com/idseefeld/Umb
 ## Installation
 At present the code is pre-release but when ready it will be available on [Nuget](http://www.nuget.org), also maybe as a package on [Our Umbraco](https://our.umbraco.org/). 
 
-In the interim code reviews and pull requests would be most welcome! (Appveyor, MyGet, Nuget config etc..)
+We already have a [MyGet package repository](https://www.myget.org/F/umbracofilesystemproviders-azure/) - for bleeding-edge / development releases.
+
+## Manual build
+
+If you prefer, you can compile UmbracoFileSystemProviders.Azure yourself, you'll need:
+
+* Visual Studio 2012 (or above)
+
+To clone it locally click the "Clone in Windows" button above or run the following git commands.
+
+```bash
+git clone https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure
+cd UmbracoFileSystemProviders.Azure
+.\build.cmd
+```
+
+In the interim code reviews and pull requests would be most welcome!
 
 ## Usage
 
