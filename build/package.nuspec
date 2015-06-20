@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+	<metadata>
+		<id></id>
+		<version>0.0.0</version>
+		<title></title>
+		<authors></authors>
+		<owners></owners>
+		<projectUrl></projectUrl>
+		<iconUrl></iconUrl>
+		<requireLicenseAcceptance></requireLicenseAcceptance>
+		<description></description>
+		<summary></summary>
+		<copyright></copyright>
+		<licenseUrl></licenseUrl>
+		<language></language>
+		<tags></tags>
+		<dependencies>
+			<dependency id="UmbracoCms.Core" version="0.0.0" />
+			<dependency id="WindowsAzure.Storage" version="4.3.0" />
+		</dependencies>
+	</metadata>
+	<files>
+        <file src="..\..\transforms\FileSystemProviders.config.transform" target="content\config\FileSystemProviders.config.transform" />
+        <file src="..\..\transforms\web.config.transform" target="content\web.config.transform" />
+    </files>
+</package>

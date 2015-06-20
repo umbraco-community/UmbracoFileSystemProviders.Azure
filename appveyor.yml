@@ -1,8 +1,49 @@
 # Version format
-version: 0.5.{build}
+version: 0.5.0.{build}
 
-build:
-  project: src/UmbracoFileSystemProviders.Azure.sln
+# UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
+# example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
+init:
+  - set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=
+
+build_script:
+- build-appveyor.cmd
 
 # Turn tests off just now
 test: off
+
+artifacts:
+  - path: artifacts\*.nupkg
+  - path: artifacts\*.zip
+
+deploy:
+     # MyGet Deployment for builds & releases
+  - provider: NuGet
+    server: https://www.myget.org/F/umbracofilesystemproviders-azure/api/v2
+    symbol_server: https://nuget.symbolsource.org/MyGet/umbracofilesystemproviders-azure
+    api_key:
+      secure: fz0rUrt3B1HczUC1ZehwVsrFSWX9WZGDQoueDztLte9/+yQG+BBU7UrO+coE8lUf
+    artifact: /.*\.nupkg/
+    on:
+      branch: develop
+
+     # GitHub Deployment for releases
+  - provider: GitHub
+    auth_token:
+      secure: fjqBa6SK926I+Zf/gRUAAMlMKGuxYS6VVUKvFS6ClY9EbAKcAJw7Ia/a1tW5ELmD
+    artifact: /.*\.zip/            # upload all Zip packages to release assets
+    draft: false
+    prerelease: false
+    on:
+      branch: master
+      appveyor_repo_tag: true        # deploy on tag push only
+
+     # NuGet Deployment for releases
+  - provider: NuGet
+    server: 
+    api_key:
+      secure: kHataLiMb9nmJEdwBE4BTXvA4nOpoD3Fw14zVeDP6Vs0ZXpL7c8qeegMv/jMZECP
+    artifact: /.*\.nupkg/
+    on:
+      branch: master
+      appveyor_repo_tag: true
