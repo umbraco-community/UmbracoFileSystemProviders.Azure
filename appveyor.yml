@@ -1,0 +1,8 @@
+# Version format
+version: 0.5.{build}
+
+build:
+  project: src/ImageProcessor.sln
+
+# Turn tests off just now
+test: off
