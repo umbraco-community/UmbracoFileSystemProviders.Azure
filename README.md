@@ -108,18 +108,18 @@ The following configuration is required in your `web.config` to enable static fi
   
 ## Combining with ImageProcessor
 
-As of ImageProcessor.Web version [4.3.2](https://www.nuget.org/packages/ImageProcessor.Web/4.3.2) a new [`IImageService`](http://imageprocessor.org/imageprocessor-web/extending/#iimageservice) implementation has been available called `CloudImageService`. To enable that service and pull images directly from the cloud simply install the [configuration package](https://www.nuget.org/packages/ImageProcessor.Web.Config/) and replace the `LocalFileImageService`setting with the following:
+As of ImageProcessor.Web version [4.3.2](https://www.nuget.org/packages/ImageProcessor.Web/4.3.2) a new [`IImageService`](http://imageprocessor.org/imageprocessor-web/extending/#iimageservice) implementation has been available called `CloudImageService`. To enable that service and pull images directly from the cloud simply install the [configuration package](https://www.nuget.org/packages/ImageProcessor.Web.Config/) and replace the `CloudImageService`setting with the following:
 
 ```xml
 <?xml version="1.0"?>
 <security>
   <services>
-    <!--Disable the LocalFileImageService and enable this one when using virtual paths. -->
-    <service name="CloudImageService" type="ImageProcessor.Web.Services.CloudImageService, ImageProcessor.Web">
+    <service name="LocalFileImageService" type="ImageProcessor.Web.Services.LocalFileImageService, ImageProcessor.Web"/>
+    <service prefix="media/" name="CloudImageService" type="ImageProcessor.Web.Services.CloudImageService, ImageProcessor.Web">
       <settings>
         <setting key="MaxBytes" value="8194304"/>
         <setting key="Timeout" value="30000"/>
-        <setting key="Host" value="http://[myAccountName].blob.core.windows.net/"/>
+        <setting key="Host" value="http://[myAccountName].blob.core.windows.net/media/"/>
       </settings>
     </service>
 </security>
