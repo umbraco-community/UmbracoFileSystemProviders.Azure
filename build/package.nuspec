@@ -18,6 +18,7 @@
 		<dependencies>
 			<dependency id="UmbracoCms.Core" version="0.0.0" />
 			<dependency id="WindowsAzure.Storage" version="4.3.0" />
-		</dependencies>
+      <dependency id="Microsoft.Web.Xdt" version="2.1.1" />
+    </dependencies>
 	</metadata>
 </package>

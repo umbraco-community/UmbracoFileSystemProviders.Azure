@@ -27,7 +27,11 @@
 	<Languages />
 	<DataTypes />
 
-	<Actions />
+  <Actions>
+    <Action runat="install" undo="false" alias="UmbracoFileSystemProviders.Azure.TransformConfig" file="~/web.config" xdtfile="~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/web.config"></Action>
+    <Action runat="install" undo="false" alias="UmbracoFileSystemProviders.Azure.TransformConfig" file="~/Config/FileSystemProviders.config" xdtfile="~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config"></Action>
+
+  </Actions>
 
 	<control />
 
