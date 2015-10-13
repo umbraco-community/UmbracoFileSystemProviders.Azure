@@ -20,8 +20,4 @@
 			<dependency id="WindowsAzure.Storage" version="4.3.0" />
 		</dependencies>
 	</metadata>
-	<files>
-        <file src="..\..\transforms\FileSystemProviders.config.transform" target="content\config\FileSystemProviders.config.transform" />
-        <file src="..\..\transforms\web.config.transform" target="content\web.config.transform" />
-    </files>
 </package>

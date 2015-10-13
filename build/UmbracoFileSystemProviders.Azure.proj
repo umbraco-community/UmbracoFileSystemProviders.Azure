@@ -125,14 +125,18 @@
 			<SrcFiles Include="$(ProjectDir)\**\*.cs" Exclude="$(ProjectDir)\obj\**"/>
 			<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
 			<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
-		</ItemGroup>
+      <WebConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\web.config.*.xdt"></WebConfigXDTFiles>
+      <FileSystemProvidersConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\FileSystemProviders.config.*.xdt"></FileSystemProvidersConfigXDTFiles>
+    </ItemGroup>
 		<Copy SourceFiles="@(UmbracoBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
 		<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
 		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
 		<Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
 		<Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
-	</Target>
+    <Copy SourceFiles="@(WebConfigXDTFiles)" DestinationFolder="$(BuildNuGetDir)\Content" />
+    <Copy SourceFiles="@(FileSystemProvidersConfigXDTFiles)" DestinationFolder="$(BuildNuGetDir)\Content\Config" />
+  </Target>
 
 	<!-- MANIFEST UMBRACO -->
 	<Target Name="ManifestUmbraco" DependsOnTargets="PrepareFiles">
