@@ -231,6 +231,7 @@
     <Compile Include="AzureBlobFileSystemTestsBase.cs" />
     <Compile Include="AzureBlobFileSystemRelativeTests.cs" />
     <Compile Include="FileSystemVirtualPathProviderTests.cs" />
+    <Compile Include="InstallerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
