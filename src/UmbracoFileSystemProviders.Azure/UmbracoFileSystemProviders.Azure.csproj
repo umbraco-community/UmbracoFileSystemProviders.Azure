@@ -258,6 +258,10 @@
     <Compile Include="Helpers\MimeTypeResolver.cs" />
     <Compile Include="Helpers\WrappedLogHelper.cs" />
     <Compile Include="Helpers\ILogHelper.cs" />
+    <Content Include="Umbraco\Installer\Configurator\Controllers\Configure.js" />
+    <Content Include="Umbraco\Installer\Configurator\Views\Configure.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Compile Include="Umbraco\Installer\PackageActions.cs" />
     <Compile Include="VirtualPathProviderController.cs" />
     <Compile Include="FileSystemVirtualPathProvider.cs" />
