@@ -129,6 +129,7 @@
       <WebConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\web.config.*.xdt"></WebConfigXDTFiles>
       <FileSystemProvidersConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\FileSystemProviders.config.*.xdt"></FileSystemProvidersConfigXDTFiles>
       <UmbracoInstallerFiles Include="$(ProjectDir)\Umbraco\Installer\Configurator\**\*.*"/>
+      <UmbracoInstallerLogo Include="$(MSBuildProjectDirectory)\assets\logo\azure-logo-32.png"/>
     </ItemGroup>
 		<Copy SourceFiles="@(UmbracoBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
     <Copy SourceFiles="@(TransformBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
@@ -137,6 +138,7 @@
 
     <Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
     <Copy SourceFiles="@(UmbracoInstallerFiles)" DestinationFiles="@(UmbracoInstallerFiles->'$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install\Configurator\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(UmbracoInstallerLogo)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
 
     <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
 		<Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />

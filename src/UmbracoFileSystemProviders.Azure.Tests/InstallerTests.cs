@@ -22,7 +22,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         public void CheckNumberOfParamters()
         {
             var parameters = InstallerController.GetParametersFromXdt("FileSystemProviders.config.install.xdt");
-            Assert.AreEqual(4, parameters.Count);
+            Assert.AreEqual(4, parameters.Count());
         }
 
     }
