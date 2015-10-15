@@ -14,14 +14,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         [Test]
         public void CheckFirstParameterKey()
         {
-            var parameters = InstallerController.GetParametersFromXdt();
+            var parameters = InstallerController.GetParametersFromXdt("FileSystemProviders.config.install.xdt");
             Assert.AreEqual("containerName", parameters.First().Key);
         }
 
         [Test]
         public void CheckNumberOfParamters()
         {
-            var parameters = InstallerController.GetParametersFromXdt();
+            var parameters = InstallerController.GetParametersFromXdt("FileSystemProviders.config.install.xdt");
             Assert.AreEqual(4, parameters.Count);
         }
 
