@@ -1,0 +1,11 @@
+﻿<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <location path="media" xdt:Locator="Match(path)">
+    <system.webServer>
+      <handlers>
+        <remove name="StaticFileHandler" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+        <add name="StaticFileHandler" path="*" verb="*" preCondition="integratedMode" type="System.Web.StaticFileHandler" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+      </handlers>
+    </system.webServer>
+  </location>
+</configuration>
