@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
+using System.Web.Http;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -26,6 +27,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
         {
             var path = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
             return GetParametersFromXdt(path);
+        }
+
+        [HttpPost]
+        public bool PostParameters(IEnumerable<Parameter> parameters)
+        {
+            // Save back to XDT
+            // Execute XDT Transform
+            // Do something with values for upgrades?
+
+            return true;
         }
 
         internal static IEnumerable<Parameter> GetParametersFromXdt(string configPath)
