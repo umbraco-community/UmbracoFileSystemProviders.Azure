@@ -12,7 +12,7 @@
             <form name="paramForm" class="form-horizontal" role="form">             
                 <div ng-repeat="param in parameters" class="control-group">
                     <ng-form name="form">
-                    <label class="control-label" for="param.Key">{{ param.Key }}</label>
+                    <label class="control-label" for="param.Key">{{ capitalizeFirstLetter(param.Key) }}</label>
                         <div class="controls">
                             <input 
                                 class ="input-block-level"
