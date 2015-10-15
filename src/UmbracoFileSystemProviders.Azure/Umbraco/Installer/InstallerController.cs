@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Web.Hosting;
 using System.Web.Http;
 using System.Xml;
-
+using umbraco.cms.businesslogic.packager.standardPackageActions;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Web.Mvc;
@@ -17,21 +17,35 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
     [PluginController("FileSystemProviders")]
     public class InstallerController : UmbracoAuthorizedApiController
     {
+        private const string ProviderType = "Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure";
+        private readonly string _fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
+
         // /Umbraco/backoffice/FileSystemProviders/Installer/GetParameters
         public IEnumerable<Parameter> GetParameters()
         {
-            var path = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
-            return GetParametersFromXdt(path);
+            return GetParametersFromXdt(_fileSystemProvidersConfigInstallXdtPath);
         }
 
         [HttpPost]
         public bool PostParameters(IEnumerable<Parameter> parameters)
         {
-            var path = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
-            return SaveParametersToXdt(path, parameters);
-           
-            // Execute XDT Transform
-            // Do something with values for upgrades?
+            if (SaveParametersToXdt(_fileSystemProvidersConfigInstallXdtPath, parameters))
+            {
+                return ExecuteFileSystemConfigTransform();
+            }
+
+            return false;
+
+            // Maybe do something with values for upgrades?
+        }
+
+        private bool ExecuteFileSystemConfigTransform()
+        {
+            var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/Config/FileSystemProviders.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/FileSystemProviders.config\">" +
+         "</Action>").FirstChild;
+
+            var transformConfig = new PackageActions.TransformConfig();
+            return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
         }
 
         internal static bool SaveParametersToXdt(string configPath, IEnumerable<Parameter> newParameters)
@@ -41,7 +55,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
 
             var document = XmlHelper.OpenAsXmlDocument(configPath);
 
-            var parameters = document.SelectNodes("//Provider[@type = 'Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure']/Parameters/add");
+            var parameters = document.SelectNodes(string.Format("//Provider[@type = '{0}']/Parameters/add", ProviderType));
 
             if (parameters == null) return false;
 
@@ -89,7 +103,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
 
             var document = XmlHelper.OpenAsXmlDocument(configPath);
 
-            var parameters = document.SelectNodes("//Provider[@type = 'Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure']/Parameters/add");
+            var parameters = document.SelectNodes(string.Format("//Provider[@type = '{0}']/Parameters/add", ProviderType));
 
             if (parameters == null) return settings;
 

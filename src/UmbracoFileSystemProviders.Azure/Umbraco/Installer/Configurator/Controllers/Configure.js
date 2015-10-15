@@ -4,6 +4,9 @@ configApp.controller("Loader", function ($scope, $http, $log) {
     var getDataUrl = "/Umbraco/backoffice/FileSystemProviders/Installer/GetParameters";
     var postDataUrl = "/Umbraco/backoffice/FileSystemProviders/Installer/PostParameters";
     // Ajax request to controller for data-
+
+    $scope.saved = false;
+
     $http.get(getDataUrl).success(function (data) {
         $scope.parameters = data;
     });
@@ -14,7 +17,7 @@ configApp.controller("Loader", function ($scope, $http, $log) {
         $log.debug($scope.entity);
 
         $http.post(postDataUrl, $scope.parameters).success(function (data) {
-            $scope.status = 'success';
+            $scope.saved = true;
         });
 
     }
