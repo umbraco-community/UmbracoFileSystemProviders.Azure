@@ -28,8 +28,11 @@
                 <button preventDefault class="btn btn-primary" ng-disabled="paramForm.$invalid" ng-click="submitForm($event)">Save</button>
             </form>
         </fieldset>
-        <div ng-show="saved">
+        <div ng-show="saved && status">
             <h3>The Azure storage provider was sucessfully configured and your media is now as light as candyfloss</h3>
+        </div>
+        <div ng-show="saved && !status">
+            <h3>Oh no, something went wrong saving, please check Umbraco log files for exceptions</h3>
         </div>
     </div>
 </div>

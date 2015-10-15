@@ -1,19 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="InstallerController.cs" company="James Jackson-South">
+//   Copyright (c) James Jackson-South and contributors.
+//   Licensed under the Apache License, Version 2.0.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
 using System.Runtime.CompilerServices;
-using System.Web.Hosting;
-using System.Web.Http;
-using System.Xml;
-using umbraco.cms.businesslogic.packager.standardPackageActions;
-using Umbraco.Core;
-using Umbraco.Core.Logging;
-using Umbraco.Web.Mvc;
-using Umbraco.Web.WebApi;
 
 [assembly: InternalsVisibleTo("Our.Umbraco.FileSystemProviders.Azure.Tests")]
 namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.Hosting;
+    using System.Web.Http;
+    using System.Xml;
+
+    using global::Umbraco.Core;
+    using global::Umbraco.Core.Logging;
+    using global::Umbraco.Web.Mvc;
+    using global::Umbraco.Web.WebApi;
+    using umbraco.cms.businesslogic.packager.standardPackageActions;
+
+    using Configurator.Models;
+
     [PluginController("FileSystemProviders")]
     public class InstallerController : UmbracoAuthorizedApiController
     {
@@ -26,22 +37,22 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
             return GetParametersFromXdt(_fileSystemProvidersConfigInstallXdtPath);
         }
 
+        // /Umbraco/backoffice/FileSystemProviders/Installer/PostParameters
         [HttpPost]
         public bool PostParameters(IEnumerable<Parameter> parameters)
         {
             if (SaveParametersToXdt(_fileSystemProvidersConfigInstallXdtPath, parameters))
             {
-                ExecuteFileSystemConfigTransform();
-                ExecuteWebConfigTransform();
-                return true;
+                if (ExecuteFileSystemConfigTransform() && ExecuteWebConfigTransform())
+                {
+                    return true;
+                }               
             }
 
             return false;
-
-            // Maybe do something with values for upgrades?
         }
 
-        private bool ExecuteFileSystemConfigTransform()
+        private static bool ExecuteFileSystemConfigTransform()
         {
             var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/Config/FileSystemProviders.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/FileSystemProviders.config\">" +
          "</Action>").FirstChild;
@@ -50,7 +61,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
             return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
         }
 
-        private bool ExecuteWebConfigTransform()
+        private static bool ExecuteWebConfigTransform()
         {
             var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
          "</Action>").FirstChild;
@@ -68,7 +79,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
 
             var parameters = document.SelectNodes(string.Format("//Provider[@type = '{0}']/Parameters/add", ProviderType));
 
-            if (parameters == null) return false;
+            if (parameters == null)
+            {
+                return false;
+            }
 
             foreach (XmlElement parameter in parameters)
             {
@@ -88,7 +102,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
                 try
                 {
                     document.Save(configPath);
-
                     // No errors so the result is true
                     result = true;
                 }
@@ -110,13 +123,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
 
         internal static IEnumerable<Parameter> GetParametersFromXdt(string configPath)
         {
+            // TODO check existing FileSystemProviders.config to see if this is an package upgrade and transfer the values
+
             var settings = new List<Parameter>();
 
             var document = XmlHelper.OpenAsXmlDocument(configPath);
 
             var parameters = document.SelectNodes(string.Format("//Provider[@type = '{0}']/Parameters/add", ProviderType));
 
-            if (parameters == null) return settings;
+            if (parameters == null)
+            {
+                return settings;
+            }
 
             foreach (XmlElement parameter in parameters)
             {
@@ -131,9 +149,5 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
         }
     }
 
-    public class Parameter
-    {
-        public string Key { get; set; }
-        public string Value { get; set; }
-    }
+
 }

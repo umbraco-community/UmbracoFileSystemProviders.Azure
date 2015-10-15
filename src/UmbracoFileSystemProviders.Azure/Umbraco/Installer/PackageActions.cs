@@ -1,4 +1,11 @@
-﻿namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PackageActions.cs" company="James Jackson-South">
+//   Copyright (c) James Jackson-South and contributors.
+//   Licensed under the Apache License, Version 2.0.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
 {
     using System.Web;
 
@@ -19,34 +26,37 @@
             private bool Transform(string packageName, System.Xml.XmlNode xmlData, bool uninstall = false)
             {
                 //The config file we want to modify
-                var file = xmlData.Attributes.GetNamedItem("file").Value;
-
-                string sourceDocFileName = VirtualPathUtility.ToAbsolute(file);
-
-                //The xdt file used for tranformation 
-                var fileEnd = "install.xdt";
-                if (uninstall)
+                if (xmlData.Attributes != null)
                 {
-                    fileEnd = string.Format("un{0}", fileEnd);
-                }
+                    var file = xmlData.Attributes.GetNamedItem("file").Value;
 
-                var xdtfile = string.Format("{0}.{1}", xmlData.Attributes.GetNamedItem("xdtfile").Value, fileEnd);
-                string xdtFileName = VirtualPathUtility.ToAbsolute(xdtfile);
+                    var sourceDocFileName = VirtualPathUtility.ToAbsolute(file);
 
-                // The translation at-hand
-                using (var xmlDoc = new XmlTransformableDocument())
-                {
-                    xmlDoc.PreserveWhitespace = true;
-                    xmlDoc.Load(HttpContext.Current.Server.MapPath(sourceDocFileName));
-
-                    using (var xmlTrans = new XmlTransformation(HttpContext.Current.Server.MapPath(xdtFileName)))
+                    //The xdt file used for tranformation 
+                    var fileEnd = "install.xdt";
+                    if (uninstall)
                     {
-                        if (xmlTrans.Apply(xmlDoc))
+                        fileEnd = string.Format("un{0}", fileEnd);
+                    }
+
+                    var xdtfile = string.Format("{0}.{1}", xmlData.Attributes.GetNamedItem("xdtfile").Value, fileEnd);
+                    var xdtFileName = VirtualPathUtility.ToAbsolute(xdtfile);
+
+                    // The translation at-hand
+                    using (var xmlDoc = new XmlTransformableDocument())
+                    {
+                        xmlDoc.PreserveWhitespace = true;
+                        xmlDoc.Load(HttpContext.Current.Server.MapPath(sourceDocFileName));
+
+                        using (var xmlTrans = new XmlTransformation(HttpContext.Current.Server.MapPath(xdtFileName)))
                         {
-                            // If we made it here, sourceDoc now has transDoc's changes
-                            // applied. So, we're going to save the final result off to
-                            // destDoc.
-                            xmlDoc.Save(HttpContext.Current.Server.MapPath(sourceDocFileName));
+                            if (xmlTrans.Apply(xmlDoc))
+                            {
+                                // If we made it here, sourceDoc now has transDoc's changes
+                                // applied. So, we're going to save the final result off to
+                                // destDoc.
+                                xmlDoc.Save(HttpContext.Current.Server.MapPath(sourceDocFileName));
+                            }
                         }
                     }
                 }
@@ -60,7 +70,7 @@
 
             public System.Xml.XmlNode SampleXml()
             {
-                string str = "<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
+                var str = "<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
                          "</Action>";
                 return helper.parseStringToXmlNode(str);
             }

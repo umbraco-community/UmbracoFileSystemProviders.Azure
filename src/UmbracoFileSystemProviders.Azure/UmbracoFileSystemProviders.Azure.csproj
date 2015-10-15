@@ -262,6 +262,7 @@
     <Content Include="Umbraco\Installer\Configurator\Views\Configure.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <Compile Include="Umbraco\Installer\Configurator\Models\Parameter.cs" />
     <Compile Include="Umbraco\Installer\InstallerController.cs" />
     <Compile Include="Umbraco\Installer\PackageActions.cs" />
     <Compile Include="VirtualPathProviderController.cs" />

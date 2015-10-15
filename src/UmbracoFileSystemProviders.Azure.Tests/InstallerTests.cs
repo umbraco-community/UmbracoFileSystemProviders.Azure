@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="InstallerTests.cs" company="James Jackson-South">
+//   Copyright (c) James Jackson-South and contributors.
+//   Licensed under the Apache License, Version 2.0.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 {
+    using System.Linq;
+    using NUnit.Framework;
+    using Umbraco.Installer;
+
     [TestFixture]
     public class InstallerTests
     {
