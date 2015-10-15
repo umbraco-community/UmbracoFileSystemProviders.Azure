@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Hosting;
 using System.Web.Http;
 using System.Xml;
-using System.Xml.Linq;
-using System.Xml.XPath;
-using ClientDependency.Core;
-using umbraco;
+
+using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 
@@ -32,20 +27,71 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
         [HttpPost]
         public bool PostParameters(IEnumerable<Parameter> parameters)
         {
-            // Save back to XDT
+            var path = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
+            return SaveParametersToXdt(path, parameters);
+           
             // Execute XDT Transform
             // Do something with values for upgrades?
+        }
 
-            return true;
+        internal static bool SaveParametersToXdt(string configPath, IEnumerable<Parameter> newParameters)
+        {
+            var modified = false;
+            var result = false;
+
+            var document = XmlHelper.OpenAsXmlDocument(configPath);
+
+            var parameters = document.SelectNodes("//Provider[@type = 'Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure']/Parameters/add");
+
+            if (parameters == null) return false;
+
+            foreach (XmlElement parameter in parameters)
+            {
+                var key = parameter.GetAttribute("key");
+                var value = parameter.GetAttribute("value");
+                var newValue = newParameters.FirstOrDefault(x => x.Key == key).Value;
+
+                if (!value.Equals(newValue))
+                {
+                    parameter.SetAttribute("value", newValue);
+                    modified = true;
+                }
+            }
+
+            if (modified)
+            {
+                try
+                {
+                    document.Save(configPath);
+
+                    // No errors so the result is true
+                    result = true;
+                }
+                catch (Exception e)
+                {
+                    // Log error message
+                    var message = "Error saving XDT Parameters: " + e.Message;
+                    LogHelper.Error(typeof(InstallerController), message, e);
+                }
+            }
+            else
+            {
+                // nothing to modify
+                result = true;
+            }
+
+            return result;
         }
 
         internal static IEnumerable<Parameter> GetParametersFromXdt(string configPath)
         {
             var settings = new List<Parameter>();
 
-            var document = xmlHelper.OpenAsXmlDocument(configPath);
+            var document = XmlHelper.OpenAsXmlDocument(configPath);
 
             var parameters = document.SelectNodes("//Provider[@type = 'Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure']/Parameters/add");
+
+            if (parameters == null) return settings;
 
             foreach (XmlElement parameter in parameters)
             {
