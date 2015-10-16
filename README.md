@@ -10,9 +10,14 @@ Used to offload static files in the media section to the cloud.
 Designed to supersede [UmbracoAzureBlobStorage](https://github.com/idseefeld/UmbracoAzureBlobStorage) by [Dirk Seefeld](https://twitter.com/dseefeld65) (With his blessing) this package allows the storage and retrieval of media items using Azure Blob Storage while retaining the relative paths to the files expected in the back office.
 
 ## Installation
-At present the code is pre-release but when ready it will be available on [Nuget](http://www.nuget.org), also maybe as a package on [Our Umbraco](https://our.umbraco.org/). 
+At present the code is pre-release but when ready it will be available on [Nuget](http://www.nuget.org), also as a package on [Our Umbraco](https://our.umbraco.org/). 
 
-We already have a [MyGet package repository](https://www.myget.org/F/umbracofilesystemproviders-azure/) - for bleeding-edge / development releases.
+**Pre-release downloads**
+
+We already have a [MyGet package repository](https://www.myget.org/F/umbracofilesystemproviders-azure/) - for bleeding-edge / development NuGet releases.
+
+For pre-release Umbraco packages you can download from the [AppVeyor artifacts](https://ci.appveyor.com/project/JamesSouth/umbracofilesystemproviders-azure/build/artifacts) (the .zip file)
+
 
 ## Manual build
 

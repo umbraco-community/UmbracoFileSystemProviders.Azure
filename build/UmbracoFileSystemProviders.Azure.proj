@@ -19,7 +19,7 @@
 		<PackageName>UmbracoFileSystemProviders.Azure</PackageName>
 		<MinUmbracoVersion>6.2.5</MinUmbracoVersion>
 		<Readme>An Azure Blob Storage IFileSystem provider for Umbraco.</Readme>
-		<AuthorName>James Jackson-South, Dirk Seefeld, Lars-Erik Aabech</AuthorName>
+		<AuthorName>James Jackson-South, Dirk Seefeld, Lars-Erik Aabech, Jeavon Leopold</AuthorName>
 		<AuthorUrl>https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/graphs/contributors</AuthorUrl>
 		<PackageLicenseName>Apache 2.0 license</PackageLicenseName>
 		<PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
