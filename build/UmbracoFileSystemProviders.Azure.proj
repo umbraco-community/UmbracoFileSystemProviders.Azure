@@ -77,6 +77,7 @@
 		<BuildNuGetDir>$(BuildDir)\_nuget</BuildNuGetDir>
 		<ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
 		<ProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure</ProjectDir>
+    <InstallerProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure.Installer</InstallerProjectDir>
 	</PropertyGroup>
 
 	<!-- TARGETS -->
@@ -97,22 +98,22 @@
 		<MakeDir Directories="$(ArtifactsDir)" />
 	</Target>
 
-	<!-- UPDATE PROJECT ASSEMBLEY VERSION -->
-	<Target Name="UpdateAssemblyInfo" DependsOnTargets="Clean">
-		<ItemGroup>
-			<VersionMajor Include="$(ProductVersion.Split('.')[0])" />
-			<VersionMinor Include="$(ProductVersion.Split('.')[1])" />
-		</ItemGroup>
-		<AssemblyInfo CodeLanguage="CS"
-			OutputFile="$(ProjectDir)\Properties\VersionInfo.cs"
-			AssemblyVersion="@(VersionMajor).@(VersionMinor).*"
-			AssemblyInformationalVersion="$(ProductVersion)"/>
-	</Target>
+  <!-- UPDATE PROJECT ASSEMBLEY VERSION -->
+  <Target Name="UpdateAssemblyInfo" DependsOnTargets="Clean">
+    <FileUpdate Encoding="ASCII" Files="$(ProjectDir)\Properties\AssemblyInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
+    <FileUpdate Encoding="ASCII" Files="$(ProjectDir)\Properties\AssemblyInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
+    <FileUpdate Encoding="ASCII" Files="$(ProjectDir)\Properties\AssemblyInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
+
+    <FileUpdate Encoding="ASCII" Files="$(InstallerProjectDir)\Properties\AssemblyInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
+    <FileUpdate Encoding="ASCII" Files="$(InstallerProjectDir)\Properties\AssemblyInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
+    <FileUpdate Encoding="ASCII" Files="$(InstallerProjectDir)\Properties\AssemblyInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
+  </Target>
 
 	<!-- COMPILE -->
 	<Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
 		<MSBuild Projects="$(ProjectDir)\UmbracoFileSystemProviders.Azure.csproj" Properties="Configuration=$(BuildConfig)" />
-		<MSBuild Projects="$(RootDir)\src\UmbracoFileSystemProviders.Azure.Tests\UmbracoFileSystemProviders.Azure.Tests.csproj" Properties="Configuration=$(BuildConfig)" />
+    <MSBuild Projects="$(RootDir)\src\UmbracoFileSystemProviders.Azure.Installer\UmbracoFileSystemProviders.Azure.Installer.csproj" Properties="Configuration=$(BuildConfig)" />
+    <MSBuild Projects="$(InstallerProjectDir)\UmbracoFileSystemProviders.Azure.Installer.csproj" Properties="Configuration=$(BuildConfig)" />
 	</Target>
 
 	<!-- PREPARE FILES -->
@@ -126,8 +127,9 @@
 
       <!-- Umbraco specific -->
       <!-- Newtonsoft.Json Excluded for now as Umbraco requires different major versions -->
-			<UmbracoOtherBinFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Web.XmlTransform.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Edm.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.OData.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Services.Client.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Configuration.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Storage.dll;$(ProjectDir)\bin\$(BuildConfig)\System.Spatial.dll" />     
-      <UmbracoInstallerFiles Include="$(ProjectDir)\Umbraco\Installer\Configurator\**\*.*"/>
+      <UmbracoOtherBinFiles Include="$(InstallerProjectDir)\bin\$(BuildConfig)\Microsoft.Web.XmlTransform.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Edm.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.OData.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Services.Client.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Configuration.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Storage.dll;$(ProjectDir)\bin\$(BuildConfig)\System.Spatial.dll" />
+      <InstallerBinFiles Include="$(InstallerProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.Installer.dll" />
+      <UmbracoInstallerFiles Include="$(InstallerProjectDir)\Umbraco\Installer\Configurator\**\*.*"/>
       <UmbracoInstallerLogo Include="$(MSBuildProjectDirectory)\assets\logo\azure-logo-32.png"/>
       <PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
       
@@ -138,6 +140,7 @@
 
     <!-- Umbraco -->
     <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
+    <Copy SourceFiles="@(InstallerBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
     <Copy SourceFiles="@(UmbracoOtherBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
     <Copy SourceFiles="@(WebConfigXDTFiles)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
     <Copy SourceFiles="@(FileSystemProvidersConfigXDTFiles)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />

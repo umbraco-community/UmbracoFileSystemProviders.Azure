@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer.Configurator.Models
+namespace Our.Umbraco.FileSystemProviders.Azure.Installer.Umbraco.Installer.Models
 {
     public class Parameter
     {

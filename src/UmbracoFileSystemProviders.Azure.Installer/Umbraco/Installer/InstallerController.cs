@@ -6,6 +6,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Runtime.CompilerServices;
+using Our.Umbraco.FileSystemProviders.Azure.Installer.Umbraco.Installer.Models;
 
 [assembly: InternalsVisibleTo("Our.Umbraco.FileSystemProviders.Azure.Tests")]
 namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
@@ -22,8 +23,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.WebApi;
     using umbraco.cms.businesslogic.packager.standardPackageActions;
-
-    using Configurator.Models;
 
     [PluginController("FileSystemProviders")]
     public class InstallerController : UmbracoAuthorizedApiController

@@ -239,6 +239,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UmbracoFileSystemProviders.Azure.Installer\UmbracoFileSystemProviders.Azure.Installer.csproj">
+      <Project>{f67f3c8f-7b04-4d4f-a1fc-ad588e93afb4}</Project>
+      <Name>UmbracoFileSystemProviders.Azure.Installer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UmbracoFileSystemProviders.Azure\UmbracoFileSystemProviders.Azure.csproj">
       <Project>{749bc432-144a-4250-9066-d1fe170afe42}</Project>
       <Name>UmbracoFileSystemProviders.Azure</Name>
