@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoFileSystemProviders.Azure", "UmbracoFileSystemProviders.Azure\UmbracoFileSystemProviders.Azure.csproj", "{749BC432-144A-4250-9066-D1FE170AFE42}"
 EndProject
@@ -17,6 +17,19 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AACE9F95-E2A5-4B66-B4D3-6CF0F53296DC}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildPackage", "BuildPackage", "{DDE4D2E6-E526-4CB3-BECE-D89DFFB37B10}"
+	ProjectSection(SolutionItems) = preProject
+		..\appveyor.yml = ..\appveyor.yml
+		..\build\transforms\FileSystemProviders.config.install.xdt = ..\build\transforms\FileSystemProviders.config.install.xdt
+		..\build\transforms\FileSystemProviders.config.uninstall.xdt = ..\build\transforms\FileSystemProviders.config.uninstall.xdt
+		..\build\package.nuspec = ..\build\package.nuspec
+		..\build\package.proj = ..\build\package.proj
+		..\build\package.xml = ..\build\package.xml
+		..\build\UmbracoFileSystemProviders.Azure.proj = ..\build\UmbracoFileSystemProviders.Azure.proj
+		..\build\transforms\web.config.install.xdt = ..\build\transforms\web.config.install.xdt
+		..\build\transforms\web.config.uninstall.xdt = ..\build\transforms\web.config.uninstall.xdt
 	EndProjectSection
 EndProject
 Global

@@ -106,6 +106,10 @@
     <Reference Include="Microsoft.Web.Mvc.FixedDisplayModes">
       <HintPath>..\packages\Microsoft.AspNet.Mvc.FixedDisplayModes.1.0.1\lib\net40\Microsoft.Web.Mvc.FixedDisplayModes.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Configuration">
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.1.8.0.0\lib\net35-full\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
@@ -149,10 +153,12 @@
       <HintPath>..\packages\UmbracoCms.Core.6.2.5\lib\System.Data.SqlServerCe.Entity.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.30506.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Spatial, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Spatial.5.6.2\lib\net40\System.Spatial.dll</HintPath>
@@ -252,6 +258,13 @@
     <Compile Include="Helpers\MimeTypeResolver.cs" />
     <Compile Include="Helpers\WrappedLogHelper.cs" />
     <Compile Include="Helpers\ILogHelper.cs" />
+    <Content Include="Umbraco\Installer\Configurator\Controllers\Configure.js" />
+    <Content Include="Umbraco\Installer\Configurator\Views\Configure.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Compile Include="Umbraco\Installer\Configurator\Models\Parameter.cs" />
+    <Compile Include="Umbraco\Installer\InstallerController.cs" />
+    <Compile Include="Umbraco\Installer\PackageActions.cs" />
     <Compile Include="VirtualPathProviderController.cs" />
     <Compile Include="FileSystemVirtualPathProvider.cs" />
     <Compile Include="FileSystemVirtualFile.cs" />
@@ -261,6 +274,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

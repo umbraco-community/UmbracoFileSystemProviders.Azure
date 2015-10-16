@@ -18,10 +18,7 @@
 		<dependencies>
 			<dependency id="UmbracoCms.Core" version="0.0.0" />
 			<dependency id="WindowsAzure.Storage" version="4.3.0" />
-		</dependencies>
+      <dependency id="Microsoft.Web.Xdt" version="2.1.1" />
+    </dependencies>
 	</metadata>
-	<files>
-        <file src="..\..\transforms\FileSystemProviders.config.transform" target="content\config\FileSystemProviders.config.transform" />
-        <file src="..\..\transforms\web.config.transform" target="content\web.config.transform" />
-    </files>
 </package>

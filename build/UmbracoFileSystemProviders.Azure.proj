@@ -118,21 +118,41 @@
 	<!-- PREPARE FILES -->
 	<Target Name="PrepareFiles" DependsOnTargets="Compile">
 		<ItemGroup>
-			<!-- Newtonsoft.Json Excluded for now as Umbraco requires different major versions -->
-			<UmbracoBinFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Edm.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.OData.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Services.Client.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Configuration.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Storage.dll;$(ProjectDir)\bin\$(BuildConfig)\System.Spatial.dll" />
-			<BinFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.dll;" />
-			<PdbFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.pdb" />
-			<SrcFiles Include="$(ProjectDir)\**\*.cs" Exclude="$(ProjectDir)\obj\**"/>
-			<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
+      <!-- Shared -->
+      <BinFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.dll" />
+      <PdbFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.pdb" />
+      <WebConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\web.config.*.xdt" />
+      <FileSystemProvidersConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\FileSystemProviders.config.*.xdt" />
+
+      <!-- Umbraco specific -->
+      <!-- Newtonsoft.Json Excluded for now as Umbraco requires different major versions -->
+			<UmbracoOtherBinFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Web.XmlTransform.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Edm.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.OData.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Services.Client.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Configuration.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Storage.dll;$(ProjectDir)\bin\$(BuildConfig)\System.Spatial.dll" />     
+      <UmbracoInstallerFiles Include="$(ProjectDir)\Umbraco\Installer\Configurator\**\*.*"/>
+      <UmbracoInstallerLogo Include="$(MSBuildProjectDirectory)\assets\logo\azure-logo-32.png"/>
+      <PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
+      
+      <!-- NuGet specific -->
+      <SrcFiles Include="$(ProjectDir)\**\*.cs" Exclude="$(ProjectDir)\obj\**"/>
 			<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
-		</ItemGroup>
-		<Copy SourceFiles="@(UmbracoBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
-		<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
-		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
-		<Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
-		<Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
-	</Target>
+    </ItemGroup>
+
+    <!-- Umbraco -->
+    <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
+    <Copy SourceFiles="@(UmbracoOtherBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
+    <Copy SourceFiles="@(WebConfigXDTFiles)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
+    <Copy SourceFiles="@(FileSystemProvidersConfigXDTFiles)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
+    <Copy SourceFiles="@(UmbracoInstallerFiles)" DestinationFiles="@(UmbracoInstallerFiles->'$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install\Configurator\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(UmbracoInstallerLogo)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
+    <Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
+
+    <!--NuGet -->
+    <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
+		<Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />    
+    <Copy SourceFiles="@(WebConfigXDTFiles)" DestinationFolder="$(BuildNuGetDir)\Content" />
+    <Copy SourceFiles="@(FileSystemProvidersConfigXDTFiles)" DestinationFolder="$(BuildNuGetDir)\Content\Config" />
+    <Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
+  </Target>
 
 	<!-- MANIFEST UMBRACO -->
 	<Target Name="ManifestUmbraco" DependsOnTargets="PrepareFiles">
