@@ -2,7 +2,7 @@
 
 configApp.controller("Loader", function ($scope, $http, $log) {
     var getDataUrl = "/Umbraco/backoffice/FileSystemProviders/Installer/GetParameters";
-    var postDataUrl = "/Umbraco/backoffice/FileSystemProviders/Installer/PostParameters";   
+    var postDataUrl = "/Umbraco/backoffice/FileSystemProviders/Installer/PostParameters";
 
     $scope.saved = false;
 
@@ -16,12 +16,16 @@ configApp.controller("Loader", function ($scope, $http, $log) {
 
         $http.post(postDataUrl, $scope.parameters).success(function (data) {
             $scope.saved = true;
-            $scope.status = data;            
+            if (typeof data === 'string') {
+                $scope.status = JSON.parse(data);
+            } else {
+                $scope.status = data;
+            }
         });
 
     }
 
-    $scope.capitalizeFirstLetter = function(string) {
+    $scope.capitalizeFirstLetter = function (string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 });

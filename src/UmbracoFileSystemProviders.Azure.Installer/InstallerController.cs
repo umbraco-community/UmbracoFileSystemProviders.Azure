@@ -3,7 +3,12 @@
 // Copyright (c) James Jackson-South. All rights reserved. Licensed under the Apache License, Version 2.0.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using System.Configuration;
 using System.Runtime.CompilerServices;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Our.Umbraco.FileSystemProviders.Azure.Installer.Enums;
 
 [assembly: InternalsVisibleTo("Our.Umbraco.FileSystemProviders.Azure.Tests")]
 namespace Our.Umbraco.FileSystemProviders.Azure.Installer
@@ -39,17 +44,27 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
         // /Umbraco/backoffice/FileSystemProviders/Installer/PostParameters
         [HttpPost]
-        public bool PostParameters(IEnumerable<Parameter> parameters)
+        public InstallerStatus PostParameters(IEnumerable<Parameter> parameters)
         {
-            if (SaveParametersToXdt(_fileSystemProvidersConfigInstallXdtPath, parameters))
+            var connection = parameters.SingleOrDefault(k => k.Key == "connectionString").Value;
+            var containerName = parameters.SingleOrDefault(k => k.Key == "containerName").Value;
+
+            if (!this.TestAzureCredentials(connection, containerName))
             {
-                if (ExecuteFileSystemConfigTransform() && ExecuteWebConfigTransform())
-                {
-                    return true;
-                }
+                return InstallerStatus.ConnectionError;
             }
 
-            return false;
+            if (SaveParametersToXdt(_fileSystemProvidersConfigInstallXdtPath, parameters))
+            {
+                if (!ExecuteFileSystemConfigTransform() || !ExecuteWebConfigTransform())
+                {
+                    return InstallerStatus.SaveConfigError;
+                }
+
+                return InstallerStatus.Ok;
+            }
+
+            return InstallerStatus.SaveXdtError;
         }
 
         internal static bool SaveParametersToXdt(string xdtPath, IEnumerable<Parameter> newParameters)
@@ -147,6 +162,39 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             }
 
             return settings;
+        }
+
+        private bool TestAzureCredentials(string connectionString, string containerName)
+        {
+            bool useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
+                               && ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey]
+                                                      .Equals("true", StringComparison.InvariantCultureIgnoreCase);
+
+            try
+            {
+                CloudStorageAccount cloudStorageAccount;
+                if (useEmulator)
+                {
+                    cloudStorageAccount = CloudStorageAccount.DevelopmentStorageAccount;
+                }
+                else
+                {
+                    cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+                }
+
+                var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+                var blobContainer = cloudBlobClient.GetContainerReference(containerName);
+
+                // this should fully check that the connection works
+                var blobExists = blobContainer.Exists();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Error<InstallerController>(string.Format("Error validating Azure storage connection: {0}", e.Message), e);
+                return false;
+            }
+
+            return true;
         }
 
         private static bool ExecuteFileSystemConfigTransform()
