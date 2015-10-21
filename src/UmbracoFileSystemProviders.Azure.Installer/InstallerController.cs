@@ -28,11 +28,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     {
         private const string ProviderType = "Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure";
         private readonly string _fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
+        private readonly string _fileSystemProvidersConfigPath = HostingEnvironment.MapPath("~/Config/FileSystemProviders.config");
+
 
         // /Umbraco/backoffice/FileSystemProviders/Installer/GetParameters
         public IEnumerable<Parameter> GetParameters()
         {
-            return GetParametersFromXdt(_fileSystemProvidersConfigInstallXdtPath);
+            return GetParametersFromXdt(_fileSystemProvidersConfigInstallXdtPath, _fileSystemProvidersConfigPath);
         }
 
         // /Umbraco/backoffice/FileSystemProviders/Installer/PostParameters
@@ -50,12 +52,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return false;
         }
 
-        internal static bool SaveParametersToXdt(string configPath, IEnumerable<Parameter> newParameters)
+        internal static bool SaveParametersToXdt(string xdtPath, IEnumerable<Parameter> newParameters)
         {
             var modified = false;
             var result = false;
 
-            var document = XmlHelper.OpenAsXmlDocument(configPath);
+            var document = XmlHelper.OpenAsXmlDocument(xdtPath);
 
             var parameters = document.SelectNodes(string.Format("//Provider[@type = '{0}']/Parameters/add", ProviderType));
 
@@ -81,7 +83,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             {
                 try
                 {
-                    document.Save(configPath);
+                    document.Save(xdtPath);
                     // No errors so the result is true
                     result = true;
                 }
@@ -101,13 +103,32 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return result;
         }
 
-        internal static IEnumerable<Parameter> GetParametersFromXdt(string configPath)
+        internal static IEnumerable<Parameter> GetParametersFromXdt(string xdtPath, string configPath)
         {
-            // TODO check existing FileSystemProviders.config to see if this is an package upgrade and transfer the values
+            // For package upgrades check for configured values in existing FileSystemProviders.config and merge with the Parameters from the XDT file (there could be new ones)
+            var xdtParameters = GetParametersFromXml(xdtPath);
+            var currentConfigParameters = GetParametersFromXml(configPath);
 
+            foreach (var parameter in xdtParameters)
+            {
+                if (currentConfigParameters.Select(k => k.Key).Contains(parameter.Key))
+                {
+                    var currentParameter = currentConfigParameters.SingleOrDefault(k => k.Key == parameter.Key);
+                    if (currentParameter != null)
+                    {
+                        parameter.Value = currentParameter.Value;
+                    }
+                }
+            }
+
+            return xdtParameters;
+        }
+
+        internal static IEnumerable<Parameter> GetParametersFromXml(string xmlPath)
+        {
             var settings = new List<Parameter>();
 
-            var document = XmlHelper.OpenAsXmlDocument(configPath);
+            var document = XmlHelper.OpenAsXmlDocument(xmlPath);
 
             var parameters = document.SelectNodes(string.Format("//Provider[@type = '{0}']/Parameters/add", ProviderType));
 
