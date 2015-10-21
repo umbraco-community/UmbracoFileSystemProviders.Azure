@@ -245,6 +245,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </param>
         public void DeleteDirectory(string path, bool recursive)
         {
+            path = this.FixPath(path);
+
             if (!this.DirectoryExists(path))
             {
                 return;
