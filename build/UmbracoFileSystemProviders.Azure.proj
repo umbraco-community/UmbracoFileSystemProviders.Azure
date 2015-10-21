@@ -214,7 +214,7 @@
 			OutputDirectory="$(ArtifactsDir)"
 			Files="@(PackageFiles)" />
 
-		<MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\src\.nuget\NuGet.exe"
+		<MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\build\tools\NuGet.exe"
 			ManifestFile="$(BuildNuGetDir)\package.nuspec"
 			BasePath="$(BuildNuGetDir)"
 			Version="$(ProductVersion)"
