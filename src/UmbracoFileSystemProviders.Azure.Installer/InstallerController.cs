@@ -50,24 +50,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return false;
         }
 
-        private static bool ExecuteFileSystemConfigTransform()
-        {
-            var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/Config/FileSystemProviders.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/FileSystemProviders.config\">" +
-         "</Action>").FirstChild;
-
-            var transformConfig = new PackageActions.TransformConfig();
-            return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
-        }
-
-        private static bool ExecuteWebConfigTransform()
-        {
-            var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
-         "</Action>").FirstChild;
-
-            var transformConfig = new PackageActions.TransformConfig();
-            return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
-        }
-
         internal static bool SaveParametersToXdt(string configPath, IEnumerable<Parameter> newParameters)
         {
             var modified = false;
@@ -145,7 +127,23 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
             return settings;
         }
+
+        private static bool ExecuteFileSystemConfigTransform()
+        {
+            var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/Config/FileSystemProviders.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/FileSystemProviders.config\">" +
+         "</Action>").FirstChild;
+
+            var transformConfig = new PackageActions.TransformConfig();
+            return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
+        }
+
+        private static bool ExecuteWebConfigTransform()
+        {
+            var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
+         "</Action>").FirstChild;
+
+            var transformConfig = new PackageActions.TransformConfig();
+            return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
+        }
     }
-
-
 }

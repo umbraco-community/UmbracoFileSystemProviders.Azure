@@ -1,17 +1,16 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PackageActions.cs" company="James Jackson-South">
-//   Copyright (c) James Jackson-South and contributors.
-//   Licensed under the Apache License, Version 2.0.
+// Copyright (c) James Jackson-South. All rights reserved. Licensed under the Apache License, Version 2.0.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Web;
-using Microsoft.Web.XmlTransform;
-using umbraco.cms.businesslogic.packager.standardPackageActions;
-using umbraco.interfaces;
-
 namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 {
+    using System.Web;
+    using Microsoft.Web.XmlTransform;
+    using umbraco.cms.businesslogic.packager.standardPackageActions;
+    using umbraco.interfaces;
+
     public class PackageActions
     {
         public class TransformConfig : IPackageAction
@@ -21,16 +20,33 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 return "UmbracoFileSystemProviders.Azure.TransformConfig";
             }
 
+            public bool Execute(string packageName, System.Xml.XmlNode xmlData)
+            {
+                return this.Transform(packageName, xmlData);
+            }
+
+            public System.Xml.XmlNode SampleXml()
+            {
+                var str = "<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
+                         "</Action>";
+                return helper.parseStringToXmlNode(str);
+            }
+
+            public bool Undo(string packageName, System.Xml.XmlNode xmlData)
+            {
+                return this.Transform(packageName, xmlData, true);
+            }
+
             private bool Transform(string packageName, System.Xml.XmlNode xmlData, bool uninstall = false)
             {
-                //The config file we want to modify
+                // The config file we want to modify
                 if (xmlData.Attributes != null)
                 {
                     var file = xmlData.Attributes.GetNamedItem("file").Value;
 
                     var sourceDocFileName = VirtualPathUtility.ToAbsolute(file);
 
-                    //The xdt file used for tranformation 
+                    // The xdt file used for tranformation 
                     var fileEnd = "install.xdt";
                     if (uninstall)
                     {
@@ -58,24 +74,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                         }
                     }
                 }
+
                 return true;
-            }
-
-            public bool Execute(string packageName, System.Xml.XmlNode xmlData)
-            {
-                return Transform(packageName, xmlData);
-            }
-
-            public System.Xml.XmlNode SampleXml()
-            {
-                var str = "<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
-                         "</Action>";
-                return helper.parseStringToXmlNode(str);
-            }
-
-            public bool Undo(string packageName, System.Xml.XmlNode xmlData)
-            {
-                return Transform(packageName, xmlData, true);
             }
         }
     }
