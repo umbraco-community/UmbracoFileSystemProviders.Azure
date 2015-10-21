@@ -6,10 +6,14 @@
 
 namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 {
+    using System;
     using System.Web;
+
     using Microsoft.Web.XmlTransform;
+
     using umbraco.cms.businesslogic.packager.standardPackageActions;
     using umbraco.interfaces;
+    using global::Umbraco.Core.Logging;
 
     public class PackageActions
     {
@@ -69,7 +73,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                                 // If we made it here, sourceDoc now has transDoc's changes
                                 // applied. So, we're going to save the final result off to
                                 // destDoc.
-                                xmlDoc.Save(HttpContext.Current.Server.MapPath(sourceDocFileName));
+                                try
+                                {
+                                    xmlDoc.Save(HttpContext.Current.Server.MapPath(sourceDocFileName));
+                                }
+                                catch (Exception e)
+                                {
+                                    // Log error message
+                                    var message = "Error executing TransformConfig package action (check file write permissions): " + e.Message;
+                                    LogHelper.Error(typeof(TransformConfig), message, e);
+                                    return false;
+                                }
                             }
                         }
                     }
