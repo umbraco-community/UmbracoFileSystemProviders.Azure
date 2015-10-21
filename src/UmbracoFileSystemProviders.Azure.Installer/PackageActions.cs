@@ -5,15 +5,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
+using System.Web;
+using Microsoft.Web.XmlTransform;
+using umbraco.cms.businesslogic.packager.standardPackageActions;
+using umbraco.interfaces;
+
+namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 {
-    using System.Web;
-
-    using Microsoft.Web.XmlTransform;
-
-    using umbraco.cms.businesslogic.packager.standardPackageActions;
-    using umbraco.interfaces;
-
     public class PackageActions
     {
         public class TransformConfig : IPackageAction

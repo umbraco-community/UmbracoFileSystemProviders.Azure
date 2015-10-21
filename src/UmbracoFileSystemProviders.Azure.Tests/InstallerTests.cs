@@ -4,12 +4,12 @@
 //   Licensed under the Apache License, Version 2.0.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 {
     using System.Linq;
     using NUnit.Framework;
-    using Umbraco.Installer;
+
+    using Installer;
 
     [TestFixture]
     public class InstallerTests

@@ -1,15 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="InstallerController.cs" company="James Jackson-South">
-//   Copyright (c) James Jackson-South and contributors.
-//   Licensed under the Apache License, Version 2.0.
+// Copyright (c) James Jackson-South. All rights reserved. Licensed under the Apache License, Version 2.0.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 using System.Runtime.CompilerServices;
-using Our.Umbraco.FileSystemProviders.Azure.Installer.Umbraco.Installer.Models;
 
 [assembly: InternalsVisibleTo("Our.Umbraco.FileSystemProviders.Azure.Tests")]
-namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
+namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 {
     using System;
     using System.Collections.Generic;
@@ -23,6 +20,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.WebApi;
     using umbraco.cms.businesslogic.packager.standardPackageActions;
+
+    using Models;
 
     [PluginController("FileSystemProviders")]
     public class InstallerController : UmbracoAuthorizedApiController
@@ -45,7 +44,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Umbraco.Installer
                 if (ExecuteFileSystemConfigTransform() && ExecuteWebConfigTransform())
                 {
                     return true;
-                }               
+                }
             }
 
             return false;

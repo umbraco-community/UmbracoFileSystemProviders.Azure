@@ -129,7 +129,7 @@
       <!-- Newtonsoft.Json Excluded for now as Umbraco requires different major versions -->
       <UmbracoOtherBinFiles Include="$(InstallerProjectDir)\bin\$(BuildConfig)\Microsoft.Web.XmlTransform.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Edm.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.OData.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Services.Client.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Configuration.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Storage.dll;$(ProjectDir)\bin\$(BuildConfig)\System.Spatial.dll" />
       <InstallerBinFiles Include="$(InstallerProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.Installer.dll" />
-      <UmbracoInstallerFiles Include="$(InstallerProjectDir)\Umbraco\Installer\Configurator\**\*.*"/>
+      <UmbracoInstallerFiles Include="$(InstallerProjectDir)\Configurator\**\*.*"/>
       <UmbracoInstallerLogo Include="$(MSBuildProjectDirectory)\assets\logo\azure-logo-32.png"/>
       <PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
       
