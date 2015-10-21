@@ -23,7 +23,7 @@ For pre-release Umbraco packages you can download from the [AppVeyor artifacts](
 
 If you prefer, you can compile UmbracoFileSystemProviders.Azure yourself, you'll need:
 
-* Visual Studio 2012 (or above)
+* Visual Studio 2015 (or above)
 
 To clone it locally click the "Clone in Windows" button above or run the following git commands.
 
