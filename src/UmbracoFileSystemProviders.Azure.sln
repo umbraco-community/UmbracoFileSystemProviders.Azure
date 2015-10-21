@@ -7,13 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoFileSystemProviders.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoFileSystemProviders.Azure.Tests", "UmbracoFileSystemProviders.Azure.Tests\UmbracoFileSystemProviders.Azure.Tests.csproj", "{A1629F8A-54F8-42B4-AF91-66A0F958F1D2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9EB32EEF-EAB3-437D-B856-5381731AE3FB}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AACE9F95-E2A5-4B66-B4D3-6CF0F53296DC}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
