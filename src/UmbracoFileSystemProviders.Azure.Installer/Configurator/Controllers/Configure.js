@@ -15,12 +15,20 @@ configApp.controller("Loader", function ($scope, $http, $log) {
         e.preventDefault();
 
         $http.post(postDataUrl, $scope.parameters).success(function (data) {
-            $scope.saved = true;
-            if (typeof data === 'string') {
-                $scope.status = JSON.parse(data);
+
+            var status;
+            if (typeof data === "string") {
+                status = JSON.parse(data);
             } else {
-                $scope.status = data;
+                status = data;
             }
+
+            $scope.status = status;
+
+            if (status !== "ConnectionError") {
+                $scope.saved = true;
+            }
+
         });
 
     }

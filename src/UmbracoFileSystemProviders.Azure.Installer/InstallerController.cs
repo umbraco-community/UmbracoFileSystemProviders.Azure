@@ -166,10 +166,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
         private bool TestAzureCredentials(string connectionString, string containerName)
         {
-            bool useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
+            var useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
                                && ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey]
                                                       .Equals("true", StringComparison.InvariantCultureIgnoreCase);
-
             try
             {
                 CloudStorageAccount cloudStorageAccount;
@@ -185,7 +184,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
                 var blobContainer = cloudBlobClient.GetContainerReference(containerName);
 
-                // this should fully check that the connection works
+                // this should fully check that the connection works, the result is not relevant
                 var blobExists = blobContainer.Exists();
             }
             catch (Exception e)
