@@ -241,6 +241,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UmbracoFileSystemProviders.Azure.Installer\UmbracoFileSystemProviders.Azure.Installer.csproj">
