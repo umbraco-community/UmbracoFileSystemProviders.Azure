@@ -1,24 +1,25 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="InstallerController.cs" company="James Jackson-South">
-// Copyright (c) James Jackson-South. All rights reserved. Licensed under the Apache License, Version 2.0.
+// Copyright (c) James Jackson-South. All rights reserved.
+// Licensed under the Apache License, Version 2.0.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Configuration;
 using System.Runtime.CompilerServices;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Our.Umbraco.FileSystemProviders.Azure.Installer.Enums;
 
+// ReSharper disable InconsistentNaming
 [assembly: InternalsVisibleTo("Our.Umbraco.FileSystemProviders.Azure.Tests")]
 namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Linq;
     using System.Web.Hosting;
     using System.Web.Http;
     using System.Xml;
+
+    using Microsoft.WindowsAzure.Storage;
 
     using global::Umbraco.Core;
     using global::Umbraco.Core.Logging;
@@ -26,20 +27,21 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using global::Umbraco.Web.WebApi;
     using umbraco.cms.businesslogic.packager.standardPackageActions;
 
+    using Enums;
     using Models;
 
     [PluginController("FileSystemProviders")]
     public class InstallerController : UmbracoAuthorizedApiController
     {
         private const string ProviderType = "Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure";
-        private readonly string _fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
-        private readonly string _fileSystemProvidersConfigPath = HostingEnvironment.MapPath("~/Config/FileSystemProviders.config");
+        private readonly string fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
+        private readonly string fileSystemProvidersConfigPath = HostingEnvironment.MapPath("~/Config/FileSystemProviders.config");
 
 
         // /Umbraco/backoffice/FileSystemProviders/Installer/GetParameters
         public IEnumerable<Parameter> GetParameters()
         {
-            return GetParametersFromXdt(_fileSystemProvidersConfigInstallXdtPath, _fileSystemProvidersConfigPath);
+            return GetParametersFromXdt(this.fileSystemProvidersConfigInstallXdtPath, this.fileSystemProvidersConfigPath);
         }
 
         // /Umbraco/backoffice/FileSystemProviders/Installer/PostParameters
@@ -49,12 +51,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             var connection = parameters.SingleOrDefault(k => k.Key == "connectionString").Value;
             var containerName = parameters.SingleOrDefault(k => k.Key == "containerName").Value;
 
-            if (!this.TestAzureCredentials(connection, containerName))
+            if (!TestAzureCredentials(connection, containerName))
             {
                 return InstallerStatus.ConnectionError;
             }
 
-            if (SaveParametersToXdt(_fileSystemProvidersConfigInstallXdtPath, parameters))
+            if (SaveParametersToXdt(this.fileSystemProvidersConfigInstallXdtPath, parameters))
             {
                 if (!ExecuteFileSystemConfigTransform() || !ExecuteWebConfigTransform())
                 {
@@ -164,38 +166,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return settings;
         }
 
-        private bool TestAzureCredentials(string connectionString, string containerName)
-        {
-            var useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
-                               && ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey]
-                                                      .Equals("true", StringComparison.InvariantCultureIgnoreCase);
-            try
-            {
-                CloudStorageAccount cloudStorageAccount;
-                if (useEmulator)
-                {
-                    cloudStorageAccount = CloudStorageAccount.DevelopmentStorageAccount;
-                }
-                else
-                {
-                    cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
-                }
-
-                var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-                var blobContainer = cloudBlobClient.GetContainerReference(containerName);
-
-                // this should fully check that the connection works, the result is not relevant
-                var blobExists = blobContainer.Exists();
-            }
-            catch (Exception e)
-            {
-                LogHelper.Error<InstallerController>(string.Format("Error validating Azure storage connection: {0}", e.Message), e);
-                return false;
-            }
-
-            return true;
-        }
-
         private static bool ExecuteFileSystemConfigTransform()
         {
             var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/Config/FileSystemProviders.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/FileSystemProviders.config\">" +
@@ -212,6 +182,30 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
             var transformConfig = new PackageActions.TransformConfig();
             return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
+        }
+
+        private static bool TestAzureCredentials(string connectionString, string containerName)
+        {
+            var useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
+                               && ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey]
+                                                      .Equals("true", StringComparison.InvariantCultureIgnoreCase);
+            try
+            {
+                var cloudStorageAccount = useEmulator ? CloudStorageAccount.DevelopmentStorageAccount : CloudStorageAccount.Parse(connectionString);
+
+                var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+                var blobContainer = cloudBlobClient.GetContainerReference(containerName);
+
+                // this should fully check that the connection works, the result is not relevant
+                var blobExists = blobContainer.Exists();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Error<InstallerController>(string.Format("Error validating Azure storage connection: {0}", e.Message), e);
+                return false;
+            }
+
+            return true;
         }
     }
 }
