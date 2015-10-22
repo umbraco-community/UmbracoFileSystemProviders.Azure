@@ -15,6 +15,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using System.Collections.Generic;
     using System.Configuration;
     using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Web.Hosting;
     using System.Web.Http;
@@ -218,10 +219,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
         private static bool CheckImageProcessorWebCompatibleVersion(Version imageProcessorWebMinRequiredVersion)
         {
+            if (!File.Exists(ImageProcessorWebAssemblyPath))
+            {
+                return false;
+            }
+
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(ImageProcessorWebAssemblyPath);
-
             var currentImageProcessorWebVersionInfo = new Version(fileVersionInfo.ProductVersion);
-
             return currentImageProcessorWebVersionInfo >= imageProcessorWebMinRequiredVersion;
         }
     }
