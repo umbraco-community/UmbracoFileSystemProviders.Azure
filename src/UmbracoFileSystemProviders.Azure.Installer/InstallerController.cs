@@ -14,6 +14,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using System;
     using System.Collections.Generic;
     using System.Configuration;
+    using System.Diagnostics;
     using System.Linq;
     using System.Web.Hosting;
     using System.Web.Http;
@@ -34,9 +35,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     public class InstallerController : UmbracoAuthorizedApiController
     {
         private const string ProviderType = "Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure";
+        private static readonly string ImageProcessorWebAssemblyPath = HostingEnvironment.MapPath("~/bin/ImageProcessor.Web.dll");
+        private static readonly Version ImageProcessorWebMinRequiredVersion = new Version("4.3.2.0");
+
         private readonly string fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
         private readonly string fileSystemProvidersConfigPath = HostingEnvironment.MapPath("~/Config/FileSystemProviders.config");
-
 
         // /Umbraco/backoffice/FileSystemProviders/Installer/GetParameters
         public IEnumerable<Parameter> GetParameters()
@@ -49,7 +52,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         public InstallerStatus PostParameters(IEnumerable<Parameter> parameters)
         {
             var connection = parameters.SingleOrDefault(k => k.Key == "connectionString").Value;
-            var containerName = parameters.SingleOrDefault(k => k.Key == "containerName").Value;
+            var containerName = parameters.SingleOrDefault(k => k.Key == "containerName").Value;            
 
             if (!TestAzureCredentials(connection, containerName))
             {
@@ -61,6 +64,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 if (!ExecuteFileSystemConfigTransform() || !ExecuteWebConfigTransform())
                 {
                     return InstallerStatus.SaveConfigError;
+                }
+
+                if (!CheckImageProcessorWebCompatibleVersion(ImageProcessorWebMinRequiredVersion))
+                {
+                    return InstallerStatus.ImageProcessorWebCompatibility;
                 }
 
                 return InstallerStatus.Ok;
@@ -206,6 +214,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             }
 
             return true;
+        }
+
+        private static bool CheckImageProcessorWebCompatibleVersion(Version imageProcessorWebMinRequiredVersion)
+        {
+            var fileVersionInfo = FileVersionInfo.GetVersionInfo(ImageProcessorWebAssemblyPath);
+
+            var currentImageProcessorWebVersionInfo = new Version(fileVersionInfo.ProductVersion);
+
+            return currentImageProcessorWebVersionInfo >= imageProcessorWebMinRequiredVersion;
         }
     }
 }
