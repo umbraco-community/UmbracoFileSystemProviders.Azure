@@ -80,10 +80,23 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
         internal static bool SaveParametersToXdt(string xdtPath, IEnumerable<Parameter> newParameters)
         {
-            var modified = false;
             var result = false;
 
             var document = XmlHelper.OpenAsXmlDocument(xdtPath);
+
+            // Inset a Parameter element with Xdt remove so that updated values get saved (for upgrades), we don't want this for NuGet packages which is why it's here instead
+            var nsMgr = new XmlNamespaceManager(document.NameTable);
+            var strNamespace = "http://schemas.microsoft.com/XML-Document-Transform";
+            nsMgr.AddNamespace("xdt", strNamespace);
+
+            var providerElement = document.SelectSingleNode(string.Format("//Provider[@type = '{0}']", ProviderType));
+            var parametersElement = providerElement.SelectSingleNode("./Parameters");
+            var parameterRemoveElement = document.CreateNode("element", "Parameters", null);
+            var tranformAttr = document.CreateAttribute("Transform", strNamespace);
+            tranformAttr.Value = "Remove";
+
+            parameterRemoveElement.Attributes.Append(tranformAttr);
+            providerElement.InsertBefore(parameterRemoveElement, parametersElement);
 
             var parameters = document.SelectNodes(string.Format("//Provider[@type = '{0}']/Parameters/add", ProviderType));
 
@@ -96,34 +109,31 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             {
                 var key = parameter.GetAttribute("key");
                 var value = parameter.GetAttribute("value");
-                var newValue = newParameters.FirstOrDefault(x => x.Key == key).Value;
 
-                if (!value.Equals(newValue))
+                var newParameter = newParameters.FirstOrDefault(x => x.Key == key);
+                if (newParameter != null)
                 {
-                    parameter.SetAttribute("value", newValue);
-                    modified = true;
+                    var newValue = newParameter.Value;
+
+                    if (!value.Equals(newValue))
+                    {
+                        parameter.SetAttribute("value", newValue);
+                    }
                 }
             }
 
-            if (modified)
+            try
             {
-                try
-                {
-                    document.Save(xdtPath);
-                    // No errors so the result is true
-                    result = true;
-                }
-                catch (Exception e)
-                {
-                    // Log error message
-                    var message = "Error saving XDT Parameters: " + e.Message;
-                    LogHelper.Error(typeof(InstallerController), message, e);
-                }
-            }
-            else
-            {
-                // nothing to modify
+                document.Save(xdtPath);
+
+                // No errors so the result is true
                 result = true;
+            }
+            catch (Exception e)
+            {
+                // Log error message
+                var message = "Error saving XDT Parameters: " + e.Message;
+                LogHelper.Error(typeof(InstallerController), message, e);
             }
 
             return result;
