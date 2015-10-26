@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildPackage", "BuildPackag
 		..\build\package.nuspec = ..\build\package.nuspec
 		..\build\package.proj = ..\build\package.proj
 		..\build\package.xml = ..\build\package.xml
+		..\build\transforms\security.config.install.xdt = ..\build\transforms\security.config.install.xdt
 		..\build\UmbracoFileSystemProviders.Azure.proj = ..\build\UmbracoFileSystemProviders.Azure.proj
 		..\build\transforms\web.config.install.xdt = ..\build\transforms\web.config.install.xdt
 		..\build\transforms\web.config.uninstall.xdt = ..\build\transforms\web.config.uninstall.xdt

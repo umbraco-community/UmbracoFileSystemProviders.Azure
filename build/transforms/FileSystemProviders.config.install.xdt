@@ -8,7 +8,7 @@
   </Provider>
 
   <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure" xdt:Locator="Match(type)" xdt:Transform="InsertIfMissing">
-      <Parameters xdt:Transform="InsertIfMissing">
+    <Parameters xdt:Transform="InsertIfMissing">
       <add key="containerName" value="media" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
       <add key="rootUrl" value="http://[myAccountName].blob.core.windows.net/" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
       <add key="connectionString" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
