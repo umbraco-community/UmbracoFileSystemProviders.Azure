@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <FileSystemProviders xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
 
-  <Provider alias="media" type="Umbraco.Core.IO.PhysicalFileSystem, Umbraco.Core"  xdt:Locator="Match(type)" xdt:Transform="Remove">
+  <Provider alias="media" type="Umbraco.Core.IO.PhysicalFileSystem, Umbraco.Core" xdt:Locator="Match(type)" xdt:Transform="Remove">
     <Parameters>
       <add key="virtualRoot" value="~/media/" />
     </Parameters>

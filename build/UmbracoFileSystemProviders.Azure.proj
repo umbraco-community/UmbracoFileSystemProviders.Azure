@@ -123,7 +123,10 @@
       <BinFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.dll" />
       <PdbFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.pdb" />
       <WebConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\web.config.*.xdt" />
-      <FileSystemProvidersConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\FileSystemProviders.config.*.xdt" />
+      <FileSystemProvidersConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\FileSystemProviders.config.install.xdt" />
+
+      <!-- The FileSystemProviders.config.uninstall.xdt needs to be excluded from the NuGet package so that upgrades don't overwrite parameter values due to NuGet upgrades actually executing uninstall/install -->
+      <FileSystemProvidersConfigXDTUninstallFile Include="$(MSBuildProjectDirectory)\transforms\FileSystemProviders.config.uninstall.xdt" />
 
       <!-- Umbraco specific -->
       <!-- Newtonsoft.Json Excluded for now as Umbraco requires different major versions -->
@@ -143,7 +146,8 @@
     <Copy SourceFiles="@(InstallerBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
     <Copy SourceFiles="@(UmbracoOtherBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
     <Copy SourceFiles="@(WebConfigXDTFiles)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
-    <Copy SourceFiles="@(FileSystemProvidersConfigXDTFiles)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
+    <Copy SourceFiles="@(FileSystemProvidersConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
+    <Copy SourceFiles="@(FileSystemProvidersConfigXDTUninstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
     <Copy SourceFiles="@(UmbracoInstallerFiles)" DestinationFiles="@(UmbracoInstallerFiles->'$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install\Configurator\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(UmbracoInstallerLogo)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
     <Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
@@ -152,7 +156,7 @@
     <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
 		<Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />    
     <Copy SourceFiles="@(WebConfigXDTFiles)" DestinationFolder="$(BuildNuGetDir)\Content" />
-    <Copy SourceFiles="@(FileSystemProvidersConfigXDTFiles)" DestinationFolder="$(BuildNuGetDir)\Content\Config" />
+    <Copy SourceFiles="@(FileSystemProvidersConfigXDTInstallFile)" DestinationFolder="$(BuildNuGetDir)\Content\Config" />
     <Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
   </Target>
