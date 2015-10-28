@@ -14,8 +14,10 @@ init:
 build_script:
 - build-appveyor.cmd
 
+before_test:
+- cmd: '"%programfiles(x86)%\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start'
 # Turn tests off just now
-test: off
+test: on
 
 artifacts:
   - path: artifacts\*.nupkg
