@@ -78,6 +78,7 @@
 		<ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
 		<ProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure</ProjectDir>
     <InstallerProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure.Installer</InstallerProjectDir>
+    <TestsProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure.Tests</TestsProjectDir>
 	</PropertyGroup>
 
 	<!-- TARGETS -->
@@ -112,7 +113,7 @@
 	<!-- COMPILE -->
 	<Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
 		<MSBuild Projects="$(ProjectDir)\UmbracoFileSystemProviders.Azure.csproj" Properties="Configuration=$(BuildConfig)" />
-    <MSBuild Projects="$(RootDir)\src\UmbracoFileSystemProviders.Azure.Installer\UmbracoFileSystemProviders.Azure.Installer.csproj" Properties="Configuration=$(BuildConfig)" />
+    <MSBuild Projects="$(TestsProjectDir)\UmbracoFileSystemProviders.Azure.Tests.csproj" Properties="Configuration=$(BuildConfig)" />
     <MSBuild Projects="$(InstallerProjectDir)\UmbracoFileSystemProviders.Azure.Installer.csproj" Properties="Configuration=$(BuildConfig)" />
 	</Target>
 
