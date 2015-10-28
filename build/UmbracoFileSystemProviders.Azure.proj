@@ -137,7 +137,7 @@
       <UmbracoInstallerLogo Include="$(MSBuildProjectDirectory)\assets\logo\azure-logo-32.png"/>
       <PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
       <ImageProcessorSecurityConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\security.config.install.xdt" />
-      <ImageProcessorSecurityConfigDefaultFile Include="$(MSBuildProjectDirectory)\config\security.config" />      
+      <ImageProcessorSecurityConfigDefaultFile Include="$(InstallerProjectDir)\config\imageprocessor\security.config" />      
 
       <!-- NuGet specific -->
       <SrcFiles Include="$(ProjectDir)\**\*.cs" Exclude="$(ProjectDir)\obj\**"/>
