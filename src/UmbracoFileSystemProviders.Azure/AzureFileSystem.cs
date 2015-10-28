@@ -216,7 +216,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 }
 
                 // Store the creation date in meta data.
-                blockBlob.Metadata.Add("CreatedDate", created.ToString(CultureInfo.InvariantCulture));
+                if (blockBlob.Metadata.ContainsKey("CreatedDate"))
+                {
+                    blockBlob.Metadata["CreatedDate"] = created.ToString(CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    blockBlob.Metadata.Add("CreatedDate", created.ToString(CultureInfo.InvariantCulture));
+                }
                 blockBlob.SetMetadata();
             }
             catch (Exception ex)
