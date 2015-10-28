@@ -468,9 +468,30 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 
             // Assert
             Assert.IsTrue(provider.DirectoryExists("media/1010/"));
+            Assert.IsTrue(provider.FileExists("media/1010/media.jpg"));
 
             // Act
             provider.DeleteDirectory("media/1010/");
+
+            // Assert
+            Assert.IsFalse(provider.DirectoryExists("media/1010/"));
+            Assert.IsFalse(provider.FileExists("media/1010/media.jpg"));
+        }
+
+        [Test]
+        public void TestDeleteDirectoryRelative()
+        {
+            // Arrange
+            AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
+
+            // Act
+            provider.AddFile("media/1010/media.jpg", Stream.Null);
+
+            // Assert
+            Assert.IsTrue(provider.DirectoryExists("media/1010"));
+
+            // Act
+            provider.DeleteDirectory("\\media\\1010");
 
             // Assert
             Assert.IsFalse(provider.DirectoryExists("media/1010/"));
