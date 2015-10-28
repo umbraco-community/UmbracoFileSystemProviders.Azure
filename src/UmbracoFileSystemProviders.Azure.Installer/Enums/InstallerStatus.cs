@@ -16,6 +16,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer.Enums
         SaveXdtError,
         SaveConfigError,
         ConnectionError,
-        ImageProcessorWebCompatibility
+        ImageProcessorWebCompatibility,
+        ImageProcessorWebConfigError
     }
 }

@@ -59,11 +59,14 @@
 
         <div class="row">
             <div<%=span %>>
-                <div class="alert alert-success" ng-show="saved && (status === 'Ok' || status === 'ImageProcessorWebCompatibility')">
+                <div class="alert alert-success" ng-show="saved && (status === 'Ok' || status === 'ImageProcessorWebCompatibility' || status === 'ImageProcessorWebConfigError')">
                    The Azure storage provider was sucessfully configured and your media is now as light as candyfloss
                 </div>
                 <div class="alert alert-info" ng-show="saved && status === 'ImageProcessorWebCompatibility'">
-                   <strong>Warning!</strong> You need to upgrade the installed version of ImageProcessor.Web to v4.3.2+ to be fully compatible with this package <a href="https://our.umbraco.org/projects/collaboration/imageprocessor/" target="_blank">https://our.umbraco.org/projects/collaboration/imageprocessor/</a>
+                   <strong>Warning!</strong> You need to upgrade the installed version of ImageProcessor.Web to v4.3.2+ (reinstall this package once you've updated) to be fully compatible with this package <a href="https://our.umbraco.org/projects/collaboration/imageprocessor/" target="_blank">https://our.umbraco.org/projects/collaboration/imageprocessor/</a>
+                </div>
+                <div class="alert alert-info" ng-show="saved && status === 'ImageProcessorWebConfigError'">
+                   <strong>Warning!</strong> The installer was unable to configure ImageProcessor.Web, please see documentation to fix the issue <a href="https://our.umbraco.org/projects/collaboration/umbracofilesystemprovidersazure/" target="_blank">https://our.umbraco.org/projects/collaboration/umbracofilesystemprovidersazure/</a>
                 </div>
                 <div class="alert alert-error" ng-show="saved && status != 'Ok' && status != 'ImageProcessorWebCompatibility'">
                     <strong>Oh no</strong>, something went wrong saving, please check Umbraco log files for exceptions

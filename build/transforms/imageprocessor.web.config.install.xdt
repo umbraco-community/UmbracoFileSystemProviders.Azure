@@ -1,0 +1,12 @@
+﻿<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <configSections>
+    <sectionGroup name="imageProcessor" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing">
+      <section name="security" requirePermission="false" type="ImageProcessor.Web.Configuration.ImageSecuritySection, ImageProcessor.Web" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+    </sectionGroup>
+  </configSections>
+  
+  <imageProcessor xdt:Transform="InsertIfMissing">
+    <security configSource="config\imageprocessor\security.config" xdt:Transform="InsertIfMissing" />
+  </imageProcessor>
+</configuration>

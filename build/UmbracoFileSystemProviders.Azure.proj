@@ -137,7 +137,8 @@
       <UmbracoInstallerLogo Include="$(MSBuildProjectDirectory)\assets\logo\azure-logo-32.png"/>
       <PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
       <ImageProcessorSecurityConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\security.config.install.xdt" />
-      <ImageProcessorSecurityConfigDefaultFile Include="$(InstallerProjectDir)\config\imageprocessor\security.config" />      
+      <ImageProcessorSecurityConfigDefaultFile Include="$(InstallerProjectDir)\config\imageprocessor\security.config" />
+      <ImageProcessorWebConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\imageprocessor.web.config.install.xdt" />
 
       <!-- NuGet specific -->
       <SrcFiles Include="$(ProjectDir)\**\*.cs" Exclude="$(ProjectDir)\obj\**"/>
@@ -153,6 +154,7 @@
     <Copy SourceFiles="@(FileSystemProvidersConfigXDTUninstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
     <Copy SourceFiles="@(ImageProcessorSecurityConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
     <Copy SourceFiles="@(ImageProcessorSecurityConfigDefaultFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
+    <Copy SourceFiles="@(ImageProcessorWebConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
 
     <Copy SourceFiles="@(UmbracoInstallerFiles)" DestinationFiles="@(UmbracoInstallerFiles->'$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install\Configurator\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(UmbracoInstallerLogo)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
