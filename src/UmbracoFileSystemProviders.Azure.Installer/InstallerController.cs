@@ -39,6 +39,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         private static readonly string ImageProcessorWebAssemblyPath = HostingEnvironment.MapPath("~/bin/ImageProcessor.Web.dll");
         private static readonly Version ImageProcessorWebMinRequiredVersion = new Version("4.3.2.0");
 
+        private static readonly string ImageProcessorConfigPath = HostingEnvironment.MapPath("~/Config/imageprocessor/");
+
+        private static readonly string ImageProcessorSecurityConfigPath = HostingEnvironment.MapPath("~/Config/imageprocessor/security.config");
+        private static readonly string ImageProcessorSecurityDefaultConfigPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/security.config");
+        private static readonly string ImageProcessorSecurityInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/security.config.install.xdt");
+        private static readonly string ImageProcessorSecurityServiceType = "ImageProcessor.Web.Services.CloudImageService, ImageProcessor.Web";
+        private static readonly string ImageProcessorSecurityServiceName = "CloudImageService";
+        private static readonly string ImageProcessorSecurityServicePrefix = "media/";
+
         private readonly string fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
         private readonly string fileSystemProvidersConfigPath = HostingEnvironment.MapPath("~/Config/FileSystemProviders.config");
 
@@ -53,7 +62,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         public InstallerStatus PostParameters(IEnumerable<Parameter> parameters)
         {
             var connection = parameters.SingleOrDefault(k => k.Key == "connectionString").Value;
-            var containerName = parameters.SingleOrDefault(k => k.Key == "containerName").Value;            
+            var containerName = parameters.SingleOrDefault(k => k.Key == "containerName").Value;
+            var rootUrl = parameters.SingleOrDefault(k => k.Key == "rootUrl").Value;
+
+            var host = $"{rootUrl}{containerName}/";
 
             if (!TestAzureCredentials(connection, containerName))
             {
@@ -70,6 +82,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 if (!CheckImageProcessorWebCompatibleVersion(ImageProcessorWebMinRequiredVersion))
                 {
                     return InstallerStatus.ImageProcessorWebCompatibility;
+                }
+                else
+                {
+                    // merge in Storage url
+                    SaveBlobPathToImageProcessorSecurityXdt(ImageProcessorSecurityInstallXdtPath, host);
+
+                    // transform ImageProcessor security.config
+                    ExecuteImageProcessorSecurityConfigTransform();
                 }
 
                 return InstallerStatus.Ok;
@@ -139,6 +159,41 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return result;
         }
 
+        internal static bool SaveBlobPathToImageProcessorSecurityXdt(string xdtPath, string blobPath)
+        {
+            var result = false;
+
+            var document = XmlHelper.OpenAsXmlDocument(xdtPath);
+
+            var rawSettings = document.SelectNodes(string.Format("//services/service[@prefix = '{0}' and @name = '{1}' and @type = '{2}']/settings/setting", ImageProcessorSecurityServicePrefix, ImageProcessorSecurityServiceName, ImageProcessorSecurityServiceType));
+
+            if (rawSettings == null)
+            {
+                return false;
+            }
+
+            foreach (var setting in from XmlElement setting in rawSettings let key = setting.GetAttribute("key") where key == "Host" select setting)
+            {
+                setting.SetAttribute("value", blobPath);
+            }
+
+            try
+            {
+                document.Save(xdtPath);
+
+                // No errors so the result is true
+                result = true;
+            }
+            catch (Exception e)
+            {
+                // Log error message
+                var message = "Error saving XDT Settings: " + e.Message;
+                LogHelper.Error(typeof(InstallerController), message, e);
+            }
+
+            return result;
+        }
+
         internal static IEnumerable<Parameter> GetParametersFromXdt(string xdtPath, string configPath)
         {
             // For package upgrades check for configured values in existing FileSystemProviders.config and merge with the Parameters from the XDT file (there could be new ones)
@@ -197,6 +252,26 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         private static bool ExecuteWebConfigTransform()
         {
             var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
+         "</Action>").FirstChild;
+
+            var transformConfig = new PackageActions.TransformConfig();
+            return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
+        }
+
+        private static bool ExecuteImageProcessorSecurityConfigTransform()
+        {
+            // Ensure that security.config exists in ~/Config/Imageprocessor/
+            if (!File.Exists(ImageProcessorSecurityConfigPath))
+            {
+                if (!Directory.Exists(ImageProcessorConfigPath))
+                {
+                    Directory.CreateDirectory(ImageProcessorConfigPath);
+                }
+
+                File.Copy(ImageProcessorSecurityDefaultConfigPath, ImageProcessorSecurityConfigPath);
+            }
+
+            var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/config/imageprocessor/security.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/security.config\">" +
          "</Action>").FirstChild;
 
             var transformConfig = new PackageActions.TransformConfig();
