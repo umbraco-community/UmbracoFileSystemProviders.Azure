@@ -127,6 +127,7 @@ As of ImageProcessor.Web version [4.3.2](https://www.nuget.org/packages/ImagePro
         <setting key="Host" value="http://[myAccountName].blob.core.windows.net/media/"/>
       </settings>
     </service>
+  </services>  
 </security>
 ```
 
