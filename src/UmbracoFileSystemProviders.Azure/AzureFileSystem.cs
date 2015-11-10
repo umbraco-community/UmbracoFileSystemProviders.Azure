@@ -50,7 +50,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// The singleton instance of <see cref="AzureFileSystem"/>.
         /// </summary>
-        private static AzureFileSystem fileSystem;
+        private static Dictionary<string, AzureFileSystem> fileSystems;
 
         /// <summary>
         /// The container name.
@@ -151,18 +151,23 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             lock (Locker)
             {
-                if (fileSystem == null)
+                if (fileSystems == null)
                 {
+                    fileSystems = new Dictionary<string, AzureFileSystem>();
+                }
+
+                if (!fileSystems.ContainsKey(containerName) || fileSystems[containerName] == null)
+                { 
                     int max;
                     if (!int.TryParse(maxDays, out max))
                     {
                         max = 365;
                     }
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max);
+                    fileSystems[containerName] = new AzureFileSystem(containerName, rootUrl, connectionString, max);
                 }
 
-                return fileSystem;
+                return fileSystems[containerName];
             }
         }
 
