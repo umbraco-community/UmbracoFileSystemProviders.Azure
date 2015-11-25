@@ -46,7 +46,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         private static readonly string ImageProcessorSecurityInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/security.config.install.xdt");
         private static readonly string ImageProcessorSecurityServiceType = "ImageProcessor.Web.Services.CloudImageService, ImageProcessor.Web";
         private static readonly string ImageProcessorSecurityServiceName = "CloudImageService";
-        private static readonly string ImageProcessorSecurityServicePrefix = "media/";
 
         private readonly string fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
         private readonly string fileSystemProvidersConfigPath = HostingEnvironment.MapPath("~/Config/FileSystemProviders.config");
@@ -64,8 +63,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             var connection = parameters.SingleOrDefault(k => k.Key == "connectionString").Value;
             var containerName = parameters.SingleOrDefault(k => k.Key == "containerName").Value;
             var rootUrl = parameters.SingleOrDefault(k => k.Key == "rootUrl").Value;
-
-            var host = $"{rootUrl}{containerName}/";
 
             if (!TestAzureCredentials(connection, containerName))
             {
@@ -86,7 +83,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 else
                 {
                     // merge in storage url to ImageProcessor security.config xdt
-                    SaveBlobPathToImageProcessorSecurityXdt(ImageProcessorSecurityInstallXdtPath, host);
+                    SaveBlobPathToImageProcessorSecurityXdt(ImageProcessorSecurityInstallXdtPath, rootUrl, containerName);
 
                     // transform ImageProcessor security.config
                     if (ExecuteImageProcessorSecurityConfigTransform())
@@ -169,14 +166,26 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return result;
         }
 
-        internal static bool SaveBlobPathToImageProcessorSecurityXdt(string xdtPath, string blobPath)
+        internal static bool SaveBlobPathToImageProcessorSecurityXdt(string xdtPath, string rootUrl, string containerName)
         {
             var result = false;
 
             var document = XmlHelper.OpenAsXmlDocument(xdtPath);
 
-            var rawSettings = document.SelectNodes(string.Format("//services/service[@prefix = '{0}' and @name = '{1}' and @type = '{2}']/settings/setting", ImageProcessorSecurityServicePrefix, ImageProcessorSecurityServiceName, ImageProcessorSecurityServiceType));
+            // Set the prefix attribute on both the Remove and InsertIfMissing actions
+            var rawServices = document.SelectNodes($"//services/service[@name = '{ImageProcessorSecurityServiceName}' and @type = '{ImageProcessorSecurityServiceType}']");
+            if (rawServices == null)
+            {
+                return false;
+            }
 
+            foreach (XmlElement service in rawServices)
+            {
+                service.SetAttribute("prefix", $"{containerName}/");
+            }
+
+            // Set the settings within the InsertIfMissing action
+            var rawSettings = document.SelectNodes($"//services/service[@prefix = '{containerName}/' and @name = '{ImageProcessorSecurityServiceName}' and @type = '{ImageProcessorSecurityServiceType}']/settings/setting");
             if (rawSettings == null)
             {
                 return false;
@@ -184,7 +193,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
             foreach (var setting in from XmlElement setting in rawSettings let key = setting.GetAttribute("key") where key == "Host" select setting)
             {
-                setting.SetAttribute("value", blobPath);
+                setting.SetAttribute("value", $"{rootUrl}{containerName}/");
             }
 
             try
