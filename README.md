@@ -10,14 +10,18 @@ Used to offload static files in the media section to the cloud.
 Designed to supersede [UmbracoAzureBlobStorage](https://github.com/idseefeld/UmbracoAzureBlobStorage) by [Dirk Seefeld](https://twitter.com/dseefeld65) (With his blessing) this package allows the storage and retrieval of media items using Azure Blob Storage while retaining the relative paths to the files expected in the back office.
 
 ## Installation
-At present the code is pre-release but when ready it will be available on [Nuget](http://www.nuget.org), also as a package on [Our Umbraco](https://our.umbraco.org/). 
 
-**Pre-release downloads**
+Both NuGet and Umbraco packages are available. If you use NuGet but would like the benefit of the Umbraco configuration wizard you can install the Umbraco package first, use the wizard, then install the NuGet package, the configuration will be maintained.
 
-We already have a [MyGet package repository](https://www.myget.org/F/umbracofilesystemproviders-azure/) - for bleeding-edge / development NuGet releases.
+|NuGet Packages    |Version           |
+|:-----------------|:-----------------|
+|**Release**|[![NuGet download](http://img.shields.io/nuget/v/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|
+|**Pre-release**|[![MyGet download](https://img.shields.io/myget/umbracofilesystemproviders-azure/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbracofilesystemproviders-azure)|[![MyGet count](https://img.shields.io/myget/umbracofilesystemproviders-azure/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbracofilesystemproviders-azure)|
 
-For pre-release Umbraco packages you can download from the [AppVeyor artifacts](https://ci.appveyor.com/project/JamesSouth/umbracofilesystemproviders-azure/build/artifacts) (the .zip file)
-
+|Umbraco Packages  |                  |
+|:-----------------|:-----------------|
+|**Release**|[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/collaboration/umbracofilesystemprovidersazure/) 
+|**Pre-release**| [![AppVeyor Artifacts](https://img.shields.io/badge/appveyor-umbraco-orange.svg)](https://ci.appveyor.com/project/JamesSouth/umbracofilesystemproviders-azure/build/artifacts)
 
 ## Manual build
 
