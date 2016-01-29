@@ -43,7 +43,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (!disable && isAzureBlobFileSystem)
             {
-                FileSystemVirtualPathProvider.ConfigureMedia();
+                var containerName = ((AzureBlobFileSystem)fileSystem).FileSystem.ContainerName;
+                FileSystemVirtualPathProvider.ConfigureMedia(containerName);
             }
 
             base.ApplicationStarting(umbracoApplication, applicationContext);

@@ -55,7 +55,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// The container name.
         /// </summary>
-        private readonly string containerName;
+        internal readonly string ContainerName;
 
         /// <summary>
         /// The root url.
@@ -112,7 +112,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             this.rootUrl = rootUrl + containerName + "/";
-            this.containerName = containerName;
+            this.ContainerName = containerName;
             this.MaxDays = maxDays;
 
             this.LogHelper = new WrappedLogHelper();
@@ -563,7 +563,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 return url.AbsoluteUri;
             }
 
-            int index = url.AbsolutePath.IndexOf(this.containerName, StringComparison.Ordinal) - 1;
+            int index = url.AbsolutePath.IndexOf(this.ContainerName, StringComparison.Ordinal) - 1;
             string relativePath = url.AbsolutePath.Substring(index);
             return relativePath;
         }
@@ -595,9 +595,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             // Strip container Prefix
-            if (path.StartsWith(this.containerName, StringComparison.InvariantCultureIgnoreCase))
+            if (path.StartsWith(this.ContainerName, StringComparison.InvariantCultureIgnoreCase))
             {
-                path = path.Substring(this.containerName.Length);
+                path = path.Substring(this.ContainerName.Length);
             }
 
             if (path.StartsWith(Delimiter))
