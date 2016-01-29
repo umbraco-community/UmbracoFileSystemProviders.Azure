@@ -50,6 +50,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         private readonly string fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
         private readonly string fileSystemProvidersConfigPath = HostingEnvironment.MapPath("~/Config/FileSystemProviders.config");
 
+        private readonly string webConfigXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/web.config.install.xdt");
+
         // /Umbraco/backoffice/FileSystemProviders/Installer/GetParameters
         public IEnumerable<Parameter> GetParameters()
         {
@@ -69,7 +71,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 return InstallerStatus.ConnectionError;
             }
 
-            if (SaveParametersToXdt(this.fileSystemProvidersConfigInstallXdtPath, parameters))
+            if (SaveParametersToFileSystemProvidersXdt(this.fileSystemProvidersConfigInstallXdtPath, parameters) && SaveContainerNameToWebConfigXdt(this.webConfigXdtPath, containerName))
             {
                 if (!ExecuteFileSystemConfigTransform() || !ExecuteWebConfigTransform())
                 {
@@ -105,7 +107,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return InstallerStatus.SaveXdtError;
         }
 
-        internal static bool SaveParametersToXdt(string xdtPath, IEnumerable<Parameter> newParameters)
+        internal static bool SaveParametersToFileSystemProvidersXdt(string xdtPath, IEnumerable<Parameter> newParameters)
         {
             var result = false;
 
@@ -148,6 +150,37 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                     }
                 }
             }
+
+            try
+            {
+                document.Save(xdtPath);
+
+                // No errors so the result is true
+                result = true;
+            }
+            catch (Exception e)
+            {
+                // Log error message
+                var message = "Error saving XDT Parameters: " + e.Message;
+                LogHelper.Error(typeof(InstallerController), message, e);
+            }
+
+            return result;
+        }
+
+        internal static bool SaveContainerNameToWebConfigXdt(string xdtPath, string containerName)
+        {
+            var result = false;
+
+            var document = XmlHelper.OpenAsXmlDocument(xdtPath);
+
+            // Inset a Parameter element with Xdt remove so that updated values get saved (for upgrades), we don't want this for NuGet packages which is why it's here instead
+            var nsMgr = new XmlNamespaceManager(document.NameTable);
+            var strNamespace = "http://schemas.microsoft.com/XML-Document-Transform";
+            nsMgr.AddNamespace("xdt", strNamespace);
+
+            var locationElement = document.SelectSingleNode(string.Format("//location"));
+            if (locationElement != null) locationElement.Attributes["path"].Value = containerName;
 
             try
             {
