@@ -4,6 +4,7 @@
     <service prefix="media/" name="CloudImageService" type="ImageProcessor.Web.Services.CloudImageService, ImageProcessor.Web" xdt:Locator="Match(prefix, name, type)" xdt:Transform="Remove" />
     <service prefix="media/" name="CloudImageService" type="ImageProcessor.Web.Services.CloudImageService, ImageProcessor.Web" xdt:Locator="Match(prefix, name, type)" xdt:Transform="InsertIfMissing">
       <settings xdt:Transform="InsertIfMissing">
+        <setting key="Container" value="" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
         <setting key="MaxBytes" value="8194304" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
         <setting key="Timeout" value="30000" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing"/>
         <setting key="Host" value="http://[myAccountName].blob.core.windows.net/media/" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing"/>
