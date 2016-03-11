@@ -24,8 +24,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="containerName">The container name.</param>
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString) :
-            this(containerName, rootUrl, connectionString, "365")
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString)
+            : this(containerName, rootUrl, connectionString, "365", string.Empty)
         {
         }
 
@@ -37,8 +37,21 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays)
+            : this(containerName, rootUrl, connectionString, maxDays, string.Empty)
         {
-            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
+        /// </summary>
+        /// <param name="containerName">The container name.</param>
+        /// <param name="rootUrl">The root url.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
+        /// <param name="cdnUrl">Url to the CDN on which you wish to expose the ressource</param>
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string cdnUrl)
+        {
+            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, cdnUrl);
         }
 
         /// <summary>
