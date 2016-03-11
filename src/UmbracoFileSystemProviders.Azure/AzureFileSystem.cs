@@ -63,6 +63,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private readonly string rootUrl;
 
         /// <summary>
+        /// The url of the CDN
+        /// </summary>
+        private readonly string cdnUrl;
+
+        /// <summary>
         /// The cloud media blob container.
         /// </summary>
         private readonly CloudBlobContainer cloudBlobContainer;
@@ -77,7 +82,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="containerName"/> is null or whitespace.
         /// </exception>
-        private AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays)
+        private AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, string cdnUrl)
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
@@ -111,10 +116,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 rootUrl = rootUrl.Trim() + "/";
             }
 
+            if (!cdnUrl.Trim().EndsWith("/"))
+            {
+                cdnUrl = cdnUrl.Trim() + "/";
+            }
+
             this.rootUrl = rootUrl + containerName + "/";
             this.ContainerName = containerName;
             this.MaxDays = maxDays;
-
+            this.cdnUrl = cdnUrl + containerName + "/";
             this.LogHelper = new WrappedLogHelper();
             this.MimeTypeResolver = new MimeTypeResolver();
         }
@@ -146,8 +156,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
+        /// <param name="cdnUrl">Url to the CDN</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays)
+        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string cdnUrl)
         {
             lock (Locker)
             {
@@ -159,7 +170,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         max = 365;
                     }
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max);
+                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, cdnUrl);
                 }
 
                 return fileSystem;
@@ -556,7 +567,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private string ResolveUrl(string path, bool relative)
         {
             // First create the full url
-            Uri url = new Uri(new Uri(this.rootUrl, UriKind.Absolute), this.FixPath(path));
+            Uri url;
+
+            if (!string.IsNullOrEmpty(this.cdnUrl))
+            {
+                url = new Uri(new Uri(this.cdnUrl, UriKind.Absolute), this.FixPath(path));
+            }
+            else
+            {
+                url = new Uri(new Uri(this.rootUrl, UriKind.Absolute), this.FixPath(path));
+            }
 
             if (!relative)
             {
