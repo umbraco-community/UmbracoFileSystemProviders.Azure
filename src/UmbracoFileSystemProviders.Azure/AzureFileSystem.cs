@@ -116,15 +116,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 rootUrl = rootUrl.Trim() + "/";
             }
 
-            if (!cdnUrl.Trim().EndsWith("/"))
+            if (!string.IsNullOrEmpty(cdnUrl))
             {
-                cdnUrl = cdnUrl.Trim() + "/";
+                if (!cdnUrl.Trim().EndsWith("/"))
+                {
+                    cdnUrl = cdnUrl.Trim() + "/";
+                }
+
+                this.cdnUrl = cdnUrl + containerName + "/";
             }
 
             this.rootUrl = rootUrl + containerName + "/";
             this.ContainerName = containerName;
             this.MaxDays = maxDays;
-            this.cdnUrl = cdnUrl + containerName + "/";
             this.LogHelper = new WrappedLogHelper();
             this.MimeTypeResolver = new MimeTypeResolver();
         }
