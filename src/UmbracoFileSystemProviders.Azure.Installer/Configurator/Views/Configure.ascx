@@ -37,13 +37,8 @@
                             <ng-form name="form">
                             <label class="control-label" for="param.Key">{{ capitalizeFirstLetter(param.Key) }}</label>
                                 <div class="controls">
-                                    <input 
-                                        class ="input-block-level"
-                                        dynamic-name="param.Key"
-                                        type="{{ getInputType(param.Key) }}"
-                                        ng-model="param.Value"                            
-                                        required
-                                    >
+                                    <span ng-if="getInputType(param.Key) === 'checkbox'" ng-include="'/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/checkbox.htm'"></span>
+                                    <span ng-if="getInputType(param.Key) === 'text'" ng-include="'/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/textfield.htm'"></span>
                                 </div>
                                 <span data-ng-show=" {{'form.'+param.Key+'.$dirty && form.'+param.Key+'.$error.required'}}">Required!</span>
                             </ng-form>
@@ -79,3 +74,4 @@
            
     </div>
 </div>
+
