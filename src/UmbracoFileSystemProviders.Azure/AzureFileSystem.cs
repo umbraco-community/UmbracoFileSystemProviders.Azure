@@ -156,7 +156,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, bool useDefaultRoute)
+        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
         {
             lock (Locker)
             {
@@ -168,7 +168,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         max = 365;
                     }
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, useDefaultRoute);
+                    bool defaultRoute;
+                    if (!bool.TryParse(useDefaultRoute, out defaultRoute))
+                    {
+                        defaultRoute = true;
+                    }
+
+                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute);
                 }
 
                 return fileSystem;
