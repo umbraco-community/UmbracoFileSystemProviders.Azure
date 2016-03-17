@@ -572,16 +572,21 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private string ResolveUrl(string path, bool relative)
         {
             // First create the full url
-            Uri url = new Uri(new Uri(this.rootUrl, UriKind.Absolute), this.FixPath(path));
+            string fixedPath = this.FixPath(path);
+
+            Uri url = new Uri(new Uri(this.rootUrl, UriKind.Absolute), fixedPath);
 
             if (!relative)
             {
                 return url.AbsoluteUri;
             }
 
-            int index = url.AbsolutePath.IndexOf(this.ContainerName, StringComparison.Ordinal) - 1;
-            string relativePath = url.AbsolutePath.Substring(index);
-            return relativePath;
+            if (this.UseDefaultRoute)
+            {
+                return string.Format("/{0}/{1}", Constants.DefaultMediaRoute, fixedPath);
+            }
+
+            return string.Format("/{0}/{1}", this.ContainerName, fixedPath);
         }
 
         /// <summary>
