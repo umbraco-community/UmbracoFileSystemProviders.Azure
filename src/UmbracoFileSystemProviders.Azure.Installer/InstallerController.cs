@@ -65,6 +65,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             var connection = parameters.SingleOrDefault(k => k.Key == "connectionString").Value;
             var containerName = parameters.SingleOrDefault(k => k.Key == "containerName").Value;
             var rootUrl = parameters.SingleOrDefault(k => k.Key == "rootUrl").Value;
+            var cdnUrl = parameters.SingleOrDefault(k => k.Key == "cdnUrl").Value;
 
             if (!TestAzureCredentials(connection, containerName))
             {
