@@ -81,7 +81,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="pathPrefix"/> is null.
         /// </exception>
-        public static void Configure<TProviderTypeFilter>(string pathPrefix = "media") where TProviderTypeFilter : FileSystemWrapper
+        public static void Configure<TProviderTypeFilter>(string pathPrefix = Constants.DefaultMediaRoute) where TProviderTypeFilter : FileSystemWrapper
         {
             if (string.IsNullOrEmpty(pathPrefix))
             {
@@ -100,7 +100,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// The path prefix.
         /// </param>
         [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Resharper seems drunk.")]
-        public static void ConfigureMedia(string pathPrefix = "media")
+        public static void ConfigureMedia(string pathPrefix = Constants.DefaultMediaRoute)
         {
             Configure<MediaFileSystem>(pathPrefix);
         }
@@ -145,7 +145,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             return new FileSystemVirtualFile(virtualPath, this.fileSystem, fileSystemPath);
         }
-        
+
         /// <summary>
         /// Correctly formats the virtual path prefix.
         /// </summary>

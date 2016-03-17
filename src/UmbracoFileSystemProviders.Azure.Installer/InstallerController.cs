@@ -62,16 +62,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         [HttpPost]
         public InstallerStatus PostParameters(IEnumerable<Parameter> parameters)
         {
-            var connection = parameters.SingleOrDefault(k => k.Key == "connectionString").Value;
-            var containerName = parameters.SingleOrDefault(k => k.Key == "containerName").Value;
-            var rootUrl = parameters.SingleOrDefault(k => k.Key == "rootUrl").Value;
+            var newParameters = parameters as IList<Parameter> ?? parameters.ToList();
+            var connection = newParameters.SingleOrDefault(k => k.Key == "connectionString").Value;
+            var containerName = newParameters.SingleOrDefault(k => k.Key == "containerName").Value;
+            bool useDefaultRoute = bool.Parse(newParameters.SingleOrDefault(k => k.Key == "useDefaultRoute").Value);
+            var rootUrl = newParameters.SingleOrDefault(k => k.Key == "rootUrl").Value;
 
             if (!TestAzureCredentials(connection, containerName))
             {
                 return InstallerStatus.ConnectionError;
             }
 
-            if (SaveParametersToFileSystemProvidersXdt(this.fileSystemProvidersConfigInstallXdtPath, parameters) && SaveContainerNameToWebConfigXdt(this.webConfigXdtPath, containerName))
+            if (SaveParametersToFileSystemProvidersXdt(this.fileSystemProvidersConfigInstallXdtPath, newParameters) && SaveContainerNameToWebConfigXdt(this.webConfigXdtPath, containerName))
             {
                 if (!ExecuteFileSystemConfigTransform() || !ExecuteWebConfigTransform())
                 {
@@ -85,7 +87,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 else
                 {
                     // merge in storage url to ImageProcessor security.config xdt
-                    SaveBlobPathToImageProcessorSecurityXdt(ImageProcessorSecurityInstallXdtPath, rootUrl, containerName);
+                    string prefix = useDefaultRoute
+                                        ? Azure.Constants.DefaultMediaRoute
+                                        : containerName;
+
+                    SaveBlobPathToImageProcessorSecurityXdt(ImageProcessorSecurityInstallXdtPath, rootUrl, prefix, containerName);
 
                     // transform ImageProcessor security.config
                     if (ExecuteImageProcessorSecurityConfigTransform())
@@ -180,7 +186,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             nsMgr.AddNamespace("xdt", strNamespace);
 
             var locationElement = document.SelectSingleNode(string.Format("//location"));
-            if (locationElement != null) locationElement.Attributes["path"].Value = containerName;
+            if (locationElement != null)
+            {
+                locationElement.Attributes["path"].Value = containerName;
+            }
 
             try
             {
@@ -199,7 +208,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return result;
         }
 
-        internal static bool SaveBlobPathToImageProcessorSecurityXdt(string xdtPath, string rootUrl, string containerName)
+        internal static bool SaveBlobPathToImageProcessorSecurityXdt(string xdtPath, string rootUrl, string prefix, string containerName)
         {
             var result = false;
 
@@ -214,7 +223,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
             foreach (XmlElement service in rawServices)
             {
-                service.SetAttribute("prefix", $"{containerName}/");
+                service.SetAttribute("prefix", $"{prefix}/");
             }
 
             // Set the settings within the InsertIfMissing action
@@ -249,14 +258,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         internal static IEnumerable<Parameter> GetParametersFromXdt(string xdtPath, string configPath)
         {
             // For package upgrades check for configured values in existing FileSystemProviders.config and merge with the Parameters from the XDT file (there could be new ones)
-            var xdtParameters = GetParametersFromXml(xdtPath);
-            var currentConfigParameters = GetParametersFromXml(configPath);
+            List<Parameter> xdtParameters = GetParametersFromXml(xdtPath).ToList();
+            List<Parameter> currentConfigParameters = GetParametersFromXml(configPath).ToList();
 
-            foreach (var parameter in xdtParameters)
+            foreach (Parameter parameter in xdtParameters)
             {
                 if (currentConfigParameters.Select(k => k.Key).Contains(parameter.Key))
                 {
-                    var currentParameter = currentConfigParameters.SingleOrDefault(k => k.Key == parameter.Key);
+                    Parameter currentParameter = currentConfigParameters.SingleOrDefault(k => k.Key == parameter.Key);
                     if (currentParameter != null)
                     {
                         parameter.Value = currentParameter.Value;

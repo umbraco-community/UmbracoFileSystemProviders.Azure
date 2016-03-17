@@ -45,7 +45,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             Mock<ILogHelper> logHelper = new Mock<ILogHelper>();
             Mock<IMimeTypeResolver> mimeTypeHelper = new Mock<IMimeTypeResolver>();
 
-            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays)
+            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, true)
             {
                 FileSystem =
                 {

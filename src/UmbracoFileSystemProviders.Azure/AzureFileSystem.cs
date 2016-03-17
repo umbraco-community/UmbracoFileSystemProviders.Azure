@@ -53,11 +53,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private static AzureFileSystem fileSystem;
 
         /// <summary>
-        /// The container name.
-        /// </summary>
-        internal readonly string ContainerName;
-
-        /// <summary>
         /// The root url.
         /// </summary>
         private readonly string rootUrl;
@@ -74,10 +69,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
+        /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="containerName"/> is null or whitespace.
         /// </exception>
-        private AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays)
+        private AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute)
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
@@ -114,6 +110,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             this.rootUrl = rootUrl + containerName + "/";
             this.ContainerName = containerName;
             this.MaxDays = maxDays;
+            this.UseDefaultRoute = useDefaultRoute;
 
             this.LogHelper = new WrappedLogHelper();
             this.MimeTypeResolver = new MimeTypeResolver();
@@ -135,9 +132,20 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public bool DisableVirtualPathProvider { get; set; }
 
         /// <summary>
-        /// Gets or sets the maximum number of days to cache blob items for in the browser.
+        /// Gets the container name.
         /// </summary>
-        public int MaxDays { get; set; }
+        public string ContainerName { get; private set; }
+
+        /// <summary>
+        /// Gets the maximum number of days to cache blob items for in the browser.
+        /// </summary>
+        public int MaxDays { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether to use the default "media" route in the url
+        /// independent of the blob container.
+        /// </summary>
+        public bool UseDefaultRoute { get; private set; }
 
         /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
@@ -146,8 +154,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
+        /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays)
+        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, bool useDefaultRoute)
         {
             lock (Locker)
             {
@@ -159,7 +168,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         max = 365;
                     }
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max);
+                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, useDefaultRoute);
                 }
 
                 return fileSystem;
@@ -224,6 +233,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 {
                     blockBlob.Metadata.Add("CreatedDate", created.ToString(CultureInfo.InvariantCulture));
                 }
+
                 blockBlob.SetMetadata();
             }
             catch (Exception ex)
@@ -280,7 +290,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 return;
             }
 
-            // Delete the directory. 
+            // Delete the directory.
             // Force recursive since Azure has no real concept of directories
             this.DeleteDirectory(path, true);
         }
@@ -592,6 +602,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             if (path.StartsWith(this.rootUrl, StringComparison.InvariantCultureIgnoreCase))
             {
                 path = path.Substring(this.rootUrl.Length);
+            }
+
+            // Strip default route
+            if (path.StartsWith(Constants.DefaultMediaRoute, StringComparison.InvariantCultureIgnoreCase))
+            {
+                path = path.Substring(Constants.DefaultMediaRoute.Length);
             }
 
             // Strip container Prefix

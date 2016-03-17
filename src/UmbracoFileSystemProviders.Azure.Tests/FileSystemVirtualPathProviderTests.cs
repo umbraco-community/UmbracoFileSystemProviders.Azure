@@ -36,8 +36,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         {
             // Arrange/Act
             Mock<IFileSystem> fileProvider = new Mock<IFileSystem>();
-            FileSystemVirtualPathProvider provider = new FileSystemVirtualPathProvider("media", new Lazy<IFileSystem>(() => fileProvider.Object));
-            
+            FileSystemVirtualPathProvider provider = new FileSystemVirtualPathProvider(Constants.DefaultMediaRoute, new Lazy<IFileSystem>(() => fileProvider.Object));
+
             // Assert
             Assert.AreEqual(provider.PathPrefix, "/media/");
         }
@@ -54,7 +54,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 
             // Act
             VirtualFile result = provider.GetFile("~/media/1010/media.jpg");
-            
+
             // Assert
             Assert.IsNotNull(result);
         }

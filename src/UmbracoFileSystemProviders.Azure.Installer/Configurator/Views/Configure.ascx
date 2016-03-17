@@ -40,7 +40,7 @@
                                     <input 
                                         class ="input-block-level"
                                         dynamic-name="param.Key"
-                                        type="text"
+                                        type="{{ getInputType(param.Key) }}"
                                         ng-model="param.Value"                            
                                         required
                                     >
