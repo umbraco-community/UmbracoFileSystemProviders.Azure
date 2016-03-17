@@ -73,7 +73,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 return InstallerStatus.ConnectionError;
             }
 
-            if (SaveParametersToFileSystemProvidersXdt(this.fileSystemProvidersConfigInstallXdtPath, newParameters) && SaveContainerNameToWebConfigXdt(this.webConfigXdtPath, containerName))
+            var routePrefix = useDefaultRoute ? Azure.Constants.DefaultMediaRoute : containerName;
+
+            if (SaveParametersToFileSystemProvidersXdt(this.fileSystemProvidersConfigInstallXdtPath, newParameters) && SaveContainerNameToWebConfigXdt(this.webConfigXdtPath, routePrefix))
             {
                 if (!ExecuteFileSystemConfigTransform() || !ExecuteWebConfigTransform())
                 {
@@ -87,11 +89,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 else
                 {
                     // merge in storage url to ImageProcessor security.config xdt
-                    string prefix = useDefaultRoute
-                                        ? Azure.Constants.DefaultMediaRoute
-                                        : containerName;
-
-                    SaveBlobPathToImageProcessorSecurityXdt(ImageProcessorSecurityInstallXdtPath, rootUrl, prefix, containerName);
+                    SaveBlobPathToImageProcessorSecurityXdt(ImageProcessorSecurityInstallXdtPath, rootUrl, routePrefix, containerName);
 
                     // transform ImageProcessor security.config
                     if (ExecuteImageProcessorSecurityConfigTransform())
@@ -227,7 +225,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             }
 
             // Set the settings within the InsertIfMissing action
-            var rawSettings = document.SelectNodes($"//services/service[@prefix = '{containerName}/' and @name = '{ImageProcessorSecurityServiceName}' and @type = '{ImageProcessorSecurityServiceType}']/settings/setting");
+            var rawSettings = document.SelectNodes($"//services/service[@prefix = '{prefix}/' and @name = '{ImageProcessorSecurityServiceName}' and @type = '{ImageProcessorSecurityServiceType}']/settings/setting");
             if (rawSettings == null)
             {
                 return false;
