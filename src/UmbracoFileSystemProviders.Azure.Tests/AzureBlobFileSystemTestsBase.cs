@@ -38,14 +38,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         public AzureBlobFileSystem CreateAzureBlobFileSystem(bool disableVirtualPathProvider = false)
         {
             string containerName = "media";
-            string rootUrl = "http://127.0.0.1:10000/devstoreaccount1/";
             string connectionString = "UseDevelopmentStorage=true";
             string maxDays = "30";
 
             Mock<ILogHelper> logHelper = new Mock<ILogHelper>();
             Mock<IMimeTypeResolver> mimeTypeHelper = new Mock<IMimeTypeResolver>();
 
-            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays)
+            return new AzureBlobFileSystem(containerName, connectionString, maxDays)
             {
                 FileSystem =
                 {

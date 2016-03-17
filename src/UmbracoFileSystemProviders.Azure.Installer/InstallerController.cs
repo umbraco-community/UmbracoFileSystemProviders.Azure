@@ -341,12 +341,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
         private static bool TestAzureCredentials(string connectionString, string containerName)
         {
-            var useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
-                               && ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey]
-                                                      .Equals("true", StringComparison.InvariantCultureIgnoreCase);
+            bool useDevelopmentStorage = false;
+            if (connectionString.Trim().Equals("UseDevelopmentStorage=true", StringComparison.InvariantCultureIgnoreCase))
+            {
+                useDevelopmentStorage = true;
+            }
+
             try
             {
-                var cloudStorageAccount = useEmulator ? CloudStorageAccount.DevelopmentStorageAccount : CloudStorageAccount.Parse(connectionString);
+                var cloudStorageAccount = useDevelopmentStorage ? CloudStorageAccount.DevelopmentStorageAccount : CloudStorageAccount.Parse(connectionString);
 
                 var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
                 var blobContainer = cloudBlobClient.GetContainerReference(containerName);

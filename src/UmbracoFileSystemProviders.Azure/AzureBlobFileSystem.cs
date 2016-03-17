@@ -19,46 +19,20 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     public class AzureBlobFileSystem : IFileSystem
     {
         /// <summary>
-        /// The configuration key for disabling the virtual path provider.
-        /// </summary>
-        private const string ConnectionStringKey = Constants.Configuration.ConnectionStringKey;
-
-        /// <summary>
-        /// The configuration key for disabling the virtual path provider.
-        /// </summary>
-        private const string ContainerNameKey = Constants.Configuration.ContainerNameKey;
-
-        /// <summary>
-        /// The configuration key for disabling the virtual path provider.
-        /// </summary>
-        private const string RootUrlKey = Constants.Configuration.RootUrlKey;
-
-        /// <summary>
-        /// The configuration key for disabling the virtual path provider.
-        /// </summary>
-        private const string MaxDaysKey = Constants.Configuration.MaxDaysKey;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
         /// </summary>
         /// <param name="containerName">The container name.</param>
-        /// <param name="rootUrl">The root url.</param>
-        /// <param name="connectionString">The connection string.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString) :
-            this(containerName, rootUrl, connectionString, "365")
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
-        /// </summary>
-        /// <param name="containerName">The container name.</param>
-        /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays)
+        public AzureBlobFileSystem(string containerName, string connectionString, string maxDays)
         {
-            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays);
+            bool useDevelopmentStorage = false;
+            if (connectionString.Trim().Equals("UseDevelopmentStorage=true", StringComparison.InvariantCultureIgnoreCase))
+            {
+                useDevelopmentStorage = true;
+            }
+
+            this.FileSystem = AzureFileSystem.GetInstance(containerName, connectionString, maxDays, useDevelopmentStorage, false);
         }
 
         /// <summary>
@@ -66,38 +40,35 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         public AzureBlobFileSystem()
         {
-
-            string connectionString = ConfigurationManager.AppSettings[ConnectionStringKey] as string;
-            if (!string.IsNullOrWhiteSpace(connectionString))
+            string connectionString = ConfigurationManager.AppSettings[Constants.Configuration.ConnectionStringKey] as string;
+            if (string.IsNullOrWhiteSpace(connectionString))
             {
-                string rootUrl = ConfigurationManager.AppSettings[RootUrlKey] as string;
-                if (string.IsNullOrWhiteSpace(rootUrl))
-                {
-                    throw new InvalidOperationException("Azure Storage Root URL is not defined in web.config. The " + RootUrlKey + " property was not defined or is empty.");
-                }
-
-                string containerName = ConfigurationManager.AppSettings[ContainerNameKey] as string;
-
-                if (string.IsNullOrWhiteSpace(containerName))
-                {
-                    containerName = "media";
-                }
-
-                string maxDays = ConfigurationManager.AppSettings[MaxDaysKey] as string;
-
-                if (string.IsNullOrWhiteSpace(maxDays))
-                {
-                    maxDays = "365";
-                }
-
-                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays);
-            }
-            else
-            {
-                throw new InvalidOperationException("Unable to retreive the Azure Storage configuration from web.config. " + ConnectionStringKey + " was not defined or is empty.");
+                throw new InvalidOperationException("Unable to retrieve the Azure Storage configuration from web.config. " + Constants.Configuration.ConnectionStringKey + " was not defined or is empty.");
             }
 
+            bool useDevelopmentStorage = false;
+            if (connectionString.Trim().Equals("UseDevelopmentStorage=true", StringComparison.InvariantCultureIgnoreCase))
+            {
+                useDevelopmentStorage = true;
+            }
 
+            bool disableVirtualPathProvider = ConfigurationManager.AppSettings[Constants.Configuration.DisableVirtualPathProviderKey] != null
+                                              && ConfigurationManager.AppSettings[Constants.Configuration.DisableVirtualPathProviderKey]
+                                             .Equals("true", StringComparison.InvariantCultureIgnoreCase);
+
+            string containerName = ConfigurationManager.AppSettings[Constants.Configuration.ContainerNameKey] as string;
+            if (string.IsNullOrWhiteSpace(containerName))
+            {
+                containerName = "media";
+            }
+
+            string maxDays = ConfigurationManager.AppSettings[Constants.Configuration.MaxDaysKey] as string;
+            if (string.IsNullOrWhiteSpace(maxDays))
+            {
+                maxDays = "365";
+            }
+
+            this.FileSystem = AzureFileSystem.GetInstance(containerName, connectionString, maxDays, useDevelopmentStorage, disableVirtualPathProvider);
         }
 
         /// <summary>

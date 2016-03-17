@@ -48,48 +48,34 @@ Update `~/Config/FileSystemProviders.config` replacing the default provider with
 ```xml
 <?xml version="1.0"?>
 <FileSystemProviders>
-  <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure">
-    <Parameters>
-      <add key="containerName" value="media" />
-      <add key="rootUrl" value="http://[myAccountName].blob.core.windows.net/" />
-      <add key="connectionString" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]"/>
-      <!--
-        Optional configuration value determining the maximum number of days to cache items in the browser.
-        Defaults to 365 days.
-      -->
-      <add key="maxDays" value="365" />
-    </Parameters>
-  </Provider>
+  <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure" />
 </FileSystemProviders>
+```
+
+And set the connection string and other configuration properties in the appsettings in the `web.config`.
+
+```xml
+<configuration>
+  <appSettings>
+    <!--Disables the built in Virtual Path Provider which allows for relative paths-->
+    <add key="AzureBlobFileSystem.DisableVirtualPathProvider" value="true" />
+	<add key="AzureBlobFileSystem.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" />
+	<add key="AzureBlobFileSystem.ContainerName" value="media" />
+	<add key="AzureBlobFileSystem.MaxDays" value="365" />
+  </appSettings>
+</configuration>
 ```
 
 Developmental mode configuration using the [Azure Storage Emulator](https://azure.microsoft.com/en-us/documentation/articles/storage-use-emulator/) for testing is as follows:
 
 ```xml
-<?xml version="1.0"?>
-<FileSystemProviders>
-  <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure">
-    <Parameters>
-      <add key="containerName" value="media" />
-      <add key="rootUrl" value="http://127.0.0.1:10000/devstoreaccount1/" />
-      <add key="connectionString" value="UseDevelopmentStorage=true"/>
-    </Parameters>
-  </Provider>
-</FileSystemProviders>
-```
-
-Additionally the provider can be further configured with the following application setting in the `web.config`.
-
-```xml
-<?xml version="1.0"?>
 <configuration>
   <appSettings>
     <!--Disables the built in Virtual Path Provider which allows for relative paths-->
     <add key="AzureBlobFileSystem.DisableVirtualPathProvider" value="true" />
-    <!--
-      Enables the development mode for testing. Addition changes to the FileSystemProviders.config are also required
-    -->
-    <add key="AzureBlobFileSystem.UseStorageEmulator" value="true" />
+	<add key="AzureBlobFileSystem.ConnectionString" value="UseDevelopmentStorage=true" />
+	<add key="AzureBlobFileSystem.ContainerName" value="media" />
+	<add key="AzureBlobFileSystem.MaxDays" value="365" />
   </appSettings>
 </configuration>
 ```

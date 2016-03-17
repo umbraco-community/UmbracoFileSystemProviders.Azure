@@ -28,11 +28,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     internal class AzureFileSystem : IFileSystem
     {
         /// <summary>
-        /// The configuration key for enabling the storage emulator.
-        /// </summary>
-        private const string UseStorageEmulatorKey = Constants.Configuration.UseStorageEmulatorKey;
-
-        /// <summary>
         /// The configuration key for disabling the virtual path provider.
         /// </summary>
         private const string DisableVirtualPathProviderKey = Constants.Configuration.DisableVirtualPathProviderKey;
@@ -71,32 +66,26 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// Initializes a new instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
         /// <param name="containerName">The container name.</param>
-        /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
+        /// <param name="useDevelopmentStorage">Whether to use development storage or not.</param>
+        /// <param name="disableVirtualPathProvider">Should the virtual path provider be disabled.</param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="containerName"/> is null or whitespace.
         /// </exception>
-        private AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays)
+        private AzureFileSystem(string containerName, string connectionString, int maxDays, bool useDevelopmentStorage, bool disableVirtualPathProvider)
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
                 throw new ArgumentNullException("containerName");
             }
 
-            this.DisableVirtualPathProvider = ConfigurationManager.AppSettings[DisableVirtualPathProviderKey] != null
-                                              && ConfigurationManager.AppSettings[DisableVirtualPathProviderKey]
-                                             .Equals("true", StringComparison.InvariantCultureIgnoreCase);
-
-            bool useEmulator = ConfigurationManager.AppSettings[UseStorageEmulatorKey] != null
-                               && ConfigurationManager.AppSettings[UseStorageEmulatorKey]
-                                                      .Equals("true", StringComparison.InvariantCultureIgnoreCase);
+            this.DisableVirtualPathProvider = disableVirtualPathProvider;
 
             CloudStorageAccount cloudStorageAccount;
-            if (useEmulator)
+            if (useDevelopmentStorage)
             {
                 cloudStorageAccount = CloudStorageAccount.DevelopmentStorageAccount;
-                rootUrl = cloudStorageAccount.BlobStorageUri.PrimaryUri.AbsoluteUri;
             }
             else
             {
@@ -106,12 +95,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
             this.cloudBlobContainer = CreateContainer(cloudBlobClient, containerName, BlobContainerPublicAccessType.Blob);
 
-            if (!rootUrl.Trim().EndsWith("/"))
+            this.rootUrl = this.cloudBlobContainer.StorageUri.PrimaryUri.AbsoluteUri;
+            if (!this.rootUrl.Trim().EndsWith("/", StringComparison.InvariantCultureIgnoreCase))
             {
-                rootUrl = rootUrl.Trim() + "/";
+                this.rootUrl += "/";
             }
 
-            this.rootUrl = rootUrl + containerName + "/";
             this.ContainerName = containerName;
             this.MaxDays = maxDays;
 
@@ -143,11 +132,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
         /// <param name="containerName">The container name.</param>
-        /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
+        /// <param name="useDevelopmentStorage">Whether to use development storage or not.</param>
+        /// <param name="disableVirtualPathProvider">Should the virtual path provider be disabled.</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays)
+        public static AzureFileSystem GetInstance(string containerName, string connectionString, string maxDays, bool useDevelopmentStorage, bool disableVirtualPathProvider)
         {
             lock (Locker)
             {
@@ -159,7 +149,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         max = 365;
                     }
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max);
+                    fileSystem = new AzureFileSystem(containerName, connectionString, max, useDevelopmentStorage, disableVirtualPathProvider);
                 }
 
                 return fileSystem;
