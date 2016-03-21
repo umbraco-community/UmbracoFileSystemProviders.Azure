@@ -36,4 +36,8 @@ configApp.controller("Loader", function ($scope, $http, $log) {
     $scope.capitalizeFirstLetter = function (string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
+
+    $scope.getInputType = function (param) {
+        return param.toUpperCase() === "USEDEFAULTROUTE" ? "checkbox" : "text";
+    }
 });

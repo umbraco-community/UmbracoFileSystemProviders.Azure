@@ -51,7 +51,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// Gets a value that indicates that this is a virtual resource that should be treated as a file.
         /// </summary>
         /// <returns>
-        /// Always false. 
+        /// Always false.
         /// </returns>
         public override bool IsDirectory
         {

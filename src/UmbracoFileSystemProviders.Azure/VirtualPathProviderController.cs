@@ -27,7 +27,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private const string DisableVirtualPathProviderKey = Constants.Configuration.DisableVirtualPathProviderKey;
 
         /// <summary>
-        /// Overridable method to execute when All resolvers have been initialized but resolution is not 
+        /// Overridable method to execute when All resolvers have been initialized but resolution is not
         /// frozen so they can be modified in this method
         /// </summary>
         /// <param name="umbracoApplication">The current <see cref="UmbracoApplicationBase"/></param>
@@ -38,13 +38,22 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                            && ConfigurationManager.AppSettings[DisableVirtualPathProviderKey]
                                                   .Equals("true", StringComparison.InvariantCultureIgnoreCase);
 
-            IFileSystem fileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider("media");
+            IFileSystem fileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider(Constants.DefaultMediaRoute);
             bool isAzureBlobFileSystem = fileSystem.GetType() == typeof(AzureBlobFileSystem);
 
             if (!disable && isAzureBlobFileSystem)
             {
-                var containerName = ((AzureBlobFileSystem)fileSystem).FileSystem.ContainerName;
-                FileSystemVirtualPathProvider.ConfigureMedia(containerName);
+                AzureFileSystem azureFileSystem = ((AzureBlobFileSystem)fileSystem).FileSystem;
+
+                // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+                if (azureFileSystem.UseDefaultRoute)
+                {
+                    FileSystemVirtualPathProvider.ConfigureMedia(Constants.DefaultMediaRoute);
+                }
+                else
+                {
+                    FileSystemVirtualPathProvider.ConfigureMedia(azureFileSystem.ContainerName);
+                }
             }
 
             base.ApplicationStarting(umbracoApplication, applicationContext);
