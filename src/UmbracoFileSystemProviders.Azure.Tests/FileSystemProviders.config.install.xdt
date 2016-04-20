@@ -17,7 +17,11 @@
         Defaults to 365 days.
       -->
       <add key="maxDays" value="365" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
-      <add key="cdnUrl" value="[myCDN].azureedge.net" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+      <!--
+        When true this allows the VirtualPathProvider to use the deafult "media" route prefix regardless 
+        of the container name.
+      -->
+      <add key="useDefaultRoute" value="true" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
     </Parameters>
   </Provider>
   <!--

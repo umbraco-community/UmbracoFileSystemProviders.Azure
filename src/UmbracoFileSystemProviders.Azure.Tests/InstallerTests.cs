@@ -41,6 +41,5 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             var parameters = InstallerController.GetParametersFromXdt("FileSystemProviders.config.install.xdt", "FileSystemProviders.default.config");
             Assert.AreEqual("http://[myAccountName].blob.core.windows.net/", parameters.Single(k => k.Key == "rootUrl").Value);
         }
-
     }
 }

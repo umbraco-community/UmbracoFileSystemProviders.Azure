@@ -271,9 +271,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Configurator\Controllers\Configure.js" />
+    <Content Include="Configurator\Views\checkbox.htm" />
     <Content Include="Configurator\Views\Configure.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <Content Include="Configurator\Views\textfield.htm" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0-beta014\analyzers\dotnet\cs\Newtonsoft.Json.dll" />

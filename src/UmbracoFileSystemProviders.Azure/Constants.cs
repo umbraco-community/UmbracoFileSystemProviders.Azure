@@ -16,6 +16,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     public static class Constants
     {
         /// <summary>
+        /// The default route path for media objects.
+        /// </summary>
+        public const string DefaultMediaRoute = "media";
+
+        /// <summary>
         /// The configuration setting constants.
         /// </summary>
         public static class Configuration
