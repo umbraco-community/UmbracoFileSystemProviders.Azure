@@ -1,0 +1,33 @@
+﻿<?xml version="1.0"?>
+<FileSystemProviders xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+
+  <Provider alias="media" type="Umbraco.Core.IO.PhysicalFileSystem, Umbraco.Core"  xdt:Locator="Match(type)" xdt:Transform="Remove">
+    <Parameters>
+      <add key="virtualRoot" value="~/media/" />
+    </Parameters>
+  </Provider>
+
+  <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure" xdt:Locator="Match(type)" xdt:Transform="InsertIfMissing">
+    <Parameters xdt:Transform="InsertIfMissing">
+      <add key="containerName" value="media" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+      <add key="rootUrl" value="http://[myAccountName].blob.core.windows.net/" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+      <add key="connectionString" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+      <!--
+        Optional configuration value determining the maximum number of days to cache items in the browser.
+        Defaults to 365 days.
+      -->
+      <add key="maxDays" value="365" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+      <add key="cdnUrl" value="[myCDN].azureedge.net" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+    </Parameters>
+  </Provider>
+  <!--
+  Developer settings.
+  <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure">
+    <Parameters>
+      <add key="containerName" value="media" />
+      <add key="rootUrl" value="http://127.0.0.1:10000/devstoreaccount1/" />
+      <add key="connectionString" value="UseDevelopmentStorage=true"/>
+    </Parameters>
+  </Provider>
+  -->
+</FileSystemProviders>
