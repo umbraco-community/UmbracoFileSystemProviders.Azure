@@ -39,7 +39,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                                                   .Equals("true", StringComparison.InvariantCultureIgnoreCase);
 
             IFileSystem fileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider(Constants.DefaultMediaRoute);
-            bool isAzureBlobFileSystem = fileSystem.GetType() == typeof(AzureBlobFileSystem);
+            bool isAzureBlobFileSystem = fileSystem is AzureBlobFileSystem;
 
             if (!disable && isAzureBlobFileSystem)
             {
