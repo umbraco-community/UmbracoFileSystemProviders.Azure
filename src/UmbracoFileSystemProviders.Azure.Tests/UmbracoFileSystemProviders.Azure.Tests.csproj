@@ -255,8 +255,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\build\transforms\FileSystemProviders.config.install.xdt">
+      <Link>FileSystemProviders.config.install.xdt</Link>
+    </None>
     <None Include="app.config" />
-    <None Include="FileSystemProviders.config.install.xdt" />
     <None Include="FileSystemProviders.default.config" />
     <None Include="FileSystemProviders.upgrade.config" />
     <None Include="packages.config" />
