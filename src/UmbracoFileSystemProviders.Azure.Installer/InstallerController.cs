@@ -35,22 +35,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     [PluginController("FileSystemProviders")]
     public class InstallerController : UmbracoAuthorizedApiController
     {
-        private const string ProviderType = "Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure";
-        private static readonly string ImageProcessorWebAssemblyPath = HostingEnvironment.MapPath("~/bin/ImageProcessor.Web.dll");
-        private static readonly Version ImageProcessorWebMinRequiredVersion = new Version("4.3.2.0");
+        private static readonly string ImageProcessorWebAssemblyPath = HostingEnvironment.MapPath(Constants.ImageProcessor.WebAssemblyPath);
+        private static readonly Version ImageProcessorWebMinRequiredVersion = new Version(Constants.ImageProcessor.WebMinRequiredVersion);
 
-        private static readonly string ImageProcessorConfigPath = HostingEnvironment.MapPath("~/Config/imageprocessor/");
+        private static readonly string ImageProcessorConfigPath = HostingEnvironment.MapPath(Constants.ImageProcessor.ConfigPath);
 
-        private static readonly string ImageProcessorSecurityConfigPath = HostingEnvironment.MapPath("~/Config/imageprocessor/security.config");
-        private static readonly string ImageProcessorSecurityDefaultConfigPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/security.config");
-        private static readonly string ImageProcessorSecurityInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/security.config.install.xdt");
-        private static readonly string ImageProcessorSecurityServiceType = "ImageProcessor.Web.Services.CloudImageService, ImageProcessor.Web";
-        private static readonly string ImageProcessorSecurityServiceName = "CloudImageService";
+        private static readonly string ImageProcessorSecurityConfigPath = HostingEnvironment.MapPath($"{Constants.ImageProcessor.ConfigPath}{Constants.ImageProcessor.SecurityConfigFile}");
+        private static readonly string ImageProcessorSecurityDefaultConfigPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.ImageProcessor.SecurityConfigFile}");
+        private static readonly string ImageProcessorSecurityInstallXdtPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.ImageProcessor.SecurityConfigFile}.install.xdt");
 
-        private readonly string fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/FileSystemProviders.config.install.xdt");
-        private readonly string fileSystemProvidersConfigPath = HostingEnvironment.MapPath("~/Config/FileSystemProviders.config");
+        private readonly string fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.FileSystemProvidersConfigFile}.install.xdt");
+        private readonly string fileSystemProvidersConfigPath = HostingEnvironment.MapPath($"{Constants.UmbracoConfigPath}{Constants.FileSystemProvidersConfigFile}");
 
-        private readonly string webConfigXdtPath = HostingEnvironment.MapPath("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/web.config.install.xdt");
+        private readonly string webConfigXdtPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.WebConfigFile}.install.xdt");
 
         // /Umbraco/backoffice/FileSystemProviders/Installer/GetParameters
         public IEnumerable<Parameter> GetParameters()
@@ -122,7 +119,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             var strNamespace = "http://schemas.microsoft.com/XML-Document-Transform";
             nsMgr.AddNamespace("xdt", strNamespace);
 
-            var providerElement = document.SelectSingleNode(string.Format("//Provider[@type = '{0}']", ProviderType));
+            var providerElement = document.SelectSingleNode($"//Provider[@type = '{Constants.ProviderType}']");
             var parametersElement = providerElement.SelectSingleNode("./Parameters");
             var parameterRemoveElement = document.CreateNode("element", "Parameters", null);
             var tranformAttr = document.CreateAttribute("Transform", strNamespace);
@@ -131,7 +128,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             parameterRemoveElement.Attributes.Append(tranformAttr);
             providerElement.InsertBefore(parameterRemoveElement, parametersElement);
 
-            var parameters = document.SelectNodes(string.Format("//Provider[@type = '{0}']/Parameters/add", ProviderType));
+            var parameters = document.SelectNodes($"//Provider[@type = '{Constants.ProviderType}']/Parameters/add");
 
             if (parameters == null)
             {
@@ -213,7 +210,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             var document = XmlHelper.OpenAsXmlDocument(xdtPath);
 
             // Set the prefix attribute on both the Remove and InsertIfMissing actions
-            var rawServices = document.SelectNodes($"//services/service[@name = '{ImageProcessorSecurityServiceName}' and @type = '{ImageProcessorSecurityServiceType}']");
+            var rawServices = document.SelectNodes($"//services/service[@name = '{Constants.ImageProcessor.SecurityServiceName}' and @type = '{Constants.ImageProcessor.SecurityServiceType}']");
             if (rawServices == null)
             {
                 return false;
@@ -225,7 +222,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             }
 
             // Set the settings within the InsertIfMissing action
-            var rawSettings = document.SelectNodes($"//services/service[@prefix = '{prefix}/' and @name = '{ImageProcessorSecurityServiceName}' and @type = '{ImageProcessorSecurityServiceType}']/settings/setting");
+            var rawSettings = document.SelectNodes($"//services/service[@prefix = '{prefix}/' and @name = '{Constants.ImageProcessor.SecurityServiceName}' and @type = '{Constants.ImageProcessor.SecurityServiceType}']/settings/setting");
             if (rawSettings == null)
             {
                 return false;
@@ -280,7 +277,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
             var document = XmlHelper.OpenAsXmlDocument(xmlPath);
 
-            var parameters = document.SelectNodes(string.Format("//Provider[@type = '{0}']/Parameters/add", ProviderType));
+            var parameters = document.SelectNodes($"//Provider[@type = '{Constants.ProviderType}']/Parameters/add");
 
             if (parameters == null)
             {
@@ -363,7 +360,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             }
             catch (Exception e)
             {
-                LogHelper.Error<InstallerController>(string.Format("Error validating Azure storage connection: {0}", e.Message), e);
+                LogHelper.Error<InstallerController>($"Error validating Azure storage connection: {e.Message}", e);
                 return false;
             }
 
