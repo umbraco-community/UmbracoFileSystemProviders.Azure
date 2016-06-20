@@ -1,31 +1,32 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <umbPackage>
-	<info>
-		<package>
-			<name></name>
-			<version>0.0.0</version>
-			<license url=""></license>
-			<url></url>
-			<requirements>
-				<major>0</major>
-				<minor>0</minor>
-				<patch>0</patch>
-			</requirements>
-		</package>
-		<author>
-			<name></name>
-			<website></website>
-		</author>
-		<readme><![CDATA[]]></readme>
-	</info>
+  <info>
+    <package>
+      <name></name>
+      <version>0.0.0</version>
+      <license url=""></license>
+      <url></url>
+      <requirements>
+        <major>0</major>
+        <minor>0</minor>
+        <patch>0</patch>
+      </requirements>
+    </package>
+    <author>
+      <name></name>
+      <website></website>
+      <iconUrl></iconUrl>
+    </author>
+    <readme><![CDATA[]]></readme>
+  </info>
 
-	<DocumentTypes />
-	<Templates />
-	<Stylesheets />
-	<Macros />
-	<DictionaryItems />
-	<Languages />
-	<DataTypes />
+  <DocumentTypes />
+  <Templates />
+  <Stylesheets />
+  <Macros />
+  <DictionaryItems />
+  <Languages />
+  <DataTypes />
 
   <Actions>
     <Action runat="uninstall" undo="true" alias="UmbracoFileSystemProviders.Azure.TransformConfig" file="~/web.config" xdtfile="~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/web.config"></Action>
@@ -35,6 +36,6 @@
 
   <control>/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/Configure.ascx</control>
 
-	<files />
+  <files />
 
 </umbPackage>
