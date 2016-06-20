@@ -21,12 +21,12 @@
                     <form name="paramForm" class="form-horizontal" role="form">             
                         <div ng-repeat="param in parameters" class="control-group">
                             <ng-form name="form">
-                            <label class="control-label" for="param.Key">{{ capitalizeFirstLetter(param.Key) }}</label>
+                            <label class="control-label" for="param.key">{{ capitalizeFirstLetter(param.key) }}</label>
                                 <div class="controls">
-                                    <span ng-if="getInputType(param.Key) === 'checkbox'" ng-include="'/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/checkbox.htm'"></span>
-                                    <span ng-if="getInputType(param.Key) === 'text'" ng-include="'/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/textfield.htm'"></span>
+                                    <span ng-if="getInputType(param.key) === 'checkbox'" ng-include="'/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/checkbox.htm'"></span>
+                                    <span ng-if="getInputType(param.key) === 'text'" ng-include="'/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/textfield.htm'"></span>
                                 </div>
-                                <span data-ng-show=" {{'form.'+param.Key+'.$dirty && form.'+param.Key+'.$error.required'}}">Required!</span>
+                                <span data-ng-show=" {{'form.'+param.key+'.$dirty && form.'+param.key+'.$error.required'}}">Required!</span>
                             </ng-form>
                         </div>
                         <button preventDefault class="btn btn-primary" ng-disabled="paramForm.$invalid" ng-click="submitForm($event)">Save</button>
