@@ -31,7 +31,7 @@
     <PackageId>UmbracoFileSystemProviders.Azure</PackageId>
     <Copyright>Copyright &#169; James Jackson-South and contributors.</Copyright>
     <Owners>James Jackson-South</Owners>
-    <Description>An Azure Blob Storage IFileSystem provider for Umbraco 6.25+. Used to offload static files in the media section to the cloud.</Description>
+    <Description>An Azure Blob Storage IFileSystem provider for Umbraco. Used to offload static files in the media section to the cloud.</Description>
     <IconUrl>https://raw.githubusercontent.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/develop/build/assets/logo/azure-logo-128.png</IconUrl>
     <Tags>umbraco azure media blob imageprocessor</Tags>
     <Language>en-GB</Language>
