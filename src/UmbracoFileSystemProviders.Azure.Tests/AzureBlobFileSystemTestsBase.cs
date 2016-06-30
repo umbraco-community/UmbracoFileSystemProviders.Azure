@@ -294,7 +294,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetDirectories("/");
 
             // Assert
-            string[] expected = { "1010/", "1011/", "1012/", "forms/", "testvalid/" };
+            string[] expected = { "1010/", "1011/", "1012/" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -315,7 +315,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetDirectories("/");
 
             // Assert
-            string[] expected = { "1010/", "1011/", "1012/", "testvalid/" };
+            string[] expected = { "1010/", "1011/", "1012/" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
         
@@ -533,6 +533,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             // Assert
             string[] expected = { "forms/form_123/", "forms/form_456/" };
             Assert.IsTrue(expected.SequenceEqual(actual));
+
+            // Tidy up after test
+            provider.DeleteDirectory("forms");
         }
 
         /// <summary>
@@ -559,10 +562,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             }
 
             // Assert
-            string[] expected = { "forms/form_123/kitty.jpg", "forms/form_123/dog.jpg", "forms/form_456/panda.jpg" };
+            string[] expected = { "forms/form_123/dog.jpg", "forms/form_123/kitty.jpg", "forms/form_456/panda.jpg" };
             Assert.IsTrue(expected.SequenceEqual(actual));
-        }
-        
 
+            // Tidy up after test
+            provider.DeleteDirectory("forms");
+        }
     }
 }

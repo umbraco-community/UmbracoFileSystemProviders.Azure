@@ -277,15 +277,31 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             CloudBlobDirectory directory = this.GetDirectoryReference(path);
 
-            IEnumerable<CloudBlockBlob> blobs = directory.ListBlobs().OfType<CloudBlockBlob>();
+            // WB: This will only delete a folder if it only has files & not sub directories
+            // IEnumerable<CloudBlockBlob> blobs = directory.ListBlobs().OfType<CloudBlockBlob>();
+
+            IEnumerable<IListBlobItem> blobs = directory.ListBlobs();
+
 
             if (recursive)
             {
-                foreach (CloudBlockBlob blockBlob in blobs)
+                foreach (var blobItem in blobs)
                 {
                     try
                     {
-                        blockBlob.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
+                        if (blobItem is CloudBlobDirectory)
+                        {
+                            var blobFolder = blobItem as CloudBlobDirectory;
+
+                            // Resurssively call this method
+                            this.DeleteDirectory(blobFolder.Prefix);
+                        }
+                        else
+                        {
+                            // Can assume its a file aka CloudBlob
+                            var blobFile = blobItem as CloudBlockBlob;
+                            blobFile?.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
+                        }
                     }
                     catch (Exception ex)
                     {
