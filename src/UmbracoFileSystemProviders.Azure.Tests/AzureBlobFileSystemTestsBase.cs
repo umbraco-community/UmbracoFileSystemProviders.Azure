@@ -461,6 +461,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
             provider.AddFile("testvalid/test.txt", Stream.Null);
             Assert.IsTrue(provider.DirectoryExists("testvalid"));
+
+            // Tidy up after test
+            provider.DeleteDirectory("testvalid");
         }
 
         [Test]
