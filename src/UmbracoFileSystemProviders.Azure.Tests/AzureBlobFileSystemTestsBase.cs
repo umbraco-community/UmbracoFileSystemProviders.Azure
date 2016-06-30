@@ -294,7 +294,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetDirectories("/");
 
             // Assert
-            string[] expected = { "1010/", "1011/", "1012/" };
+            string[] expected = { "1010", "1011", "1012" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -315,7 +315,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetDirectories("/");
 
             // Assert
-            string[] expected = { "1010/", "1011/", "1012/" };
+            string[] expected = { "1010", "1011", "1012" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
         
@@ -534,7 +534,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetDirectories("forms");
 
             // Assert
-            string[] expected = { "forms/form_123/", "forms/form_456/" };
+            string[] expected = { "forms/form_123", "forms/form_456" };
             Assert.IsTrue(expected.SequenceEqual(actual));
 
             // Tidy up after test
