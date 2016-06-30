@@ -455,6 +455,21 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             Assert.IsFalse(provider.FileExists("1010/media.jpg"));
         }
 
+        [Test]
+        public void TestValidDirectory()
+        {
+            AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
+            provider.AddFile("testvalid/test.txt", Stream.Null);
+            Assert.IsTrue(provider.DirectoryExists("testvalid"));
+        }
+
+        [Test]
+        public void TestInvalidDirectory()
+        {
+            AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
+            Assert.IsFalse(provider.DirectoryExists("testinvalid/"));
+        }
+
         /// <summary>
         /// Asserts that the file system correctly deletes a directory when the input has been prefixed.
         /// </summary>

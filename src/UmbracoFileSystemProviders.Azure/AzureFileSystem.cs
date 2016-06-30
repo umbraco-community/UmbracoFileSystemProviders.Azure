@@ -285,7 +285,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 {
                     try
                     {
-                        blockBlob.Delete(DeleteSnapshotsOption.IncludeSnapshots);
+                        blockBlob.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
                     }
                     catch (Exception ex)
                     {
@@ -337,7 +337,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public bool DirectoryExists(string path)
         {
-            return this.GetDirectories(path).Any();
+            var fixedPath = this.FixPath(path);
+            var directory = this.cloudBlobContainer.GetDirectoryReference(fixedPath);
+
+            return directory.ListBlobs().Any();
         }
 
         /// <summary>
@@ -385,11 +388,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             CloudBlobDirectory directory = this.GetDirectoryReference(path);
 
-            IEnumerable<IListBlobItem> blobs = directory.ListBlobs();
+            IEnumerable<IListBlobItem> blobs = directory.ListBlobs().Where(blob => blob is CloudBlobDirectory);
 
             // Always get last segment for media sub folder simulation. E.g 1001, 1002
             return blobs.Select(cd =>
                                 cd.Uri.Segments[cd.Uri.Segments.Length - 1].Split(Delimiter.ToCharArray())[0]);
+
         }
 
         /// <summary>
