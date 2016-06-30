@@ -388,12 +388,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             CloudBlobDirectory directory = this.GetDirectoryReference(path);
 
-            IEnumerable<IListBlobItem> blobs = directory.ListBlobs().Where(blob => blob is CloudBlobDirectory);
+            IEnumerable<IListBlobItem> blobs = directory.ListBlobs().Where(blob => blob is CloudBlobDirectory).ToList();
 
             // Always get last segment for media sub folder simulation. E.g 1001, 1002
-            return blobs.Select(cd =>
-                                cd.Uri.Segments[cd.Uri.Segments.Length - 1].Split(Delimiter.ToCharArray())[0]);
-
+            return blobs.Cast<CloudBlobDirectory>().Select(cd => cd.Prefix);
         }
 
         /// <summary>

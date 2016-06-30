@@ -294,7 +294,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetDirectories("/");
 
             // Assert
-            string[] expected = { "1010", "1011", "1012" };
+            string[] expected = { "1010/", "1011/", "1012/", "forms/", "testvalid/" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -315,10 +315,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetDirectories("/");
 
             // Assert
-            string[] expected = { "1010", "1011", "1012" };
+            string[] expected = { "1010/", "1011/", "1012/", "testvalid/" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
-
+        
         /// <summary>
         /// Asserts that the file system correctly returns a sequence of files from the root
         /// container in the correct format.
@@ -513,5 +513,56 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             Assert.IsFalse(provider.DirectoryExists("media/1010/"));
             Assert.IsFalse(provider.FileExists("media/1010/media.jpg"));
         }
+
+        /// <summary>
+        /// Asserts that the file system correctly returns a sequence of sub-directories in the
+        /// correct format.
+        /// </summary>
+        [Test]
+        public void TestGetSubDirectories()
+        {
+            // Arrange
+            AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
+            provider.AddFile("forms/form_123/kitty.jpg", Stream.Null);
+            provider.AddFile("forms/form_123/dog.jpg", Stream.Null);
+            provider.AddFile("forms/form_456/panda.jpg", Stream.Null);
+
+            // Act
+            IEnumerable<string> actual = provider.GetDirectories("forms");
+
+            // Assert
+            string[] expected = { "forms/form_123/", "forms/form_456/" };
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        /// <summary>
+        /// Asserts that the file system correctly returns a sequence of sub-directories in the
+        /// correct format.
+        /// </summary>
+        [Test]
+        public void TestGetSubDirectoriesAndFiles()
+        {
+            // Arrange
+            AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
+            provider.AddFile("forms/form_123/kitty.jpg", Stream.Null);
+            provider.AddFile("forms/form_123/dog.jpg", Stream.Null);
+            provider.AddFile("forms/form_456/panda.jpg", Stream.Null);
+
+            // Act
+            var subfolders = provider.GetDirectories("forms");
+            var actual = new List<string>();
+
+            foreach (var folder in subfolders)
+            {
+                // Get files in subfolder and add to a single collection
+                actual.AddRange(provider.GetFiles(folder));
+            }
+
+            // Assert
+            string[] expected = { "forms/form_123/kitty.jpg", "forms/form_123/dog.jpg", "forms/form_456/panda.jpg" };
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+        
+
     }
 }
