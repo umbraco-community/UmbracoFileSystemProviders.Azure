@@ -277,15 +277,31 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             CloudBlobDirectory directory = this.GetDirectoryReference(path);
 
-            IEnumerable<CloudBlockBlob> blobs = directory.ListBlobs().OfType<CloudBlockBlob>();
+            // WB: This will only delete a folder if it only has files & not sub directories
+            // IEnumerable<CloudBlockBlob> blobs = directory.ListBlobs().OfType<CloudBlockBlob>();
+
+            IEnumerable<IListBlobItem> blobs = directory.ListBlobs();
+
 
             if (recursive)
             {
-                foreach (CloudBlockBlob blockBlob in blobs)
+                foreach (var blobItem in blobs)
                 {
                     try
                     {
-                        blockBlob.Delete(DeleteSnapshotsOption.IncludeSnapshots);
+                        if (blobItem is CloudBlobDirectory)
+                        {
+                            var blobFolder = blobItem as CloudBlobDirectory;
+
+                            // Resurssively call this method
+                            this.DeleteDirectory(blobFolder.Prefix);
+                        }
+                        else
+                        {
+                            // Can assume its a file aka CloudBlob
+                            var blobFile = blobItem as CloudBlockBlob;
+                            blobFile?.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -337,7 +353,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public bool DirectoryExists(string path)
         {
-            return this.GetDirectories(path).Any();
+            var fixedPath = this.FixPath(path);
+            var directory = this.cloudBlobContainer.GetDirectoryReference(fixedPath);
+
+            return directory.ListBlobs().Any();
         }
 
         /// <summary>
@@ -385,11 +404,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             CloudBlobDirectory directory = this.GetDirectoryReference(path);
 
-            IEnumerable<IListBlobItem> blobs = directory.ListBlobs();
+            IEnumerable<IListBlobItem> blobs = directory.ListBlobs().Where(blob => blob is CloudBlobDirectory).ToList();
 
             // Always get last segment for media sub folder simulation. E.g 1001, 1002
-            return blobs.Select(cd =>
-                                cd.Uri.Segments[cd.Uri.Segments.Length - 1].Split(Delimiter.ToCharArray())[0]);
+            return blobs.Cast<CloudBlobDirectory>().Select(cd => cd.Prefix.TrimEnd('/'));
         }
 
         /// <summary>
