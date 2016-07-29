@@ -48,9 +48,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private static readonly object Locker = new object();
 
         /// <summary>
-        /// The singleton instance of <see cref="AzureFileSystem"/>.
+        /// A list of <see cref="AzureFileSystem"/>.
         /// </summary>
-        private static AzureFileSystem fileSystem;
+        private static List<AzureFileSystem> fileSystems;
 
         /// <summary>
         /// The root url.
@@ -73,7 +73,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="containerName"/> is null or whitespace.
         /// </exception>
-        private AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute)
+        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute)
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
@@ -156,11 +156,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
+        public AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
         {
             lock (Locker)
             {
-                if (fileSystem == null)
+                if (fileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootUrl == rootUrl) == null)
                 {
                     int max;
                     if (!int.TryParse(maxDays, out max))
@@ -174,10 +174,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         defaultRoute = true;
                     }
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute);
+                    var fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute);
+
+                    if (fileSystems == null)
+                    {
+                        fileSystems = new List<AzureFileSystem> { fileSystem };
+                    }
+                    else
+                    {
+                        fileSystems.Add(fileSystem);
+                    }
                 }
 
-                return fileSystem;
+                return fileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootUrl == rootUrl);
             }
         }
 
