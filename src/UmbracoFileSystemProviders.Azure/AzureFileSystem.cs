@@ -8,6 +8,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Text.RegularExpressions;
+
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -547,7 +549,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <returns>The <see cref="CloudBlobContainer"/></returns>
         private static CloudBlobContainer CreateContainer(CloudBlobClient cloudBlobClient, string containerName, BlobContainerPublicAccessType accessType)
         {
-            CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
+            containerName = containerName.ToLowerInvariant();
+
+            // Validate container name - from: http://stackoverflow.com/a/23364534/5018
+            var regEx = new Regex("^[a-z0-9](?:[a-z0-9]|(\\-(?!\\-))){1,61}[a-z0-9]$|^\\$root$");
+            var isContainerNameValid = regEx.IsMatch(containerName);
+            if (isContainerNameValid == false)
+            {
+                throw new ArgumentException(string.Format("The container name {0} is not valid, see https://msdn.microsoft.com/en-us/library/azure/dd135715.aspx for the restrtictions for container names.", containerName));
+            }
+
+            CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName.ToLowerInvariant());
             container.CreateIfNotExists();
             container.SetPermissions(new BlobContainerPermissions { PublicAccess = accessType });
             return container;
