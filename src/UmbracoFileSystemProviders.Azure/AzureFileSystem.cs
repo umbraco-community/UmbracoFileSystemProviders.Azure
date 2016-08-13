@@ -16,7 +16,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using Microsoft.WindowsAzure.Storage.Blob;
 
     /// <summary>
-    /// A singleton class for communicating with Azure Blob Storage.
+    /// A class for communicating with Azure Blob Storage.
     /// </summary>
     internal class AzureFileSystem : IFileSystem
     {
@@ -43,12 +43,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// A list of <see cref="AzureFileSystem"/>.
         /// </summary>
-        private static List<AzureFileSystem> fileSystems;
+        private static List<AzureFileSystem> fileSystems = new List<AzureFileSystem>();
 
         /// <summary>
         /// The root url.
         /// </summary>
-        private readonly string rootUrl;
+        private readonly string rootBlobUrl;
 
         /// <summary>
         /// The cloud media blob container.
@@ -70,7 +70,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
-                throw new ArgumentNullException("containerName");
+                throw new ArgumentNullException(nameof(containerName));
             }
 
             this.DisableVirtualPathProvider = ConfigurationManager.AppSettings[DisableVirtualPathProviderKey] != null
@@ -100,7 +100,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 rootUrl = rootUrl.Trim() + "/";
             }
 
-            this.rootUrl = rootUrl + containerName + "/";
+            this.rootBlobUrl = rootUrl + containerName + "/";
             this.ContainerName = containerName;
             this.MaxDays = maxDays;
             this.UseDefaultRoute = useDefaultRoute;
@@ -153,7 +153,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             lock (Locker)
             {
-                if (fileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootUrl == rootUrl) == null)
+                if (fileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootBlobUrl == rootUrl) == null)
                 {
                     int max;
                     if (!int.TryParse(maxDays, out max))
@@ -179,7 +179,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     }
                 }
 
-                return fileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootUrl == rootUrl);
+                return fileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootBlobUrl == rootUrl);
             }
         }
 
@@ -427,14 +427,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
                     if (filter.Equals("*.*", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        return url.Substring(this.rootUrl.Length);
+                        return url.Substring(this.rootBlobUrl.Length);
                     }
 
                     // Filter by name.
                     filter = filter.TrimStart('*');
                     if (url.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) > -1)
                     {
-                        return url.Substring(this.rootUrl.Length);
+                        return url.Substring(this.rootBlobUrl.Length);
                     }
 
                     return null;
@@ -592,7 +592,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             // First create the full url
             string fixedPath = this.FixPath(path);
 
-            Uri url = new Uri(new Uri(this.rootUrl, UriKind.Absolute), fixedPath);
+            Uri url = new Uri(new Uri(this.rootBlobUrl, UriKind.Absolute), fixedPath);
 
             if (!relative)
             {
@@ -628,9 +628,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             // Strip root url
-            if (path.StartsWith(this.rootUrl, StringComparison.InvariantCultureIgnoreCase))
+            if (path.StartsWith(this.rootBlobUrl, StringComparison.InvariantCultureIgnoreCase))
             {
-                path = path.Substring(this.rootUrl.Length);
+                path = path.Substring(this.rootBlobUrl.Length);
             }
 
             // Strip default route
