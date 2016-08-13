@@ -2,6 +2,7 @@
 // Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
+
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -66,7 +67,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class 
+        /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class
         /// from values in application settings.
         /// </summary>
         public AzureBlobFileSystem()
