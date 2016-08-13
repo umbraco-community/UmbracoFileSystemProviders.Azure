@@ -2,6 +2,10 @@
 // Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
+
+// <summary>
+// A singleton class for communicating with Azure Blob Storage.
+// </summary>
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -10,6 +14,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using global::Umbraco.Core.IO;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -33,6 +38,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// The delimiter.
         /// </summary>
         private const string Delimiter = "/";
+
+        /// <summary>
+        /// The regex for parsing container names.
+        /// </summary>
+        private static readonly Regex ContainerRegex = new Regex("^[a-z0-9](?:[a-z0-9]|(\\-(?!\\-))){1,61}[a-z0-9]$|^\\$root$", RegexOptions.Compiled);
 
         /// <summary>
         /// Our object to lock against during initialization.
@@ -525,7 +535,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (!blockBlob.Exists())
             {
-                this.LogHelper.Info<AzureBlobFileSystem>(string.Format("No file exists at {0}.", path));
+                this.LogHelper.Info<AzureBlobFileSystem>($"No file exists at {path}.");
                 return null;
             }
 
@@ -549,7 +559,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <returns>The <see cref="CloudBlobContainer"/></returns>
         private static CloudBlobContainer CreateContainer(CloudBlobClient cloudBlobClient, string containerName, BlobContainerPublicAccessType accessType)
         {
-            CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
+            containerName = containerName.ToLowerInvariant();
+
+            // Validate container name - from: http://stackoverflow.com/a/23364534/5018
+            bool isContainerNameValid = ContainerRegex.IsMatch(containerName);
+            if (isContainerNameValid == false)
+            {
+                throw new ArgumentException($"The container name {containerName} is not valid, see https://msdn.microsoft.com/en-us/library/azure/dd135715.aspx for the restrtictions for container names.");
+            }
+
+            CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName.ToLowerInvariant());
             container.CreateIfNotExists();
             container.SetPermissions(new BlobContainerPermissions { PublicAccess = accessType });
             return container;
