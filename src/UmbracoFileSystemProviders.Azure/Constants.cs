@@ -49,6 +49,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             /// The configuration key for providing the Maximum Days Cache value via the web.config
             /// </summary>
             public const string MaxDaysKey = "AzureBlobFileSystem.MaxDays";
+
+            /// <summary>
+            /// The configuration key for providing the Use Default Root value via the web.config
+            /// </summary>
+            public const string UseDefaultRouteKey = "AzureBlobFileSystem.UseDefaultRoute";
         }
     }
 }
