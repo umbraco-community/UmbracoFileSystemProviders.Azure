@@ -10,12 +10,32 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.IO;
 
     using global::Umbraco.Core.IO;
-
+    using System.Configuration;
     /// <summary>
     /// The azure file system.
     /// </summary>
     public class AzureBlobFileSystem : IFileSystem
     {
+        /// <summary>
+        /// The configuration key for disabling the virtual path provider.
+        /// </summary>
+        private const string ConnectionStringKey = Constants.Configuration.ConnectionStringKey;
+
+        /// <summary>
+        /// The configuration key for disabling the virtual path provider.
+        /// </summary>
+        private const string ContainerNameKey = Constants.Configuration.ContainerNameKey;
+
+        /// <summary>
+        /// The configuration key for disabling the virtual path provider.
+        /// </summary>
+        private const string RootUrlKey = Constants.Configuration.RootUrlKey;
+
+        /// <summary>
+        /// The configuration key for disabling the virtual path provider.
+        /// </summary>
+        private const string MaxDaysKey = Constants.Configuration.MaxDaysKey;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
         /// </summary>
@@ -38,6 +58,45 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
         {
             this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class from values in web.config through ConfigurationManager.
+        /// </summary>
+        public AzureBlobFileSystem()
+        {
+
+            string connectionString = ConfigurationManager.AppSettings[ConnectionStringKey] as string;
+            if (!string.IsNullOrWhiteSpace(connectionString))
+            {
+                string rootUrl = ConfigurationManager.AppSettings[RootUrlKey] as string;
+                if (string.IsNullOrWhiteSpace(rootUrl))
+                {
+                    throw new InvalidOperationException("Azure Storage Root URL is not defined in web.config. The " + RootUrlKey + " property was not defined or is empty.");
+                }
+
+                string containerName = ConfigurationManager.AppSettings[ContainerNameKey] as string;
+
+                if (string.IsNullOrWhiteSpace(containerName))
+                {
+                    containerName = "media";
+                }
+
+                string maxDays = ConfigurationManager.AppSettings[MaxDaysKey] as string;
+
+                if (string.IsNullOrWhiteSpace(maxDays))
+                {
+                    maxDays = "365";
+                }
+
+                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unable to retreive the Azure Storage configuration from web.config. " + ConnectionStringKey + " was not defined or is empty.");
+            }
+
+
         }
 
         /// <summary>

@@ -29,6 +29,26 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             /// The configuration key for enabling the storage emulator.
             /// </summary>
             public const string UseStorageEmulatorKey = "AzureBlobFileSystem.UseStorageEmulator";
+
+            /// <summary>
+            /// The configuration key for providing the connection string via the web.config
+            /// </summary>
+            public const string ConnectionStringKey = "AzureBlobFileSystem.ConnectionString";
+
+            /// <summary>
+            /// The configuration key for providing the Azure Blob Container Name via the web.config
+            /// </summary>
+            public const string ContainerNameKey = "AzureBlobFileSystem.ContainerName";
+
+            /// <summary>
+            /// The configuration key for providing the Storage Root URL via the web.config
+            /// </summary>
+            public const string RootUrlKey = "AzureBlobFileSystem.RootUrl";
+
+            /// <summary>
+            /// The configuration key for providing the Maximum Days Cache value via the web.config
+            /// </summary>
+            public const string MaxDaysKey = "AzureBlobFileSystem.MaxDays";
         }
     }
 }
