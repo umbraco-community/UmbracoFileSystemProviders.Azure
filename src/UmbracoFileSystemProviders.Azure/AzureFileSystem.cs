@@ -429,7 +429,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     }
 
                     return null;
-                });
+                }).Where(x => x != null);
         }
 
         /// <summary>
