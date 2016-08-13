@@ -45,9 +45,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private static readonly List<AzureFileSystem> FileSystems = new List<AzureFileSystem>();
 
         /// <summary>
-        /// The root url.
+        /// The root host url.
         /// </summary>
-        private readonly string rootBlobUrl;
+        private readonly string rootHostUrl;
+
+        /// <summary>
+        /// The combined root and container url.
+        /// </summary>
+        private readonly string rootContainerUrl;
 
         /// <summary>
         /// The cloud media blob container.
@@ -94,12 +99,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
             this.cloudBlobContainer = CreateContainer(cloudBlobClient, containerName, BlobContainerPublicAccessType.Blob);
 
+            // First assign a local copy before editing. We use that to track the type.
+            // TODO: Do we need this? The container should be an identifer.
+            this.rootHostUrl = rootUrl;
+
             if (!rootUrl.Trim().EndsWith("/"))
             {
                 rootUrl = rootUrl.Trim() + "/";
             }
 
-            this.rootBlobUrl = rootUrl + containerName + "/";
+            this.rootContainerUrl = rootUrl + containerName + "/";
             this.ContainerName = containerName;
             this.MaxDays = maxDays;
             this.UseDefaultRoute = useDefaultRoute;
@@ -148,11 +157,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
+        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
         {
             lock (Locker)
             {
-                if (FileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootBlobUrl == rootUrl) == null)
+                AzureFileSystem fileSystem = FileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootHostUrl == rootUrl);
+
+                if (fileSystem == null)
                 {
                     int max;
                     if (!int.TryParse(maxDays, out max))
@@ -166,11 +177,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         defaultRoute = true;
                     }
 
-                    AzureFileSystem fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute);
+                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute);
                     FileSystems.Add(fileSystem);
                 }
 
-                return FileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootBlobUrl == rootUrl);
+                return fileSystem;
             }
         }
 
@@ -418,14 +429,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
                     if (filter.Equals("*.*", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        return url.Substring(this.rootBlobUrl.Length);
+                        return url.Substring(this.rootContainerUrl.Length);
                     }
 
                     // Filter by name.
                     filter = filter.TrimStart('*');
                     if (url.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) > -1)
                     {
-                        return url.Substring(this.rootBlobUrl.Length);
+                        return url.Substring(this.rootContainerUrl.Length);
                     }
 
                     return null;
@@ -583,7 +594,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             // First create the full url
             string fixedPath = this.FixPath(path);
 
-            Uri url = new Uri(new Uri(this.rootBlobUrl, UriKind.Absolute), fixedPath);
+            Uri url = new Uri(new Uri(this.rootContainerUrl, UriKind.Absolute), fixedPath);
 
             if (!relative)
             {
@@ -619,9 +630,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             // Strip root url
-            if (path.StartsWith(this.rootBlobUrl, StringComparison.InvariantCultureIgnoreCase))
+            if (path.StartsWith(this.rootContainerUrl, StringComparison.InvariantCultureIgnoreCase))
             {
-                path = path.Substring(this.rootBlobUrl.Length);
+                path = path.Substring(this.rootContainerUrl.Length);
             }
 
             // Strip default route

@@ -63,20 +63,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
         {
-            bool useDefaultRouteParsed;
-            int maxDaysParsed;
-
-            if (int.TryParse(maxDays, out maxDaysParsed) == false)
-            {
-                throw new ArgumentException(string.Format("Argument maxDays with value {0} could be converted from string to int", maxDays));
-            }
-
-            if (bool.TryParse(useDefaultRoute, out useDefaultRouteParsed) == false)
-            {
-                throw new ArgumentException(string.Format("Argument useDefaultRoute with value {0} could be converted from string to bool", useDefaultRoute));
-            }
-
-            this.FileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, maxDaysParsed, useDefaultRouteParsed);
+            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute);
         }
 
         /// <summary>
@@ -85,7 +72,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         public AzureBlobFileSystem()
         {
-
             string connectionString = ConfigurationManager.AppSettings[ConnectionStringKey];
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
