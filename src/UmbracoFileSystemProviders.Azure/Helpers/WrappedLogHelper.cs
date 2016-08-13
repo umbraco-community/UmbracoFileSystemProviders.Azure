@@ -1,12 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="WrappedLogHelper.cs" company="James Jackson-South">
-//   Copyright (c) James Jackson-South and contributors.
-//   Licensed under the Apache License, Version 2.0.
+﻿// <copyright file="WrappedLogHelper.cs" company="James Jackson-South, Jeavon Leopold, and contributors">
+// Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
+// Licensed under the Apache License, Version 2.0.
 // </copyright>
-// <summary>
-//   Provides a <see cref="LogHelper" /> wrapper for logging messages within the application.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
 
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
@@ -20,8 +15,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     public class WrappedLogHelper : ILogHelper
     {
         /// <summary>
-        /// Traces a message, only generating the message if tracing is actually enabled. 
-        /// Use this method to avoid calling any long-running methods such as "ToDebugString" if 
+        /// Traces a message, only generating the message if tracing is actually enabled.
+        /// Use this method to avoid calling any long-running methods such as "ToDebugString" if
         /// logging is disabled.
         /// </summary>
         /// <typeparam name="T">The type of class the message is associated with.</typeparam>
@@ -42,7 +37,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         }
 
         /// <summary>
-        /// Traces a message, only generating the message if tracing is actually enabled. 
+        /// Traces a message, only generating the message if tracing is actually enabled.
         /// </summary>
         /// <typeparam name="T">The type of class the message is associated with.</typeparam>
         /// <param name="generateMessageFormat">The generate message format.</param>
@@ -53,7 +48,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         }
 
         /// <summary>
-        /// Traces a message, only generating the message if tracing is actually enabled. 
+        /// Traces a message, only generating the message if tracing is actually enabled.
         /// </summary>
         /// <param name="type">The calling <see cref="Type"/>.</param>
         /// <param name="generateMessageFormat">The generate message format.</param>
