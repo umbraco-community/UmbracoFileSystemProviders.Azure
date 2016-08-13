@@ -1,19 +1,26 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Parameter.cs" company="James Jackson-South">
-// Copyright (c) James Jackson-South. All rights reserved.
+﻿// <copyright file="Parameter.cs" company="James Jackson-South, Jeavon Leopold, and contributors">
+// Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
-// --------------------------------------------------------------------------------------------------------------------
 
 namespace Our.Umbraco.FileSystemProviders.Azure.Installer.Models
 {
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// A parameter consisting of a key/value pair
+    /// </summary>
     public class Parameter
     {
+        /// <summary>
+        /// The key.
+        /// </summary>
         [JsonProperty("key")]
         public string Key { get; set; }
 
+        /// <summary>
+        /// The value.
+        /// </summary>
         [JsonProperty("value")]
         public string Value { get; set; }
     }

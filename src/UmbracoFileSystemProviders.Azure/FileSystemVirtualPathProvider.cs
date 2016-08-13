@@ -1,13 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FileSystemVirtualPathProvider.cs" company="James Jackson-South">
-//   Copyright (c) James Jackson-South and contributors.
-//   Licensed under the Apache License, Version 2.0.
+﻿// <copyright file="FileSystemVirtualPathProvider.cs" company="James Jackson-South, Jeavon Leopold, and contributors">
+// Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
+// Licensed under the Apache License, Version 2.0.
 // </copyright>
-// <summary>
-//   Provides a set of methods that enable a Web application to retrieve
-//   resources from a virtual file system implementing <see cref="IFileSystem" />.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
 
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
@@ -18,7 +12,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using global::Umbraco.Core.IO;
 
     /// <summary>
-    /// Provides a set of methods that enable a Web application to retrieve 
+    /// Provides a set of methods that enable a Web application to retrieve
     /// resources from a virtual file system implementing <see cref="IFileSystem"/>.
     /// </summary>
     public class FileSystemVirtualPathProvider : VirtualPathProvider
@@ -81,7 +75,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="pathPrefix"/> is null.
         /// </exception>
-        public static void Configure<TProviderTypeFilter>(string pathPrefix = Constants.DefaultMediaRoute) where TProviderTypeFilter : FileSystemWrapper
+        public static void Configure<TProviderTypeFilter>(string pathPrefix = Constants.DefaultMediaRoute)
+            where TProviderTypeFilter : FileSystemWrapper
         {
             if (string.IsNullOrEmpty(pathPrefix))
             {
@@ -129,7 +124,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// Gets a virtual file from the virtual file system.
         /// </summary>
         /// <returns>
-        /// A descendent of the <see cref="T:System.Web.Hosting.VirtualFile"/> class that represents a 
+        /// A descendent of the <see cref="T:System.Web.Hosting.VirtualFile"/> class that represents a
         /// file in the virtual file system.
         /// </returns>
         /// <param name="virtualPath">The path to the virtual file.</param>

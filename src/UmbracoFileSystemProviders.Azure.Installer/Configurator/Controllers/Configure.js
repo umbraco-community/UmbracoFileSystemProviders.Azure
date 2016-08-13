@@ -1,4 +1,4 @@
-﻿var configApp = angular.module('UFSPLoader', []);
+﻿var configApp = angular.module("UFSPLoader", []);
 
 configApp.controller("Loader", function ($scope, $http, $log) {
     var getDataUrl = "/Umbraco/backoffice/FileSystemProviders/Installer/GetParameters";
@@ -14,30 +14,30 @@ configApp.controller("Loader", function ($scope, $http, $log) {
     $scope.submitForm = function (e) {
         e.preventDefault();
 
-        $http.post(postDataUrl, $scope.parameters).success(function (data) {
+        $http.post(postDataUrl, $scope.parameters)
+            .success(function (data) {
 
-            var status;
-            if (typeof data === "string") {
-                status = JSON.parse(data);
-            } else {
-                status = data;
-            }
+                var status;
+                if (typeof data === "string") {
+                    status = JSON.parse(data);
+                } else {
+                    status = data;
+                }
 
-            $scope.status = status;
+                $scope.status = status;
 
-            if (status !== "ConnectionError") {
-                $scope.saved = true;
-            }
+                if (status !== "ConnectionError") {
+                    $scope.saved = true;
+                }
 
-        });
-
-    }
+            });
+    };
 
     $scope.capitalizeFirstLetter = function (string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
-    }
+    };
 
     $scope.getInputType = function (param) {
         return param.toUpperCase() === "USEDEFAULTROUTE" ? "checkbox" : "text";
-    }
+    };
 });

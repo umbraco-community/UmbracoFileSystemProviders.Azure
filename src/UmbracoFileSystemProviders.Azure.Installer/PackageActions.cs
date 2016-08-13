@@ -1,72 +1,89 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PackageActions.cs" company="James Jackson-South">
-// Copyright (c) James Jackson-South. All rights reserved. Licensed under the Apache License, Version 2.0.
+﻿// <copyright file="PackageActions.cs" company="James Jackson-South, Jeavon Leopold, and contributors">
+// Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
+// Licensed under the Apache License, Version 2.0.
 // </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-
 namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 {
     using System;
     using System.Web;
+    using System.Xml;
 
+    using global::Umbraco.Core.Logging;
     using Microsoft.Web.XmlTransform;
-
     using umbraco.cms.businesslogic.packager.standardPackageActions;
     using umbraco.interfaces;
-    using global::Umbraco.Core.Logging;
 
+    /// <summary>
+    /// Handles installer package actions.
+    /// </summary>
     public class PackageActions
     {
+        /// <summary>
+        /// The transform config package action.
+        /// </summary>
         public class TransformConfig : IPackageAction
         {
+            /// <inheritdoc/>
             public string Alias()
             {
                 return "UmbracoFileSystemProviders.Azure.TransformConfig";
             }
 
-            public bool Execute(string packageName, System.Xml.XmlNode xmlData)
+            /// <inheritdoc/>
+            public bool Execute(string packageName, XmlNode xmlData)
             {
                 return this.Transform(packageName, xmlData);
             }
 
-            public System.Xml.XmlNode SampleXml()
+            /// <inheritdoc/>
+            public XmlNode SampleXml()
             {
-                var str = "<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
-                         "</Action>";
-                return helper.parseStringToXmlNode(str);
+                string xml = "<Action runat=\"install\" "
+                          + "undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
+                          + "file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">"
+                          + "</Action>";
+                return helper.parseStringToXmlNode(xml);
             }
 
-            public bool Undo(string packageName, System.Xml.XmlNode xmlData)
+            /// <inheritdoc/>
+            public bool Undo(string packageName, XmlNode xmlData)
             {
                 return this.Transform(packageName, xmlData, true);
             }
 
-            private bool Transform(string packageName, System.Xml.XmlNode xmlData, bool uninstall = false)
+            /// <summary>
+            /// Applied the transform.
+            /// </summary>
+            /// <param name="packageName">The package name.</param>
+            /// <param name="xmlData">The XML data</param>
+            /// <param name="uninstall">Whether to uninstall.</param>
+            /// <returns><c>true</c> if the transform is sucessful.</returns>
+            private bool Transform(string packageName, XmlNode xmlData, bool uninstall = false)
             {
                 // The config file we want to modify
                 if (xmlData.Attributes != null)
                 {
-                    var file = xmlData.Attributes.GetNamedItem("file").Value;
+                    string file = xmlData.Attributes.GetNamedItem("file").Value;
 
-                    var sourceDocFileName = VirtualPathUtility.ToAbsolute(file);
+                    string sourceDocFileName = VirtualPathUtility.ToAbsolute(file);
 
                     // The xdt file used for tranformation 
-                    var fileEnd = "install.xdt";
+                    string fileEnd = "install.xdt";
                     if (uninstall)
                     {
-                        fileEnd = string.Format("un{0}", fileEnd);
+                        fileEnd = $"un{fileEnd}";
                     }
 
-                    var xdtfile = string.Format("{0}.{1}", xmlData.Attributes.GetNamedItem("xdtfile").Value, fileEnd);
-                    var xdtFileName = VirtualPathUtility.ToAbsolute(xdtfile);
+                    string xdtfile = $"{xmlData.Attributes.GetNamedItem("xdtfile").Value}.{fileEnd}";
+                    string xdtFileName = VirtualPathUtility.ToAbsolute(xdtfile);
 
                     // The translation at-hand
-                    using (var xmlDoc = new XmlTransformableDocument())
+                    using (XmlTransformableDocument xmlDoc = new XmlTransformableDocument())
                     {
                         xmlDoc.PreserveWhitespace = true;
                         xmlDoc.Load(HttpContext.Current.Server.MapPath(sourceDocFileName));
 
-                        using (var xmlTrans = new XmlTransformation(HttpContext.Current.Server.MapPath(xdtFileName)))
+                        using (XmlTransformation xmlTrans = new XmlTransformation(HttpContext.Current.Server.MapPath(xdtFileName)))
                         {
                             if (xmlTrans.Apply(xmlDoc))
                             {
@@ -80,7 +97,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                                 catch (Exception e)
                                 {
                                     // Log error message
-                                    var message = "Error executing TransformConfig package action (check file write permissions): " + e.Message;
+                                    string message = "Error executing TransformConfig package action (check file write permissions): " + e.Message;
                                     LogHelper.Error(typeof(TransformConfig), message, e);
                                     return false;
                                 }
