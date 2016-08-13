@@ -2,7 +2,6 @@
 // Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
-
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -43,7 +42,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// A list of <see cref="AzureFileSystem"/>.
         /// </summary>
-        private static List<AzureFileSystem> fileSystems = new List<AzureFileSystem>();
+        private static readonly List<AzureFileSystem> FileSystems = new List<AzureFileSystem>();
 
         /// <summary>
         /// The root url.
@@ -153,7 +152,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             lock (Locker)
             {
-                if (fileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootBlobUrl == rootUrl) == null)
+                if (FileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootBlobUrl == rootUrl) == null)
                 {
                     int max;
                     if (!int.TryParse(maxDays, out max))
@@ -167,19 +166,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         defaultRoute = true;
                     }
 
-                    var fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute);
-
-                    if (fileSystems == null)
-                    {
-                        fileSystems = new List<AzureFileSystem> { fileSystem };
-                    }
-                    else
-                    {
-                        fileSystems.Add(fileSystem);
-                    }
+                    AzureFileSystem fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute);
+                    FileSystems.Add(fileSystem);
                 }
 
-                return fileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootBlobUrl == rootUrl);
+                return FileSystems.SingleOrDefault(fs => fs.ContainerName == containerName && fs.rootBlobUrl == rootUrl);
             }
         }
 
@@ -197,8 +188,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (!overrideIfExists && exists)
             {
-                InvalidOperationException error = new InvalidOperationException(string.Format("File already exists at {0}", blockBlob.Uri));
-                this.LogHelper.Error<AzureBlobFileSystem>(string.Format("File already exists at {0}", path), error);
+                InvalidOperationException error = new InvalidOperationException($"File already exists at {blockBlob.Uri}");
+                this.LogHelper.Error<AzureBlobFileSystem>($"File already exists at {path}", error);
                 return;
             }
 
@@ -224,7 +215,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     blockBlob.Properties.ContentType = contentType;
                 }
 
-                blockBlob.Properties.CacheControl = string.Format("public, max-age={0}", this.MaxDays * 86400);
+                blockBlob.Properties.CacheControl = $"public, max-age={this.MaxDays * 86400}";
                 blockBlob.SetProperties();
 
                 if (created == DateTimeOffset.MinValue)
@@ -246,7 +237,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
             catch (Exception ex)
             {
-                this.LogHelper.Error<AzureBlobFileSystem>(string.Format("Unable to upload file at {0}", path), ex);
+                this.LogHelper.Error<AzureBlobFileSystem>($"Unable to upload file at {path}", ex);
             }
         }
 
@@ -305,7 +296,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     }
                     catch (Exception ex)
                     {
-                        this.LogHelper.Error<AzureBlobFileSystem>(string.Format("Unable to delete directory at {0}", path), ex);
+                        this.LogHelper.Error<AzureBlobFileSystem>($"Unable to delete directory at {path}", ex);
                     }
                 }
 
@@ -340,7 +331,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
             catch (Exception ex)
             {
-                this.LogHelper.Error<AzureBlobFileSystem>(string.Format("Unable to delete file at {0}", path), ex);
+                this.LogHelper.Error<AzureBlobFileSystem>($"Unable to delete file at {path}", ex);
             }
         }
 
@@ -601,10 +592,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (this.UseDefaultRoute)
             {
-                return string.Format("/{0}/{1}", Constants.DefaultMediaRoute, fixedPath);
+                return $"/{Constants.DefaultMediaRoute}/{fixedPath}";
             }
 
-            return string.Format("/{0}/{1}", this.ContainerName, fixedPath);
+            return $"/{this.ContainerName}/{fixedPath}";
         }
 
         /// <summary>
