@@ -2,7 +2,8 @@
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
     <system.webServer xdt:Transform="InsertIfMissing">
       <handlers xdt:Transform="InsertIfMissing">
-        <add name="StaticFileHandler" path="*" verb="*" preCondition="integratedMode" type="System.Web.StaticFileHandler" xdt:Locator="Match(name)" xdt:Transform="InsertBefore(/configuration/system.webServer/handlers/add)" />
+          <add name="StaticFileHandler" path="*" verb="*" preCondition="integratedMode" type="System.Web.StaticFileHandler" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+          <add name="StaticFileHandler" path="*" verb="*" preCondition="integratedMode" type="System.Web.StaticFileHandler" xdt:Locator="Match(name)" xdt:Transform="InsertBefore(/configuration/system.webServer/handlers/add)" />
       </handlers>
     </system.webServer>
 </configuration>
