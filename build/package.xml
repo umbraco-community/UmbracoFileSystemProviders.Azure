@@ -11,11 +11,11 @@
         <minor>0</minor>
         <patch>0</patch>
       </requirements>
+      <iconUrl></iconUrl>
     </package>
     <author>
       <name></name>
       <website></website>
-      <iconUrl></iconUrl>
     </author>
     <readme><![CDATA[]]></readme>
   </info>
