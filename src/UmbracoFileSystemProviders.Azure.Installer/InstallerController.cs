@@ -44,6 +44,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
         private readonly string webConfigXdtPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.WebConfigFile}.install.xdt");
 
+        private readonly string mediaWebConfigXdtPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.MediaWebConfigXdtFile}.install.xdt");
+
         /// <summary>
         /// Gets the parameters from the XDT transform file.
         /// </summary>
@@ -84,7 +86,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
             if (SaveParametersToFileSystemProvidersXdt(this.fileSystemProvidersConfigInstallXdtPath, newParameters) && SaveContainerNameToWebConfigXdt(this.webConfigXdtPath, routePrefix))
             {
-                if (!ExecuteFileSystemConfigTransform() || !ExecuteWebConfigTransform())
+                if (!ExecuteFileSystemConfigTransform() || !ExecuteWebConfigTransform() || !ExecuteMediaWebConfigTransform())
                 {
                     return InstallerStatus.SaveConfigError;
                 }
@@ -368,6 +370,20 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                                             + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
                                             + "file=\"~/web.config\" "
                                             + "xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">"
+                                            + "</Action>").FirstChild;
+
+            PackageActions.TransformConfig transformConfig = new PackageActions.TransformConfig();
+            return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
+        }
+
+        private static bool ExecuteMediaWebConfigTransform()
+        {
+            XmlNode transFormConfigAction =
+                helper.parseStringToXmlNode("<Action runat=\"install\" "
+                                            + "undo=\"true\" "
+                                            + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
+                                            + "file=\"~/Media/web.config\" "
+                                            + "xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/media-web.config\">"
                                             + "</Action>").FirstChild;
 
             PackageActions.TransformConfig transformConfig = new PackageActions.TransformConfig();

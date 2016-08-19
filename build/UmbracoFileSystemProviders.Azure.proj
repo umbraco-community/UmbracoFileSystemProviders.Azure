@@ -130,7 +130,7 @@
       <FileSystemProvidersConfigXDTUninstallFile Include="$(MSBuildProjectDirectory)\transforms\FileSystemProviders.config.uninstall.xdt" />
 
       <MediaWebConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\media-web.config.install.xdt" />
-      <MediaWebConfigXDTUninstallFile Include="$(MSBuildProjectDirectory)\transforms\media-web.config.install.xdt" />
+      <MediaWebConfigXDTUninstallFile Include="$(MSBuildProjectDirectory)\transforms\media-web.config.uninstall.xdt" />
 
         <!-- Umbraco specific -->
       <!-- Newtonsoft.Json Excluded for now as Umbraco requires different major versions -->

@@ -31,6 +31,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         public const string WebConfigFile = "web.config";
 
         /// <summary>
+        /// The media web configuration xdt file name.
+        /// </summary>
+        public const string MediaWebConfigXdtFile = "media-web.config";
+
+        /// <summary>
         /// The full qualified type name for the provider.
         /// </summary>
         public const string ProviderType = "Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure";
