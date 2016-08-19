@@ -94,6 +94,38 @@ Additionally the provider can be further configured with the following applicati
 </configuration>
 ```
 
+### Configuration via Web.Config
+
+**Available in v0.5.4+**
+
+Optionally instead of having the configuration in `FileSystemProviders.config` it can be moved to `Web.config`
+
+In `FileSystemProviders.config` remove the default parameters and add a new one with the key `alias`, the value should match the provider alias
+
+```xml
+<?xml version="1.0"?>
+<FileSystemProviders>
+  
+  <!-- Media -->
+  <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure">
+  	<Parameters>
+  		<add key="alias" value="media"/>
+  	</Parameters>
+  </Provider>
+   
+</FileSystemProviders>
+```
+
+In `Web.config` create the new application keys and post fix each key with the `alias` defined in `FileSystemProviders.config` after a colon.
+
+```xml
+<add key="AzureBlobFileSystem.ConnectionString:media" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" />
+<add key="AzureBlobFileSystem.ContainerName:media" value="media" />
+<add key="AzureBlobFileSystem.RootUrl:media" value="http://[myAccountName].blob.core.windows.net/" />
+<add key="AzureBlobFileSystem.MaxDays:media" value="365" />
+<add key="AzureBlobFileSystem.UseDefaultRoute:media" value="true" />
+```
+
 ## Virtual Path Provider
 By default the plugin will serve files transparently from your domain or serve media directly from Azure. This is made possible by using a custom [Virtual Path Provider](https://msdn.microsoft.com/en-us/library/system.web.hosting.virtualpathprovider%28v=vs.110%29.aspx) included and automatically initialised upon application startup. This can be disable by adding the configuration setting noted above.
 
