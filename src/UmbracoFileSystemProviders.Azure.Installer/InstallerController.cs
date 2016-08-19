@@ -266,9 +266,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 return false;
             }
 
-            foreach (XmlElement setting in from XmlElement setting in rawSettings let key = setting.GetAttribute("key") where key == "Host" select setting)
+            foreach (XmlElement setting in from XmlElement setting in rawSettings select setting)
             {
-                setting.SetAttribute("value", $"{rootUrl}{containerName}/");
+                if (setting.GetAttribute("key").InvariantEquals("Host"))
+                {
+                    setting.SetAttribute("value", $"{rootUrl}");
+                }
+
+                if (setting.GetAttribute("key").InvariantEquals("Container"))
+                {
+                    setting.SetAttribute("value", $"{containerName}");
+                }
             }
 
             try
