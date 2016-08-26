@@ -181,6 +181,24 @@ As of ImageProcessor.Web version [4.3.2](https://www.nuget.org/packages/ImagePro
   </services>  
 </security>
 ```
+If using a version of ImageProcessor.Web version [4.5.0](https://www.nuget.org/packages/ImageProcessor.Web/4.5.0) the configuration details will need to be configured as follows:
+
+```xml
+<?xml version="1.0"?>
+<security>
+  <services>
+    <service name="LocalFileImageService" type="ImageProcessor.Web.Services.LocalFileImageService, ImageProcessor.Web"/>
+    <service prefix="media/" name="CloudImageService" type="ImageProcessor.Web.Services.CloudImageService, ImageProcessor.Web">
+      <settings>
+        <setting key="Container" value="media"/>
+        <setting key="MaxBytes" value="8194304"/>
+        <setting key="Timeout" value="30000"/>
+        <setting key="Host" value="http://[myAccountName].blob.core.windows.net/media"/>
+      </settings>
+    </service>
+  </services>  
+</security>
+```
 
 Be sure to install the [AzureBlobCache](http://imageprocessor.org/imageprocessor-web/plugins/azure-blob-cache/) plugin to get the most out of the package.
 
