@@ -2,6 +2,7 @@
 // Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
+
 namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 {
     using System;
@@ -10,6 +11,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Web;
     using System.Web.Hosting;
     using System.Web.Http;
     using System.Xml;
@@ -386,16 +388,21 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
         private static bool ExecuteMediaWebConfigTransform()
         {
-            XmlNode transFormConfigAction =
-                helper.parseStringToXmlNode("<Action runat=\"install\" "
-                                            + "undo=\"true\" "
-                                            + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
-                                            + "file=\"~/Media/web.config\" "
-                                            + "xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/media-web.config\">"
-                                            + "</Action>").FirstChild;
+            if (File.Exists(HttpContext.Current.Server.MapPath("~/Media/web.config")))
+            {
+                XmlNode transFormConfigAction =
+    helper.parseStringToXmlNode("<Action runat=\"install\" "
+                                + "undo=\"true\" "
+                                + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
+                                + "file=\"~/Media/web.config\" "
+                                + "xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/media-web.config\">"
+                                + "</Action>").FirstChild;
 
-            PackageActions.TransformConfig transformConfig = new PackageActions.TransformConfig();
-            return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
+                PackageActions.TransformConfig transformConfig = new PackageActions.TransformConfig();
+                return transformConfig.Execute("UmbracoFileSystemProviders.Azure", transFormConfigAction);
+            }
+
+            return true;
         }
 
         private static bool ExecuteImageProcessorSecurityConfigTransform()
