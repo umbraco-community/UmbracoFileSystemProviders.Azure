@@ -1,7 +1,7 @@
 os: Visual Studio 2015
 
 # Version format
-version: 0.5.6.{build}
+version: 0.5.7.{build}
 
 cache:
   - src\packages -> **\packages.config   # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
