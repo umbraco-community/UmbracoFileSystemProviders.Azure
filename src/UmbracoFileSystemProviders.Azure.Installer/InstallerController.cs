@@ -457,7 +457,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 CloudBlobContainer blobContainer = cloudBlobClient.GetContainerReference(containerName);
 
                 // This should fully check that the connection works.
-                return blobContainer.CreateIfNotExists();
+                blobContainer.CreateIfNotExists();
+                return true;
             }
             catch (Exception e)
             {
