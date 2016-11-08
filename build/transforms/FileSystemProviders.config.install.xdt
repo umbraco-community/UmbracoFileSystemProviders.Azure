@@ -22,6 +22,10 @@
         of the container name.
       -->
       <add key="useDefaultRoute" value="true" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+      <!--
+        When true blob containers will be private instead of public what means that you can't access the original blob file directly from its blob url.
+      -->
+      <add key="usePrivateContainer" value="false" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
     </Parameters>
   </Provider>
   <!--

@@ -77,10 +77,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
+        /// <param name="accessType"><see cref="BlobContainerPublicAccessType"/> indicating the access permissions.</param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="containerName"/> is null or whitespace.
         /// </exception>
-        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute)
+        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType accessType)
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
@@ -107,7 +108,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-            this.cloudBlobContainer = CreateContainer(cloudBlobClient, containerName, BlobContainerPublicAccessType.Blob);
+            this.cloudBlobContainer = CreateContainer(cloudBlobClient, containerName, accessType);
 
             // First assign a local copy before editing. We use that to track the type.
             // TODO: Do we need this? The container should be an identifer.
@@ -166,8 +167,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
+        /// <param name="usePrivateContainer">blob container can be private (no direct access) or public (direct access possible, default)</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
+        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer)
         {
             lock (Locker)
             {
@@ -187,7 +189,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         defaultRoute = true;
                     }
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute);
+                    bool privateContainer;
+                    if (!bool.TryParse(usePrivateContainer, out privateContainer))
+                    {
+                        privateContainer = true;
+                    }
+
+                    var blobContainerPublicAccessType = privateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
+
+                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType);
                     FileSystems.Add(fileSystem);
                 }
 
