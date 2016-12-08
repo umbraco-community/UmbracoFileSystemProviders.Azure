@@ -58,6 +58,10 @@ Update `~/Config/FileSystemProviders.config` replacing the default provider with
         Defaults to 365 days.
       -->
       <add key="maxDays" value="365" />
+	  <!--
+        Optional configuration of the container public access type. This can be one of the following values: Off, Blob, Public. See [BlobContainerPublicAccessType documentation](https://msdn.microsoft.com/en-us/library/microsoft.windowsazure.storage.blob.blobcontainerpublicaccesstype.aspx) for more information.
+      -->
+      <add key="containerPublicAccessType" value="Blob" />
     </Parameters>
   </Provider>
 </FileSystemProviders>
@@ -124,6 +128,7 @@ In `Web.config` create the new application keys and post fix each key with the `
 <add key="AzureBlobFileSystem.RootUrl:media" value="http://[myAccountName].blob.core.windows.net/" />
 <add key="AzureBlobFileSystem.MaxDays:media" value="365" />
 <add key="AzureBlobFileSystem.UseDefaultRoute:media" value="true" />
+<add key="AzureBlobFileSystem.ContainerPublicAccessType:media" value="true" />
 ```
 
 ## Virtual Path Provider

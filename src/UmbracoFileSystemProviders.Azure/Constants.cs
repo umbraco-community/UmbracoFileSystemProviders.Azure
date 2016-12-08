@@ -54,6 +54,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             /// The configuration key for providing the Use Default Root value via the web.config
             /// </summary>
             public const string UseDefaultRouteKey = "AzureBlobFileSystem.UseDefaultRoute";
+
+            /// <summary>
+            /// The configuration indicating the access permissions when creating a container
+            /// </summary>
+            public const string ContainerPublicAccessType = "AzureBlobFileSystem.ContainerPublicAccessType";
         }
     }
 }

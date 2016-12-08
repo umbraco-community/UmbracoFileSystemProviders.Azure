@@ -77,10 +77,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
+        /// <param name="containerPublicAccessType">The public access type for the specified container</param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="containerName"/> is null or whitespace.
         /// </exception>
-        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute)
+        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType containerPublicAccessType)
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
@@ -107,7 +108,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-            this.cloudBlobContainer = CreateContainer(cloudBlobClient, containerName, BlobContainerPublicAccessType.Blob);
+            this.cloudBlobContainer = CreateContainer(cloudBlobClient, containerName, containerPublicAccessType);
 
             // First assign a local copy before editing. We use that to track the type.
             // TODO: Do we need this? The container should be an identifer.
@@ -122,6 +123,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             this.ContainerName = containerName;
             this.MaxDays = maxDays;
             this.UseDefaultRoute = useDefaultRoute;
+            this.ContainerPublicAccessType = containerPublicAccessType;
 
             this.LogHelper = new WrappedLogHelper();
             this.MimeTypeResolver = new MimeTypeResolver();
@@ -159,6 +161,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public bool UseDefaultRoute { get; private set; }
 
         /// <summary>
+        /// The container access type for the configured
+        /// </summary>
+        public BlobContainerPublicAccessType ContainerPublicAccessType { get; private set; }
+
+        /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
         /// <param name="containerName">The container name.</param>
@@ -166,8 +173,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
+        /// <param name="containerPublicAccessType">The public access type for the specified container</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
+        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, BlobContainerPublicAccessType containerPublicAccessType)
         {
             lock (Locker)
             {
@@ -187,7 +195,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         defaultRoute = true;
                     }
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute);
+                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, containerPublicAccessType);
                     FileSystems.Add(fileSystem);
                 }
 
