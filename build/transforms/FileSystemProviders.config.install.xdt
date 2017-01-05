@@ -22,6 +22,11 @@
         of the container name.
       -->
       <add key="useDefaultRoute" value="true" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+      <!--
+        Optional configuration of the container public access type. This can be one of the following values: Off, Blob, Public.
+        Defaults to Blob.
+      -->
+      <add key="containerPublicAccessType" value="Blob" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
     </Parameters>
   </Provider>
   <!--

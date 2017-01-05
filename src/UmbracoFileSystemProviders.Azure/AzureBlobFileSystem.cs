@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using Microsoft.WindowsAzure.Storage.Blob;
+
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -43,13 +45,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private const string UseDefaultRootKey = Constants.Configuration.UseDefaultRouteKey;
 
         /// <summary>
+        /// Configuration specifying the access type to create blob containers with
+        /// </summary>
+        private const string ContainerPublicAccessType = Constants.Configuration.ContainerPublicAccessType;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
         /// </summary>
         /// <param name="containerName">The container name.</param>
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString)
-            : this(containerName, rootUrl, connectionString, "365", "true")
+            : this(containerName, rootUrl, connectionString, "365", "true", BlobContainerPublicAccessType.Blob)
         {
         }
 
@@ -61,9 +68,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
+        /// <param name="containerPublicAccessType">The public access type for the container</param>
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, BlobContainerPublicAccessType containerPublicAccessType)
         {
-            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute);
+            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, containerPublicAccessType);
         }
 
         /// <summary>
@@ -100,7 +108,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     useDefaultRoute = "true";
                 }
 
-                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute);
+                string containerPublicAccessTypeConfig = ConfigurationManager.AppSettings[$"{ContainerPublicAccessType}:{alias}"];
+                BlobContainerPublicAccessType blob;
+                if (!Enum.TryParse(containerPublicAccessTypeConfig, out blob))
+                {
+                    blob = BlobContainerPublicAccessType.Blob;
+                }
+
+                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, blob);
             }
             else
             {

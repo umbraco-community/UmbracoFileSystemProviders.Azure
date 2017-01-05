@@ -9,6 +9,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Threading;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 {
@@ -42,11 +43,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             string connectionString = "UseDevelopmentStorage=true";
             string maxDays = "30";
             string useDefaultRoute = "true";
+            BlobContainerPublicAccessType publicAccessType = BlobContainerPublicAccessType.Blob;
 
             Mock<ILogHelper> logHelper = new Mock<ILogHelper>();
             Mock<IMimeTypeResolver> mimeTypeHelper = new Mock<IMimeTypeResolver>();
 
-            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, useDefaultRoute)
+            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, publicAccessType)
             {
                 FileSystem =
                 {
