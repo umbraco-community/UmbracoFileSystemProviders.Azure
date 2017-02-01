@@ -45,6 +45,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private const string UseDefaultRootKey = Constants.Configuration.UseDefaultRouteKey;
 
         /// <summary>
+        /// The configuration key for determining whether the container should be private.
+        /// </summary>
+        private const string UsePrivateContainerKey = Constants.Configuration.UsePrivateContainer;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
         /// </summary>
         /// <param name="containerName">The container name.</param>
@@ -115,11 +120,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     useDefaultRoute = "true";
                 }
 
-                string accessType = ConfigurationManager.AppSettings[$"{UseDefaultRootKey}:{alias}"];
-                if (string.IsNullOrWhiteSpace(useDefaultRoute))
+                string accessType = ConfigurationManager.AppSettings[$"{UsePrivateContainerKey}:{alias}"];
+                if (string.IsNullOrWhiteSpace(accessType))
                 {
-                    useDefaultRoute = "true";
+                    accessType = "true";
                 }
+
+                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, accessType);
 
 
                 this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute,accessType);
