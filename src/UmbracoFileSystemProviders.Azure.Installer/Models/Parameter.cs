@@ -13,13 +13,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer.Models
     public class Parameter
     {
         /// <summary>
-        /// The key.
+        /// Gets or sets the key.
         /// </summary>
         [JsonProperty("key")]
         public string Key { get; set; }
 
         /// <summary>
-        /// The value.
+        /// Gets or sets the value.
         /// </summary>
         [JsonProperty("value")]
         public string Value { get; set; }

@@ -43,13 +43,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private const string UseDefaultRootKey = Constants.Configuration.UseDefaultRouteKey;
 
         /// <summary>
+        /// The configuration key for determining whether the container should be private.
+        /// </summary>
+        private const string UsePrivateContainerKey = Constants.Configuration.UsePrivateContainer;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
         /// </summary>
         /// <param name="containerName">The container name.</param>
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString)
-            : this(containerName, rootUrl, connectionString, "365", "true")
+            : this(containerName, rootUrl, connectionString, "365", "true", "false")
         {
         }
 
@@ -62,8 +67,22 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
+            : this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false")
         {
-            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
+        /// </summary>
+        /// <param name="containerName">The container name.</param>
+        /// <param name="rootUrl">The root url.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
+        /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
+        /// <param name="usePrivateContainer">blob container can be private (no direct access) or public (direct access possible, default)</param>
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer)
+        {
+            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer);
         }
 
         /// <summary>
@@ -100,7 +119,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     useDefaultRoute = "true";
                 }
 
-                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute);
+                string accessType = ConfigurationManager.AppSettings[$"{UsePrivateContainerKey}:{alias}"];
+                if (string.IsNullOrWhiteSpace(accessType))
+                {
+                    accessType = "true";
+                }
+
+                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, accessType);
             }
             else
             {
@@ -111,7 +136,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// Gets a singleton instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
-        internal AzureFileSystem FileSystem { get; private set; }
+        internal AzureFileSystem FileSystem { get; }
 
         /// <summary>
         /// Adds a file to the file system.

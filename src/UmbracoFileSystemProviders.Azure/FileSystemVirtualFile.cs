@@ -36,7 +36,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             if (fileSystem == null)
             {
-                throw new ArgumentNullException("fileSystem");
+                throw new ArgumentNullException(nameof(fileSystem));
             }
 
             this.stream = () => fileSystem.Value.OpenFile(fileSystemPath);
@@ -48,10 +48,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <returns>
         /// Always false.
         /// </returns>
-        public override bool IsDirectory
-        {
-            get { return false; }
-        }
+        public override bool IsDirectory => false;
 
         /// <summary>
         /// When overridden in a derived class, returns a read-only stream to the virtual resource.

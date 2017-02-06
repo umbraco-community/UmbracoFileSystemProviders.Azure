@@ -1,14 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AzureBlobFileSystemTestsBase.cs" company="James Jackson-South">
-//   Copyright (c) James Jackson-South and contributors.
-//   Licensed under the Apache License, Version 2.0.
+﻿// <copyright file="AzureBlobFileSystemTestsBase.cs" company="James Jackson-South and contributors">
+// Copyright (c) James Jackson-South and contributors. All rights reserved.
+// Licensed under the Apache License, Version 2.0.
 // </copyright>
-// <summary>
-//   The <see cref="AzureBlobFileSystem" /> tests base.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-using System.Threading;
 
 namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 {
@@ -17,9 +10,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
     using System.IO;
     using System.Linq;
     using System.Text;
-
+    using System.Threading;
     using Moq;
-
     using NUnit.Framework;
 
     /// <summary>
@@ -42,11 +34,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             string connectionString = "UseDevelopmentStorage=true";
             string maxDays = "30";
             string useDefaultRoute = "true";
+            string usePrivateContainer = "false";
 
             Mock<ILogHelper> logHelper = new Mock<ILogHelper>();
             Mock<IMimeTypeResolver> mimeTypeHelper = new Mock<IMimeTypeResolver>();
 
-            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, useDefaultRoute)
+            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer)
             {
                 FileSystem =
                 {
@@ -141,7 +134,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         }
 
         /// <summary>
-        /// Asserts that the file system correctly determines whether a file exists 
+        /// Asserts that the file system correctly determines whether a file exists
         /// when the input has been prefixed.
         /// </summary>
         [Test]
@@ -318,7 +311,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             string[] expected = { "1010", "1011", "1012" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
-        
+
         /// <summary>
         /// Asserts that the file system correctly returns a sequence of files from the root
         /// container in the correct format.
@@ -364,7 +357,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         }
 
         /// <summary>
-        /// Asserts that the file system correctly returns a sequence of files from a 
+        /// Asserts that the file system correctly returns a sequence of files from a
         /// subfolder in the correct format.
         /// </summary>
         [Test]
@@ -455,6 +448,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             Assert.IsFalse(provider.FileExists("1010/media.jpg"));
         }
 
+        /// <summary>
+        /// Asserts that the file system correctly creates a directory.
+        /// </summary>
         [Test]
         public void TestValidDirectory()
         {
@@ -466,6 +462,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             provider.DeleteDirectory("testvalid");
         }
 
+        /// <summary>
+        /// Asserts that the file system does not automatically create a directory.
+        /// </summary>
         [Test]
         public void TestInvalidDirectory()
         {
@@ -497,6 +496,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             Assert.IsFalse(provider.FileExists("media/1010/media.jpg"));
         }
 
+        /// <summary>
+        /// Asserts that the file system correctly deletes a relative directory and file.
+        /// </summary>
         [Test]
         public void TestDeleteDirectoryRelative()
         {
