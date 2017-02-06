@@ -77,6 +77,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             string connection = newParameters.SingleOrDefault(k => k.Key == "connectionString").Value;
             string containerName = newParameters.SingleOrDefault(k => k.Key == "containerName").Value;
             bool useDefaultRoute = bool.Parse(newParameters.SingleOrDefault(k => k.Key == "useDefaultRoute").Value);
+            bool usePrivateContainer = bool.Parse(newParameters.SingleOrDefault(k => k.Key == "usePrivateContainer").Value);
             string rootUrl = newParameters.SingleOrDefault(k => k.Key == "rootUrl").Value;
 
             if (!TestAzureCredentials(connection, containerName))

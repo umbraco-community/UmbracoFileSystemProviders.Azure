@@ -38,6 +38,6 @@ configApp.controller("Loader", function ($scope, $http, $log) {
     };
 
     $scope.getInputType = function (param) {
-        return param.toUpperCase() === "USEDEFAULTROUTE" ? "checkbox" : "text";
+        return param.toUpperCase() === "USEDEFAULTROUTE" || param.toUpperCase() === "USEPRIVATECONTAINER" ? "checkbox" : "text";
     };
 });
