@@ -1,26 +1,17 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FileSystemVirtualPathProviderTests.cs" company="James Jackson-South">
-//   Copyright (c) James Jackson-South and contributors.
-//   Licensed under the Apache License, Version 2.0.
+﻿// <copyright file="FileSystemVirtualPathProviderTests.cs" company="James Jackson-South and contributors">
+// Copyright (c) James Jackson-South and contributors. All rights reserved.
+// Licensed under the Apache License, Version 2.0.
 // </copyright>
-// <summary>
-//   The <see cref="FileSystemVirtualPathProvider" /> tests.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
 
 namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 {
     using System;
     using System.IO;
     using System.Web.Hosting;
-
-    using Moq;
-
-    using NUnit.Framework;
-
-    using Our.Umbraco.FileSystemProviders.Azure;
-
+    using Azure;
     using global::Umbraco.Core.IO;
+    using Moq;
+    using NUnit.Framework;
 
     /// <summary>
     /// The <see cref="FileSystemVirtualPathProvider"/> tests.

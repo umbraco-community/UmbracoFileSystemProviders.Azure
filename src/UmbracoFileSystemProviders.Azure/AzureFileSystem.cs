@@ -146,18 +146,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// Gets the container name.
         /// </summary>
-        public string ContainerName { get; private set; }
+        public string ContainerName { get; }
 
         /// <summary>
         /// Gets the maximum number of days to cache blob items for in the browser.
         /// </summary>
-        public int MaxDays { get; private set; }
+        public int MaxDays { get; }
 
         /// <summary>
         /// Gets a value indicating whether to use the default "media" route in the url
         /// independent of the blob container.
         /// </summary>
-        public bool UseDefaultRoute { get; private set; }
+        public bool UseDefaultRoute { get; }
 
         /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
@@ -167,7 +167,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
-        /// <param name="usePrivateContainer">blob container can be private (no direct access) or public (direct access possible, default)</param>
+        /// <param name="usePrivateContainer">Whether to use private blob access (no direct access) or public (direct access possible, default) access.</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
         public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer)
         {
@@ -195,7 +195,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         privateContainer = true;
                     }
 
-                    var blobContainerPublicAccessType = privateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
+                    BlobContainerPublicAccessType blobContainerPublicAccessType = privateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
 
                     fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType);
                     FileSystems.Add(fileSystem);

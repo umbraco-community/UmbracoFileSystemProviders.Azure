@@ -3,8 +3,6 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
-using Microsoft.WindowsAzure.Storage.Blob;
-
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -68,7 +66,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute): this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false")
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
+            : this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false")
         {
         }
 
@@ -127,9 +126,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 }
 
                 this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, accessType);
-
-
-                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute,accessType);
             }
             else
             {
@@ -140,7 +136,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// Gets a singleton instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
-        internal AzureFileSystem FileSystem { get; private set; }
+        internal AzureFileSystem FileSystem { get; }
 
         /// <summary>
         /// Adds a file to the file system.

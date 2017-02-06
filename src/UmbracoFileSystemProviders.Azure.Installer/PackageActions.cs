@@ -67,7 +67,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
                     string sourceDocFileName = VirtualPathUtility.ToAbsolute(file);
 
-                    // The xdt file used for tranformation 
+                    // The xdt file used for tranformation
                     string fileEnd = "install.xdt";
                     if (uninstall)
                     {

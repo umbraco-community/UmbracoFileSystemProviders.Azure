@@ -43,12 +43,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             if (string.IsNullOrEmpty(pathPrefix))
             {
-                throw new ArgumentNullException("pathPrefix");
+                throw new ArgumentNullException(nameof(pathPrefix));
             }
 
             if (fileSystem == null)
             {
-                throw new ArgumentNullException("fileSystem");
+                throw new ArgumentNullException(nameof(fileSystem));
             }
 
             this.pathPrefix = this.FormatVirtualPathPrefix(pathPrefix);
@@ -58,10 +58,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// Gets the path prefix.
         /// </summary>
-        public string PathPrefix
-        {
-            get { return this.pathPrefix; }
-        }
+        public string PathPrefix => this.pathPrefix;
 
         /// <summary>
         /// Configures the virtual path provider.
@@ -80,7 +77,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             if (string.IsNullOrEmpty(pathPrefix))
             {
-                throw new ArgumentNullException("pathPrefix");
+                throw new ArgumentNullException(nameof(pathPrefix));
             }
 
             Lazy<IFileSystem> fileSystem = new Lazy<IFileSystem>(() => FileSystemProviderManager.Current.GetFileSystemProvider<TProviderTypeFilter>());

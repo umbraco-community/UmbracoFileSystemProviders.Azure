@@ -58,6 +58,15 @@ Update `~/Config/FileSystemProviders.config` replacing the default provider with
         Defaults to 365 days.
       -->
       <add key="maxDays" value="365" />
+      <!--
+        When true this allows the VirtualPathProvider to use the default "media" route prefix regardless 
+        of the container name.
+      -->
+      <add key="useDefaultRoute" value="true" />
+      <!--
+        When true blob containers will be private instead of public what means that you can't access the original blob file directly from its blob url.
+      -->
+      <add key="usePrivateContainer" value="false" />
     </Parameters>
   </Provider>
 </FileSystemProviders>
@@ -124,6 +133,7 @@ In `Web.config` create the new application keys and post fix each key with the `
 <add key="AzureBlobFileSystem.RootUrl:media" value="http://[myAccountName].blob.core.windows.net/" />
 <add key="AzureBlobFileSystem.MaxDays:media" value="365" />
 <add key="AzureBlobFileSystem.UseDefaultRoute:media" value="true" />
+<add key="AzureBlobFileSystem.UsePrivateContainer" value="false" />
 ```
 
 ## Virtual Path Provider
@@ -164,7 +174,8 @@ For **Umbraco v7.5+ you must add the the StaticFileHandler** to the new Web.conf
   
 ## Combining with ImageProcessor
 
-As of ImageProcessor.Web version [4.3.2](https://www.nuget.org/packages/ImageProcessor.Web/4.3.2) a new [`IImageService`](http://imageprocessor.org/imageprocessor-web/extending/#iimageservice) implementation has been available called `CloudImageService`. To enable that service and pull images directly from the cloud simply install the [configuration package](https://www.nuget.org/packages/ImageProcessor.Web.Config/) and replace the `CloudImageService`setting with the following:
+As of ImageProcessor.Web version [4.3.2](https://www.nuget.org/packages/ImageProcessor.Web/4.3.2) a new [`IImageService`](http://imageprocessor.org/imageprocessor-web/extending/#iimageservice) implementation has been available called `CloudImageService`. To enable that service and pull images directly from 
+the cloud simply install the [configuration package](https://www.nuget.org/packages/ImageProcessor.Web.Config/) and replace the `CloudImageService`setting with the following:
 
 ```xml
 <?xml version="1.0"?>
@@ -181,6 +192,8 @@ As of ImageProcessor.Web version [4.3.2](https://www.nuget.org/packages/ImagePro
   </services>  
 </security>
 ```
+**Note** The `CloudImageService`is not compatible with the FileSystemProvider when using private storage. You will have to build your own `IImageService` implementation.
+
 If using a version of ImageProcessor.Web version [4.5.0](https://www.nuget.org/packages/ImageProcessor.Web/4.5.0) the configuration details will need to be configured as follows:
 
 ```xml

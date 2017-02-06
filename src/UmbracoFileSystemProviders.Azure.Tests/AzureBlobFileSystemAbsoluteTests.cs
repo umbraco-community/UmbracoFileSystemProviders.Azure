@@ -1,12 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AzureBlobFileSystemAbsoluteTests.cs" company="James Jackson-South">
-//   Copyright (c) James Jackson-South and contributors.
-//   Licensed under the Apache License, Version 2.0.
+﻿// <copyright file="AzureBlobFileSystemAbsoluteTests.cs" company="James Jackson-South and contributors">
+// Copyright (c) James Jackson-South and contributors. All rights reserved.
+// Licensed under the Apache License, Version 2.0.
 // </copyright>
-// <summary>
-//   The <see cref="AzureBlobFileSystem" /> absolute tests.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
 
 namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 {
