@@ -133,7 +133,7 @@ In `Web.config` create the new application keys and post fix each key with the `
 <add key="AzureBlobFileSystem.RootUrl:media" value="http://[myAccountName].blob.core.windows.net/" />
 <add key="AzureBlobFileSystem.MaxDays:media" value="365" />
 <add key="AzureBlobFileSystem.UseDefaultRoute:media" value="true" />
-<add key="AzureBlobFileSystem.UsePrivateContainer" value="false" />
+<add key="AzureBlobFileSystem.UsePrivateContainer:media" value="false" />
 ```
 
 ## Virtual Path Provider
