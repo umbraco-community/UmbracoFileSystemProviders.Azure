@@ -7,6 +7,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Web;
     using System.Web.Hosting;
 
     using global::Umbraco.Core.IO;
@@ -152,7 +153,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             prefix = prefix.Replace("\\", "/");
             prefix = prefix.StartsWith("/") ? prefix : string.Concat("/", prefix);
             prefix = prefix.EndsWith("/") ? prefix : string.Concat(prefix, "/");
-            return prefix;
+            return HttpRuntime.AppDomainAppVirtualPath + prefix;
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using System.Web;
     using global::Umbraco.Core.IO;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -158,6 +159,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// independent of the blob container.
         /// </summary>
         public bool UseDefaultRoute { get; }
+
+        /// <summary>
+        /// Gets or sets func to calculate application virtual path
+        /// </summary>
+        public string ApplicationVirtualPath { get; internal set; } = HttpRuntime.AppDomainAppVirtualPath;
+
 
         /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
@@ -620,6 +627,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         private string ResolveUrl(string path, bool relative)
         {
+            string appVirtualPath = this.ApplicationVirtualPath;
+
             // First create the full url
             string fixedPath = this.FixPath(path);
 
@@ -632,10 +641,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (this.UseDefaultRoute)
             {
-                return $"/{Constants.DefaultMediaRoute}/{fixedPath}";
+                return $"{appVirtualPath}/{Constants.DefaultMediaRoute}/{fixedPath}";
             }
 
-            return $"/{this.ContainerName}/{fixedPath}";
+            return $"{appVirtualPath}/{this.ContainerName}/{fixedPath}";
         }
 
         /// <summary>
@@ -651,6 +660,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             if (string.IsNullOrEmpty(path))
             {
                 return string.Empty;
+            }
+
+            string appVirtualPath = this.ApplicationVirtualPath;
+            if (path.StartsWith(appVirtualPath))
+            {
+                path = path.Substring(appVirtualPath.Length);
             }
 
             if (path.StartsWith(Delimiter))
