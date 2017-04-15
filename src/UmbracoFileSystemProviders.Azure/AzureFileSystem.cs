@@ -165,7 +165,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         public string ApplicationVirtualPath { get; internal set; } = HttpRuntime.AppDomainAppVirtualPath;
 
-
         /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
@@ -627,8 +626,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         private string ResolveUrl(string path, bool relative)
         {
-            string appVirtualPath = this.ApplicationVirtualPath;
-
             // First create the full url
             string fixedPath = this.FixPath(path);
 
@@ -641,10 +638,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (this.UseDefaultRoute)
             {
-                return $"{appVirtualPath}/{Constants.DefaultMediaRoute}/{fixedPath}";
+                return $"{this.ApplicationVirtualPath}/{Constants.DefaultMediaRoute}/{fixedPath}";
             }
 
-            return $"{appVirtualPath}/{this.ContainerName}/{fixedPath}";
+            return $"{this.ApplicationVirtualPath}/{this.ContainerName}/{fixedPath}";
         }
 
         /// <summary>
