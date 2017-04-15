@@ -48,8 +48,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 throw new ArgumentNullException(nameof(pathPrefix));
             }
 
+            if (fileSystem == null)
+            {
+                throw new ArgumentNullException(nameof(fileSystem));
+            }
+
             this.pathPrefix = this.FormatVirtualPathPrefix(pathPrefix);
-            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.fileSystem = fileSystem;
         }
 
         /// <summary>
