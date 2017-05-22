@@ -1,13 +1,13 @@
 ﻿<%@ Control Language="c#" AutoEventWireup="True" TargetSchema="http://schemas.microsoft.com/intellisense/ie5"%>
 
-<script src="/umbraco/lib/angular/1.1.5/angular.min.js"></script>
-<script src="/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Controllers/Configure.js"></script>
+<script src="~/umbraco/lib/angular/1.1.5/angular.min.js"></script>
+<script src="~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Controllers/Configure.js"></script>
 
 <div ng-app ="UFSPLoader">
     <div ng-controller="Loader">
         <div class="row">        
             <div class="span1">
-                <img src="/App_Plugins/UmbracoFileSystemProviders/Azure/Install/azure-logo-32.png"/>
+                <img src="~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/azure-logo-32.png"/>
             </div>
             <div><h4>Umbraco Azure File System Provider</h4></div>
         </div>
