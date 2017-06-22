@@ -665,10 +665,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (this.UseDefaultRoute)
             {
-                return $"{this.ApplicationVirtualPath}/{Constants.DefaultMediaRoute}/{fixedPath}";
+                return $"{this.ApplicationVirtualPath?.TrimEnd('/')}/{Constants.DefaultMediaRoute}/{fixedPath}";
             }
 
-            return $"{this.ApplicationVirtualPath}/{this.ContainerName}/{fixedPath}";
+            return $"{this.ApplicationVirtualPath?.TrimEnd('/')}/{this.ContainerName}/{fixedPath}";
         }
 
         /// <summary>
