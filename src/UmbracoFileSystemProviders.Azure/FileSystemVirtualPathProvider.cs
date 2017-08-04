@@ -7,8 +7,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Reflection;
+    using System.Web;
+    using System.Web.Compilation;
     using System.Web.Hosting;
-
     using global::Umbraco.Core.IO;
 
     /// <summary>
@@ -82,7 +84,36 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             Lazy<IFileSystem> fileSystem = new Lazy<IFileSystem>(() => FileSystemProviderManager.Current.GetFileSystemProvider<TProviderTypeFilter>());
             FileSystemVirtualPathProvider provider = new FileSystemVirtualPathProvider(pathPrefix, fileSystem);
-            HostingEnvironment.RegisterVirtualPathProvider(provider);
+
+            // The standard HostingEnvironment.RegisterVirtualPathProvider(virtualPathProvider) method is ignored when
+            // BuildManager.IsPrecompiledApp is true so we have to use reflection when registering the provider.
+            if (!BuildManager.IsPrecompiledApp)
+            {
+                HostingEnvironment.RegisterVirtualPathProvider(provider);
+            }
+            else
+            {
+                // Gets the private _theHostingEnvironment reference.
+                HostingEnvironment hostingEnvironmentInstance = (HostingEnvironment)typeof(HostingEnvironment)
+                    .InvokeMember("_theHostingEnvironment", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetField, null, null, null);
+
+                if (hostingEnvironmentInstance == null)
+                {
+                    return;
+                }
+
+                // Get the static internal MethodInfo for RegisterVirtualPathProviderInternal method.
+                MethodInfo methodInfo = typeof(HostingEnvironment)
+                    .GetMethod("RegisterVirtualPathProviderInternal", BindingFlags.NonPublic | BindingFlags.Static);
+
+                if (methodInfo == null)
+                {
+                    return;
+                }
+
+                // Invoke RegisterVirtualPathProviderInternal method with one argument which is the instance of our own provider.
+                methodInfo.Invoke(hostingEnvironmentInstance, new object[] { provider });
+            }
         }
 
         /// <summary>
@@ -152,7 +183,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             prefix = prefix.Replace("\\", "/");
             prefix = prefix.StartsWith("/") ? prefix : string.Concat("/", prefix);
             prefix = prefix.EndsWith("/") ? prefix : string.Concat(prefix, "/");
-            return prefix;
+            return HttpRuntime.AppDomainAppVirtualPath + prefix;
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 os: Visual Studio 2015
 
 # Version format
-version: 0.5.8.{build}
+version: 0.5.9.{build}
 
 cache:
   - src\packages -> **\packages.config   # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
@@ -37,7 +37,7 @@ deploy:
      # GitHub Deployment for releases
   - provider: GitHub
     auth_token:
-      secure: RH8UIklPiSC24UnsDFEHx5AHsMbpyLcYOKA4/ZnTsSc=
+      secure: gnJNHw3btYiQ7G0GexIGpSyA3moAz/GuJvgGZvJmz63/+YVLFC+qew/xlniRLDSk
     artifact: /.*\.zip/            # upload all Zip packages to release assets
     draft: false
     prerelease: false

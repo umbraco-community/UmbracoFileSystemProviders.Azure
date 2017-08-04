@@ -15,6 +15,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using System.Web;
     using global::Umbraco.Core.IO;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -160,6 +161,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public bool UseDefaultRoute { get; }
 
         /// <summary>
+        /// Gets or sets func to calculate application virtual path
+        /// </summary>
+        public string ApplicationVirtualPath { get; internal set; } = HttpRuntime.AppDomainAppVirtualPath;
+
+        /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
         /// <param name="containerName">The container name.</param>
@@ -214,61 +220,65 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public void AddFile(string path, Stream stream, bool overrideIfExists)
         {
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
-            bool exists = blockBlob.Exists();
-            DateTimeOffset created = DateTimeOffset.MinValue;
 
-            if (!overrideIfExists && exists)
+            if (blockBlob != null)
             {
-                InvalidOperationException error = new InvalidOperationException($"File already exists at {blockBlob.Uri}");
-                this.LogHelper.Error<AzureBlobFileSystem>($"File already exists at {path}", error);
-                return;
-            }
+                bool exists = blockBlob.Exists();
+                DateTimeOffset created = DateTimeOffset.MinValue;
 
-            try
-            {
-                if (exists)
+                if (!overrideIfExists && exists)
                 {
-                    // Ensure original created date is preserved.
-                    blockBlob.FetchAttributes();
+                    InvalidOperationException error = new InvalidOperationException($"File already exists at {blockBlob.Uri}");
+                    this.LogHelper.Error<AzureBlobFileSystem>($"File already exists at {path}", error);
+                    return;
+                }
+
+                try
+                {
+                    if (exists)
+                    {
+                        // Ensure original created date is preserved.
+                        blockBlob.FetchAttributes();
+                        if (blockBlob.Metadata.ContainsKey("CreatedDate"))
+                        {
+                            // We store the creation date in meta data.
+                            created = DateTime.Parse(blockBlob.Metadata["CreatedDate"], CultureInfo.InvariantCulture).ToUniversalTime();
+                        }
+                    }
+
+                    blockBlob.UploadFromStream(stream);
+
+                    string contentType = this.MimeTypeResolver.Resolve(path);
+
+                    if (!string.IsNullOrWhiteSpace(contentType))
+                    {
+                        blockBlob.Properties.ContentType = contentType;
+                    }
+
+                    blockBlob.Properties.CacheControl = $"public, max-age={this.MaxDays * 86400}";
+                    blockBlob.SetProperties();
+
+                    if (created == DateTimeOffset.MinValue)
+                    {
+                        created = DateTimeOffset.UtcNow;
+                    }
+
+                    // Store the creation date in meta data.
                     if (blockBlob.Metadata.ContainsKey("CreatedDate"))
                     {
-                        // We store the creation date in meta data.
-                        created = DateTime.Parse(blockBlob.Metadata["CreatedDate"], CultureInfo.InvariantCulture).ToUniversalTime();
+                        blockBlob.Metadata["CreatedDate"] = created.ToString(CultureInfo.InvariantCulture);
                     }
+                    else
+                    {
+                        blockBlob.Metadata.Add("CreatedDate", created.ToString(CultureInfo.InvariantCulture));
+                    }
+
+                    blockBlob.SetMetadata();
                 }
-
-                blockBlob.UploadFromStream(stream);
-
-                string contentType = this.MimeTypeResolver.Resolve(path);
-
-                if (!string.IsNullOrWhiteSpace(contentType))
+                catch (Exception ex)
                 {
-                    blockBlob.Properties.ContentType = contentType;
+                    this.LogHelper.Error<AzureBlobFileSystem>($"Unable to upload file at {path}", ex);
                 }
-
-                blockBlob.Properties.CacheControl = $"public, max-age={this.MaxDays * 86400}";
-                blockBlob.SetProperties();
-
-                if (created == DateTimeOffset.MinValue)
-                {
-                    created = DateTimeOffset.UtcNow;
-                }
-
-                // Store the creation date in meta data.
-                if (blockBlob.Metadata.ContainsKey("CreatedDate"))
-                {
-                    blockBlob.Metadata["CreatedDate"] = created.ToString(CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    blockBlob.Metadata.Add("CreatedDate", created.ToString(CultureInfo.InvariantCulture));
-                }
-
-                blockBlob.SetMetadata();
-            }
-            catch (Exception ex)
-            {
-                this.LogHelper.Error<AzureBlobFileSystem>($"Unable to upload file at {path}", ex);
             }
         }
 
@@ -356,13 +366,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
 
-            try
+            if (blockBlob != null)
             {
-                blockBlob.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
-            }
-            catch (Exception ex)
-            {
-                this.LogHelper.Error<AzureBlobFileSystem>($"Unable to delete file at {path}", ex);
+                try
+                {
+                    blockBlob.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
+                }
+                catch (Exception ex)
+                {
+                    this.LogHelper.Error<AzureBlobFileSystem>($"Unable to delete file at {path}", ex);
+                }
             }
         }
 
@@ -390,7 +403,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public bool FileExists(string path)
         {
-            return this.GetBlockBlobReference(path).Exists();
+            CloudBlockBlob blockBlobReference = this.GetBlockBlobReference(path);
+            return blockBlobReference?.Exists() ?? false;
         }
 
         /// <summary>
@@ -404,12 +418,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
 
-            // Populate the blob's attributes.
-            blockBlob.FetchAttributes();
-            if (blockBlob.Metadata.ContainsKey("CreatedDate"))
+            if (blockBlob != null)
             {
-                // We store the creation date in meta data.
-                return DateTimeOffset.Parse(blockBlob.Metadata["CreatedDate"], CultureInfo.InvariantCulture).ToUniversalTime();
+                // Populate the blob's attributes.
+                blockBlob.FetchAttributes();
+                if (blockBlob.Metadata.ContainsKey("CreatedDate"))
+                {
+                    // We store the creation date in meta data.
+                    return DateTimeOffset.Parse(blockBlob.Metadata["CreatedDate"], CultureInfo.InvariantCulture).ToUniversalTime();
+                }
             }
 
             return DateTimeOffset.MinValue;
@@ -459,6 +476,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         return url.Substring(this.rootContainerUrl.Length);
                     }
 
+                    this.LogHelper.Error<AzureFileSystem>("Directory not found", new DirectoryNotFoundException($"Directory not found at{path}"));
                     return null;
                 }).Where(x => x != null);
         }
@@ -497,12 +515,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public DateTimeOffset GetLastModified(string path)
         {
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
-            blockBlob.FetchAttributes();
-            return blockBlob.Properties.LastModified.GetValueOrDefault();
+
+            if (blockBlob != null)
+            {
+                blockBlob.FetchAttributes();
+                return blockBlob.Properties.LastModified.GetValueOrDefault();
+            }
+
+            return DateTimeOffset.MinValue;
         }
 
         /// <summary>
-        /// Returns the relative path to the media item.
+        /// Returns the application relative path to the file.
         /// </summary>
         /// <param name="fullPathOrUrl">The full path or url.</param>
         /// <returns>
@@ -514,7 +538,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         }
 
         /// <summary>
-        /// Returns the url to the media item.
+        /// Returns the application relative url to the file.
         /// </summary>
         /// <remarks>If the virtual path provider is enabled this returns a relative url.</remarks>
         /// <param name="path">The path to return the url for.</param>
@@ -532,7 +556,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         }
 
         /// <summary>
-        /// Gets a <see cref="Stream"/> containing the contains of the given file.
+        /// Gets a <see cref="Stream"/> representing the file at the gieven path.
         /// </summary>
         /// <param name="path">The path to the file.</param>
         /// <returns>
@@ -540,24 +564,28 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public Stream OpenFile(string path)
         {
-            // TODO: Caching?
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
 
-            if (!blockBlob.Exists())
+            if (blockBlob != null)
             {
-                this.LogHelper.Info<AzureBlobFileSystem>($"No file exists at {path}.");
-                return null;
+                if (!blockBlob.Exists())
+                {
+                    this.LogHelper.Info<AzureBlobFileSystem>($"No file exists at {path}.");
+                    return null;
+                }
+
+                MemoryStream stream = new MemoryStream();
+                blockBlob.DownloadToStream(stream);
+
+                if (stream.CanSeek)
+                {
+                    stream.Seek(0, SeekOrigin.Begin);
+                }
+
+                return stream;
             }
 
-            MemoryStream stream = new MemoryStream();
-            blockBlob.DownloadToStream(stream);
-
-            if (stream.CanSeek)
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-            }
-
-            return stream;
+            return null;
         }
 
         /// <summary>
@@ -594,7 +622,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private CloudBlockBlob GetBlockBlobReference(string path)
         {
             string blobPath = this.FixPath(path);
-            return this.cloudBlobContainer.GetBlockBlobReference(blobPath);
+
+            // Only make the request if there is an actual path. See issue 8.
+            // https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/issues/8
+            return !string.IsNullOrWhiteSpace(path)
+                ? this.cloudBlobContainer.GetBlockBlobReference(blobPath)
+                : null;
         }
 
         /// <summary>
@@ -632,10 +665,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (this.UseDefaultRoute)
             {
-                return $"/{Constants.DefaultMediaRoute}/{fixedPath}";
+                return $"{this.ApplicationVirtualPath?.TrimEnd('/')}/{Constants.DefaultMediaRoute}/{fixedPath}";
             }
 
-            return $"/{this.ContainerName}/{fixedPath}";
+            return $"{this.ApplicationVirtualPath?.TrimEnd('/')}/{this.ContainerName}/{fixedPath}";
         }
 
         /// <summary>
@@ -651,6 +684,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             if (string.IsNullOrEmpty(path))
             {
                 return string.Empty;
+            }
+
+            string appVirtualPath = this.ApplicationVirtualPath;
+            if (path.StartsWith(appVirtualPath))
+            {
+                path = path.Substring(appVirtualPath.Length);
             }
 
             if (path.StartsWith(Delimiter))

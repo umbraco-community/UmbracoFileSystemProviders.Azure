@@ -65,6 +65,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 cache.SetCacheability(HttpCacheability.Public);
                 cache.VaryByHeaders["Accept-Encoding"] = true;
 
+                // Add Accept-Ranges header to fix videos not playing on Safari
+                HttpContext.Current.Response.AppendHeader("Accept-Ranges", "bytes");
+
                 IFileSystem azureBlobFileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider("media");
                 int maxDays = ((AzureBlobFileSystem)azureBlobFileSystem).FileSystem.MaxDays;
 

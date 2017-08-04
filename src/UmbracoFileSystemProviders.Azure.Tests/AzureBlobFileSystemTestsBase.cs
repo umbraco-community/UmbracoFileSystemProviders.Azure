@@ -24,10 +24,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         /// Creates an instance of <see cref="AzureBlobFileSystem"/> set up for developmental testing.
         /// </summary>
         /// <param name="disableVirtualPathProvider">Whether to disable the virtual path provider.</param>
+        /// <param name="appVirtualPath">Mocked virtual path of application</param>
         /// <returns>
         /// The <see cref="AzureBlobFileSystem"/>.
         /// </returns>
-        public AzureBlobFileSystem CreateAzureBlobFileSystem(bool disableVirtualPathProvider = false)
+        public AzureBlobFileSystem CreateAzureBlobFileSystem(bool disableVirtualPathProvider = false, string appVirtualPath = "")
         {
             string containerName = "media";
             string rootUrl = "http://127.0.0.1:10000/devstoreaccount1/";
@@ -45,7 +46,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
                 {
                     LogHelper = logHelper.Object,
                     MimeTypeResolver = mimeTypeHelper.Object,
-                    DisableVirtualPathProvider = disableVirtualPathProvider
+                    DisableVirtualPathProvider = disableVirtualPathProvider,
+                    ApplicationVirtualPath = appVirtualPath
                 }
             };
         }
@@ -97,6 +99,23 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 
             // Assert
             Assert.AreEqual("/media/1010/media.jpg", actual);
+        }
+
+
+        /// <summary>
+        /// Asserts that the file system correctly resolves the relative path when Umbraco is hosted in virtual path
+        /// </summary>
+        [Test]
+        public void ResolveRelativePathWithAppVirtualPath()
+        {
+            // Arrange
+            AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem(false, "/test");
+
+            // Act
+            string actual = provider.GetRelativePath("1010/media.jpg");
+
+            // Assert
+            Assert.AreEqual("/test/media/1010/media.jpg", actual);
         }
 
         /// <summary>
