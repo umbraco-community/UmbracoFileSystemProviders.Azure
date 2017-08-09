@@ -183,8 +183,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             prefix = prefix.Replace("\\", "/");
             prefix = prefix.StartsWith("/") ? prefix : string.Concat("/", prefix);
             prefix = prefix.EndsWith("/") ? prefix : string.Concat(prefix, "/");
+
+            // if Umbraco is running in a virtual path, the path then needs to be included in the prefix
+            if (HttpRuntime.AppDomainAppVirtualPath != "/")
+            {
+                return HttpRuntime.AppDomainAppVirtualPath + prefix;
+            }
+
             return prefix;
-            // return HttpRuntime.AppDomainAppVirtualPath + prefix;
         }
 
         /// <summary>
