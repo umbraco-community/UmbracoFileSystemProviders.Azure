@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoFileSystemProviders.Azure", "UmbracoFileSystemProviders.Azure\UmbracoFileSystemProviders.Azure.csproj", "{749BC432-144A-4250-9066-D1FE170AFE42}"
 EndProject
@@ -15,6 +15,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildPackage", "BuildPackage", "{DDE4D2E6-E526-4CB3-BECE-D89DFFB37B10}"
 	ProjectSection(SolutionItems) = preProject
 		..\appveyor.yml = ..\appveyor.yml
+		..\build-appveyor.cmd = ..\build-appveyor.cmd
+		..\build.cmd = ..\build.cmd
 		..\build\transforms\FileSystemProviders.config.install.xdt = ..\build\transforms\FileSystemProviders.config.install.xdt
 		..\build\transforms\FileSystemProviders.config.uninstall.xdt = ..\build\transforms\FileSystemProviders.config.uninstall.xdt
 		..\build\transforms\imageprocessor.web.config.install.xdt = ..\build\transforms\imageprocessor.web.config.install.xdt
