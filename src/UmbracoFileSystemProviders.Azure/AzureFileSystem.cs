@@ -476,7 +476,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         return url.Substring(this.rootContainerUrl.Length);
                     }
 
-                    this.LogHelper.Error<AzureFileSystem>("Directory not found", new DirectoryNotFoundException($"Directory not found at{path}"));
+                    this.LogHelper.Error<AzureFileSystem>("Directory not found", new DirectoryNotFoundException($"Directory not found at '{path}' with filter '{filter}'"));
                     return null;
                 }).Where(x => x != null);
         }
