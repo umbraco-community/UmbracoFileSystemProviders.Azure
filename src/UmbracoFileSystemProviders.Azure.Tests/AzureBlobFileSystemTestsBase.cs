@@ -2,7 +2,6 @@
 // Copyright (c) James Jackson-South and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
-
 namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 {
     using System;
@@ -350,6 +349,23 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             // Assert
             string[] expected = { "1010/media.jpg", "1011/media.jpg", "1012/media.jpg" };
             Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+
+        /// <summary>
+        /// Asserts that a invalid path parameter passed to GetFiles returns null
+        /// </summary>
+        [Test]
+        public void TestGetFilesInvalidPath()
+        {
+            // Arrange
+            AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
+
+            // Act
+            IEnumerable<string> actual = provider.GetFiles("/somethingmissing", "*.jpg");
+
+            // Assert
+            Assert.IsNull(actual);
         }
 
         /// <summary>

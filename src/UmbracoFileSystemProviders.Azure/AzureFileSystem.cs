@@ -460,7 +460,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public IEnumerable<string> GetFiles(string path, string filter)
         {
             IEnumerable<IListBlobItem> blobs = this.cloudBlobContainer.ListBlobs(this.FixPath(path), true);
-            return blobs.OfType<CloudBlockBlob>().Select(cd =>
+
+            var blobList = blobs as IList<IListBlobItem> ?? blobs.ToList();
+
+            if (!blobList.Any())
+            {
+                this.LogHelper.Error<AzureFileSystem>("Blob not found", new DirectoryNotFoundException($"Blob not found at '{path}'"));
+                return null;
+            }
+
+            return blobList.OfType<CloudBlockBlob>().Select(cd =>
                 {
                     string url = cd.Uri.AbsoluteUri;
 
@@ -476,7 +485,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         return url.Substring(this.rootContainerUrl.Length);
                     }
 
-                    this.LogHelper.Error<AzureFileSystem>("Directory not found", new DirectoryNotFoundException($"Directory not found at '{path}' with filter '{filter}'"));
                     return null;
                 }).Where(x => x != null);
         }
