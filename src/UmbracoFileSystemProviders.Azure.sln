@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoFileSystemProviders.Azure", "UmbracoFileSystemProviders.Azure\UmbracoFileSystemProviders.Azure.csproj", "{749BC432-144A-4250-9066-D1FE170AFE42}"
 EndProject
@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildPackage", "BuildPackag
 		..\build\package.proj = ..\build\package.proj
 		..\build\package.xml = ..\build\package.xml
 		..\build\transforms\security.config.install.xdt = ..\build\transforms\security.config.install.xdt
+		..\build\transforms\umbpak-web.config.install.xdt = ..\build\transforms\umbpak-web.config.install.xdt
+		..\build\transforms\umbpak-web.config.uninstall.xdt = ..\build\transforms\umbpak-web.config.uninstall.xdt
 		..\build\UmbracoFileSystemProviders.Azure.proj = ..\build\UmbracoFileSystemProviders.Azure.proj
 		..\build\transforms\web.config.install.xdt = ..\build\transforms\web.config.install.xdt
 		..\build\transforms\web.config.uninstall.xdt = ..\build\transforms\web.config.uninstall.xdt
@@ -54,5 +56,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3AE84ED2-4474-40A2-AE68-0FB12C21CC46}
 	EndGlobalSection
 EndGlobal
