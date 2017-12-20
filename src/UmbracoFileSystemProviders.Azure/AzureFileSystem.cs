@@ -695,7 +695,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             string appVirtualPath = this.ApplicationVirtualPath;
-            if (path.StartsWith(appVirtualPath))
+            if (appVirtualPath != null && path.StartsWith(appVirtualPath))
             {
                 path = path.Substring(appVirtualPath.Length);
             }
