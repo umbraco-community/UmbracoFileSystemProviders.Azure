@@ -365,7 +365,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetFiles("/somethingmissing", "*.jpg");
 
             // Assert
-            Assert.IsEmpty(actual);
+            Assert.IsNull(actual);
         }
 
         /// <summary>
