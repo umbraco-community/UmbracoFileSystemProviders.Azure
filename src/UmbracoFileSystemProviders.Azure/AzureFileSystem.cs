@@ -466,7 +466,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             if (!blobList.Any())
             {
                 this.LogHelper.Error<AzureFileSystem>("Blob not found", new DirectoryNotFoundException($"Blob not found at '{path}'"));
-                return null;
+                return Enumerable.Empty<string>();
             }
 
             return blobList.OfType<CloudBlockBlob>().Select(cd =>
