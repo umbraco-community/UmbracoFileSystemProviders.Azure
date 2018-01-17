@@ -694,6 +694,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 return string.Empty;
             }
 
+            path = path.Replace("\\", Delimiter);
+
             string appVirtualPath = this.ApplicationVirtualPath;
             if (appVirtualPath != null && path.StartsWith(appVirtualPath))
             {
@@ -728,7 +730,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 path = path.Substring(1);
             }
 
-            return path.Replace("\\", Delimiter).TrimStart(Delimiter.ToCharArray()).TrimEnd(Delimiter.ToCharArray());
+            return path.TrimStart(Delimiter.ToCharArray()).TrimEnd(Delimiter.ToCharArray());
         }
     }
 }
