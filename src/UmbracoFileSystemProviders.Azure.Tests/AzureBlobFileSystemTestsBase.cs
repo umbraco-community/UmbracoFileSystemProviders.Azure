@@ -24,10 +24,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         /// </summary>
         /// <param name="disableVirtualPathProvider">Whether to disable the virtual path provider.</param>
         /// <param name="appVirtualPath">Mocked virtual path of application</param>
+        /// <param name="cdnUrl">mocked cdn url</param>
         /// <returns>
         /// The <see cref="AzureBlobFileSystem"/>.
         /// </returns>
-        public AzureBlobFileSystem CreateAzureBlobFileSystem(bool disableVirtualPathProvider = false, string appVirtualPath = "")
+        public AzureBlobFileSystem CreateAzureBlobFileSystem(bool disableVirtualPathProvider = false, string appVirtualPath = "", string cdnUrl = "")
         {
             string containerName = "media";
             string rootUrl = "http://127.0.0.1:10000/devstoreaccount1/";
@@ -35,11 +36,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             string maxDays = "30";
             string useDefaultRoute = "true";
             string usePrivateContainer = "false";
-
             Mock<ILogHelper> logHelper = new Mock<ILogHelper>();
             Mock<IMimeTypeResolver> mimeTypeHelper = new Mock<IMimeTypeResolver>();
 
-            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer)
+            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer, cdnUrl)
             {
                 FileSystem =
                 {
@@ -92,7 +92,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         {
             // Arrange
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
-
+            
             // Act
             string actual = provider.GetRelativePath("1010/media.jpg");
 
@@ -100,6 +100,23 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             Assert.AreEqual("/media/1010/media.jpg", actual);
         }
 
+
+        /// <summary>
+        /// Asserts that the file system correctly resolves the relative path when Umbraco is hosted in virtual path
+        /// </summary>
+        [Test]
+        public void ResolveAbsolutePathWithCdn()
+        {
+            // Arrange
+            var url = "http://test.cdn.com";
+            AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem(true, cdnUrl: url);
+
+            // Act
+            string actual = provider.GetFullPath("1010/media.jpg");
+
+            // Assert
+            Assert.AreEqual(url + "/media/1010/media.jpg", actual);
+        }
 
         /// <summary>
         /// Asserts that the file system correctly resolves the relative path when Umbraco is hosted in virtual path

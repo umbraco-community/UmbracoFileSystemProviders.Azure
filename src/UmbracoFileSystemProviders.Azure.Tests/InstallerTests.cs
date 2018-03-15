@@ -34,7 +34,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         public void CheckXdtNumberOfParameters()
         {
             IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXml("..\\..\\build\\transforms\\FileSystemProviders.config.install.xdt");
-            Assert.AreEqual(6, parameters.Count());
+            Assert.AreEqual(7, parameters.Count());
         }
 
         /// <summary>

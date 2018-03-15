@@ -6,6 +6,9 @@
 // <summary>
 // A singleton class for communicating with Azure Blob Storage.
 // </summary>
+
+using System.Runtime.CompilerServices;
+
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -82,7 +85,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="containerName"/> is null or whitespace.
         /// </exception>
-        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType accessType)
+        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType accessType, string cdnUrl)
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
@@ -120,11 +123,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 rootUrl = rootUrl.Trim() + "/";
             }
 
+            if (!string.IsNullOrEmpty(cdnUrl))
+            {
+                if (!cdnUrl.Trim().EndsWith("/"))
+                {
+                    cdnUrl = cdnUrl.Trim() + "/";
+                }
+                this.CdnUrl = cdnUrl + containerName + "/";
+            }
+
             this.rootContainerUrl = rootUrl + containerName + "/";
             this.ContainerName = containerName;
             this.MaxDays = maxDays;
             this.UseDefaultRoute = useDefaultRoute;
-
             this.LogHelper = new WrappedLogHelper();
             this.MimeTypeResolver = new MimeTypeResolver();
         }
@@ -161,6 +172,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public bool UseDefaultRoute { get; }
 
         /// <summary>
+        /// Get the provided url for CDN
+        /// </summary>
+        public string CdnUrl { get; }
+
+        /// <summary>
         /// Gets or sets func to calculate application virtual path
         /// </summary>
         public string ApplicationVirtualPath { get; internal set; } = HttpRuntime.AppDomainAppVirtualPath;
@@ -174,8 +190,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <param name="usePrivateContainer">Whether to use private blob access (no direct access) or public (direct access possible, default) access.</param>
+        /// <param name="cdnUrl">Url of the Azure cdn that replaces the blobl hostname</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer)
+        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer, string cdnUrl)
         {
             lock (Locker)
             {
@@ -203,7 +220,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
                     BlobContainerPublicAccessType blobContainerPublicAccessType = privateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType);
+                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType, cdnUrl);
                     FileSystems.Add(fileSystem);
                 }
 
@@ -663,8 +680,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             // First create the full url
             string fixedPath = this.FixPath(path);
+            Uri url;
 
-            Uri url = new Uri(new Uri(this.rootContainerUrl, UriKind.Absolute), fixedPath);
+            if (!string.IsNullOrEmpty(this.CdnUrl))
+            {
+                url = new Uri(new Uri(this.CdnUrl, UriKind.Absolute), this.FixPath(path));
+            }
+            else
+            {
+                url = new Uri(new Uri(this.rootContainerUrl, UriKind.Absolute), fixedPath);
+            }
 
             if (!relative)
             {
