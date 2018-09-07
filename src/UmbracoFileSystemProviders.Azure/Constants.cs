@@ -59,6 +59,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             /// The configuration key for providing the Use Private Container value via the web.config
             /// </summary>
             public const string UsePrivateContainer = "AzureBlobFileSystem.UsePrivateContainer";
-        }
-    }
+
+            /// <summary>
+            /// The configuration key for providing the version of TLS to use for connections
+            /// </summary>
+            public const string TlsVersion = "AzureBlobFileSystem.TlsVersion";
+
+         }
+     }
 }

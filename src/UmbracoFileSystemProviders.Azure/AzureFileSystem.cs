@@ -14,6 +14,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Text.RegularExpressions;
     using System.Web;
     using global::Umbraco.Core.IO;
@@ -78,11 +79,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
-        /// <param name="accessType"><see cref="BlobContainerPublicAccessType"/> indicating the access permissions.</param>
+        /// <param name="accessType"><see cref="BlobContainerPublicAccessType"/> Indicating the access permissions.</param>
+        /// <param name="tlsVersion">Version of TLS to use for connections</param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="containerName"/> is null or whitespace.
         /// </exception>
-        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType accessType)
+        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType accessType, SecurityProtocolType tlsVersion)
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
@@ -96,6 +98,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             bool useEmulator = ConfigurationManager.AppSettings[UseStorageEmulatorKey] != null
                                && ConfigurationManager.AppSettings[UseStorageEmulatorKey]
                                                       .Equals("true", StringComparison.InvariantCultureIgnoreCase);
+
+            ServicePointManager.SecurityProtocol = tlsVersion;
 
             CloudStorageAccount cloudStorageAccount;
             if (useEmulator)
@@ -174,8 +178,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <param name="usePrivateContainer">Whether to use private blob access (no direct access) or public (direct access possible, default) access.</param>
+        /// <param name="tlsVersion">Version of TLS to use for connections</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer)
+        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer, SecurityProtocolType tlsVersion)
         {
             lock (Locker)
             {
@@ -203,7 +208,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
                     BlobContainerPublicAccessType blobContainerPublicAccessType = privateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType);
+                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType, tlsVersion);
                     FileSystems.Add(fileSystem);
                 }
 
