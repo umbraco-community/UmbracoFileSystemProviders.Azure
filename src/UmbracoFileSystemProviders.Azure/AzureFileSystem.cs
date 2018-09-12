@@ -460,7 +460,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public IEnumerable<string> GetFiles(string path, string filter)
         {
             IEnumerable<IListBlobItem> blobs = this.cloudBlobContainer.ListBlobs(this.FixPath(path), true);
-            return blobs.OfType<CloudBlockBlob>().Select(cd =>
+
+            var blobList = blobs as IList<IListBlobItem> ?? blobs.ToList();
+
+            if (!blobList.Any())
+            {
+                this.LogHelper.Error<AzureFileSystem>("Blob not found", new DirectoryNotFoundException($"Blob not found at '{path}'"));
+                return Enumerable.Empty<string>();
+            }
+
+            return blobList.OfType<CloudBlockBlob>().Select(cd =>
                 {
                     string url = cd.Uri.AbsoluteUri;
 
@@ -476,7 +485,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         return url.Substring(this.rootContainerUrl.Length);
                     }
 
-                    this.LogHelper.Error<AzureFileSystem>("Directory not found", new DirectoryNotFoundException($"Directory not found at{path}"));
                     return null;
                 }).Where(x => x != null);
         }
@@ -665,10 +673,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (this.UseDefaultRoute)
             {
-                return $"{this.ApplicationVirtualPath}/{Constants.DefaultMediaRoute}/{fixedPath}";
+                return $"{this.ApplicationVirtualPath?.TrimEnd('/')}/{Constants.DefaultMediaRoute}/{fixedPath}";
             }
 
-            return $"{this.ApplicationVirtualPath}/{this.ContainerName}/{fixedPath}";
+            return $"{this.ApplicationVirtualPath?.TrimEnd('/')}/{this.ContainerName}/{fixedPath}";
         }
 
         /// <summary>
@@ -686,8 +694,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 return string.Empty;
             }
 
+            path = path.Replace("\\", Delimiter);
+
             string appVirtualPath = this.ApplicationVirtualPath;
-            if (path.StartsWith(appVirtualPath))
+            if (appVirtualPath != null && path.StartsWith(appVirtualPath))
             {
                 path = path.Substring(appVirtualPath.Length);
             }
@@ -720,7 +730,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 path = path.Substring(1);
             }
 
-            return path.Replace("\\", Delimiter).TrimStart(Delimiter.ToCharArray()).TrimEnd(Delimiter.ToCharArray());
+            return path.TrimStart(Delimiter.ToCharArray()).TrimEnd(Delimiter.ToCharArray());
         }
     }
 }

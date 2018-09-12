@@ -1,13 +1,13 @@
 ﻿<%@ Control Language="c#" AutoEventWireup="True" TargetSchema="http://schemas.microsoft.com/intellisense/ie5"%>
 
-<script src="/umbraco/lib/angular/1.1.5/angular.min.js"></script>
-<script src="/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Controllers/Configure.js"></script>
+<script src="<%=ResolveUrl("~/umbraco/lib/angular/1.1.5/angular.min.js") %>"></script>
+<script src="<%=ResolveUrl("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Controllers/Configure.js")%>"></script>
 
 <div ng-app ="UFSPLoader">
     <div ng-controller="Loader">
         <div class="row">        
             <div class="span1">
-                <img src="/App_Plugins/UmbracoFileSystemProviders/Azure/Install/azure-logo-32.png"/>
+                <img src="<%=ResolveUrl("~/App_Plugins/UmbracoFileSystemProviders/Azure/Install/azure-logo-32.png")%>"/>
             </div>
             <div><h4>Umbraco Azure File System Provider</h4></div>
         </div>
@@ -23,8 +23,8 @@
                             <ng-form name="form">
                             <label class="control-label" for="param.key">{{ capitalizeFirstLetter(param.key) }}</label>
                                 <div class="controls">
-                                    <span ng-if="getInputType(param.key) === 'checkbox'" ng-include="'/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/checkbox.htm'"></span>
-                                    <span ng-if="getInputType(param.key) === 'text'" ng-include="'/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/textfield.htm'"></span>
+                                    <span ng-if="getInputType(param.key) === 'checkbox'" ng-include="'<%=ResolveUrl("/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/checkbox.htm")%>'"></span>
+                                    <span ng-if="getInputType(param.key) === 'text'" ng-include="'<%=ResolveUrl("/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/textfield.htm")%>'"></span>
                                 </div>
                                 <span data-ng-show=" {{'form.'+param.key+'.$dirty && form.'+param.key+'.$error.required'}}">Required!</span>
                             </ng-form>
