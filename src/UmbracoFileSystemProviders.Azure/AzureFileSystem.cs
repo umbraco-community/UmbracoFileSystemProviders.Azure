@@ -615,7 +615,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName.ToLowerInvariant());
-            if (!cloudBlobClient.Credentials.IsSAS)
+            if (cloudBlobClient.Credentials.IsSAS)
             {
                 // Shared access signatures (SAS) have some limitations compared to shared access keys
                 // read more on: https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1
@@ -624,10 +624,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 if (isAccountSas)
                 {
                     container.CreateIfNotExists();
+
+                    // permissions can't be set!
                 }
 
-                container.SetPermissions(new BlobContainerPermissions { PublicAccess = accessType });
+                return container;
             }
+
+            container.CreateIfNotExists();
+            container.SetPermissions(new BlobContainerPermissions { PublicAccess = accessType });
 
             return container;
         }
