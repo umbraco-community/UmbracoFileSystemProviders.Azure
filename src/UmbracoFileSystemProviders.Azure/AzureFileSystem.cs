@@ -631,8 +631,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 return container;
             }
 
-            container.CreateIfNotExists();
-            container.SetPermissions(new BlobContainerPermissions { PublicAccess = accessType });
+            if (!container.Exists())
+            {
+                container.CreateIfNotExists();
+                container.SetPermissions(new BlobContainerPermissions { PublicAccess = accessType });
+            }
 
             return container;
         }
