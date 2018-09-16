@@ -194,7 +194,9 @@ the cloud simply install the [configuration package](https://www.nuget.org/packa
 ```
 **Note** The `CloudImageService`is not compatible with the FileSystemProvider when using private storage. You will have to build your own `IImageService` implementation.
 
-If using a version of ImageProcessor.Web version [4.5.0](https://www.nuget.org/packages/ImageProcessor.Web/4.5.0) the configuration details will need to be configured as follows:
+**Note 2** With ImageProcessor.Web version [4.5.?] the `CloudImageService` will handle private blobs.
+
+If using a version of ImageProcessor.Web version [4.5.?](https://www.nuget.org/packages/ImageProcessor.Web/4.5.0) the configuration details will need to be configured as follows:
 
 ```xml
 <?xml version="1.0"?>
@@ -207,11 +209,15 @@ If using a version of ImageProcessor.Web version [4.5.0](https://www.nuget.org/p
         <setting key="MaxBytes" value="8194304"/>
         <setting key="Timeout" value="30000"/>
         <setting key="Host" value="http://[myAccountName].blob.core.windows.net/media"/>
+	<!-- new since version 4.5.? -->
+	<setting key="SASQueryString" value="?sv=2018-03-28&amp;si=media-r&amp;sr=c&amp;sig=drXDwEyrzyOKP3QX3e1puVzURvCJMU1oYpBk5oKsrZY%3D"/>
       </settings>
     </service>
   </services>  
 </security>
 ```
+***Note 3*** _SASQueryString_ can easily be configured via **_Microsoft Azure Storage Explorer_**. 
+Read documentation for SAS: https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1
 
 Be sure to install the [AzureBlobCache](http://imageprocessor.org/imageprocessor-web/plugins/azure-blob-cache/) plugin to get the most out of the package.
 
