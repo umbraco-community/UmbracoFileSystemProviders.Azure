@@ -9,6 +9,7 @@
 
   <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure" xdt:Locator="Match(type)" xdt:Transform="InsertIfMissing">
     <Parameters xdt:Transform="InsertIfMissing">
+        
       <add key="containerName" value="media" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
       <add key="rootUrl" value="http://[myAccountName].blob.core.windows.net/" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
       <add key="connectionString" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
@@ -26,6 +27,11 @@
         When true blob containers will be private instead of public what means that you can't access the original blob file directly from its blob url.
       -->
       <add key="usePrivateContainer" value="false" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+        
+        <!-- 
+            If a CDN is attached use the url of this to serve media
+        -->
+        <add key="cdnUrl" value="[myCDN].azureedge.net" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
     </Parameters>
   </Provider>
   <!--

@@ -48,13 +48,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         private const string UsePrivateContainerKey = Constants.Configuration.UsePrivateContainer;
 
         /// <summary>
+        /// The configuration key for providing the cdn url.
+        /// </summary>
+        private const string CdnUrlKey = Constants.Configuration.CdnUrl;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
         /// </summary>
         /// <param name="containerName">The container name.</param>
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString)
-            : this(containerName, rootUrl, connectionString, "365", "true", "false")
+            : this(containerName, rootUrl, connectionString, "365", "true", "false", string.Empty)
         {
         }
 
@@ -66,7 +71,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays)
-            : this(containerName, rootUrl, connectionString, maxDays, "true", "false")
+            : this(containerName, rootUrl, connectionString, maxDays, "true", "false", string.Empty)
         {
         }
 
@@ -79,7 +84,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
-            : this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false")
+            : this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false", string.Empty)
         {
         }
 
@@ -92,9 +97,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <param name="usePrivateContainer">blob container can be private (no direct access) or public (direct access possible, default)</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer)
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer, string cdnUrl)
         {
-            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer);
+            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer, cdnUrl);
         }
 
         /// <summary>
@@ -137,7 +142,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     accessType = "true";
                 }
 
-                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, accessType);
+                string cdnUrl = ConfigurationManager.AppSettings[$"{CdnUrlKey}:{alias}"];
+                if (string.IsNullOrWhiteSpace(accessType))
+                {
+                    accessType = "true";
+                }
+                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, accessType, cdnUrl);
             }
             else
             {
