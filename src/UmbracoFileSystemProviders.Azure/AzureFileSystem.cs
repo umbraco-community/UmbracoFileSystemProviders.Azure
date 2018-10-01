@@ -16,6 +16,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Web;
+    using global::Umbraco.Core.Configuration;
     using global::Umbraco.Core.IO;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -540,8 +541,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <returns>
         /// The <see cref="string"/> representing the relative path.
         /// </returns>
+        /// <remarks>
+        /// Umbraco 7.5.15 changed the way that relative paths are used for media upload. 
+        /// This is the fixing issue where uploading file to replace creates new folder.
+        /// </remarks>
         public string GetRelativePath(string fullPathOrUrl)
         {
+            var lastSafeVersion = new Version(7, 5, 14);
+  
+            if (UmbracoVersion.Current.CompareTo(lastSafeVersion) > 0)
+            {
+                return this.FixPath(fullPathOrUrl);
+            }
+
             return this.ResolveUrl(fullPathOrUrl, true);
         }
 
