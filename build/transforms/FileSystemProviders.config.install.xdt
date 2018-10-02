@@ -26,6 +26,10 @@
         When true blob containers will be private instead of public what means that you can't access the original blob file directly from its blob url.
       -->
       <add key="usePrivateContainer" value="false" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+      <!--
+        Allows for TLS version to be specified for connections to blob storage, options are Tls, Tls11, Tls12
+      -->
+      <add key="TlsVersion" value="Tls" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
     </Parameters>
   </Provider>
   <!--
