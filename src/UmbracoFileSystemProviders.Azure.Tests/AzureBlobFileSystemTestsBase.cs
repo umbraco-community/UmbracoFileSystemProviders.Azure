@@ -36,7 +36,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             string maxDays = "30";
             string useDefaultRoute = "true";
             string usePrivateContainer = "false";
-            SecurityProtocolType tlsVersion = SecurityProtocolType.Tls;
+            string tlsVersion = "Tls12";
 
             Mock<ILogHelper> logHelper = new Mock<ILogHelper>();
             Mock<IMimeTypeResolver> mimeTypeHelper = new Mock<IMimeTypeResolver>();

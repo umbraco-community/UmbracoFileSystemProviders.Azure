@@ -59,7 +59,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="containerName">The container name.</param>
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, SecurityProtocolType tlsVersion)
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string tlsVersion)
             : this(containerName, rootUrl, connectionString, "365", "true", "false", tlsVersion)
         {
         }
@@ -71,7 +71,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, SecurityProtocolType tlsVersion)
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string tlsVersion)
             : this(containerName, rootUrl, connectionString, maxDays, "true", "false", tlsVersion)
         {
         }
@@ -84,7 +84,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, SecurityProtocolType tlsVersion)
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string tlsVersion)
             : this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false", tlsVersion)
         {
         }
@@ -99,7 +99,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <param name="usePrivateContainer">blob container can be private (no direct access) or public (direct access possible, default)</param>
         /// <param name="tlsVersion">Version of TLS to use for connections</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer, SecurityProtocolType tlsVersion)
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer, string tlsVersion)
         {
             this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer, tlsVersion);
         }
@@ -144,10 +144,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     accessType = "true";
                 }
 
-                string tlsVersionConfig = ConfigurationManager.AppSettings[$"{TlsVersionKey}:{alias}"];
-                if (!Enum.TryParse(tlsVersionConfig, out SecurityProtocolType tlsVersion))
+                string tlsVersion = ConfigurationManager.AppSettings[$"{TlsVersionKey}:{alias}"];
+                if (string.IsNullOrWhiteSpace(tlsVersion))
                 {
-                    tlsVersion = SecurityProtocolType.Tls;
+                    tlsVersion = "Tls";
                 }
 
                 this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, accessType, tlsVersion);

@@ -181,7 +181,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="usePrivateContainer">Whether to use private blob access (no direct access) or public (direct access possible, default) access.</param>
         /// <param name="tlsVersion">Version of TLS to use for connections</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer, SecurityProtocolType tlsVersion)
+        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer, string tlsVersion)
         {
             lock (Locker)
             {
@@ -207,9 +207,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         privateContainer = true;
                     }
 
+                    if (!Enum.TryParse(tlsVersion, out SecurityProtocolType tlsVersionConfig))
+                    {
+                       tlsVersionConfig = SecurityProtocolType.Tls;
+                    }
+
                     BlobContainerPublicAccessType blobContainerPublicAccessType = privateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType, tlsVersion);
+                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType, tlsVersionConfig);
                     FileSystems.Add(fileSystem);
                 }
 
