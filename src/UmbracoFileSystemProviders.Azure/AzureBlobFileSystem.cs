@@ -59,8 +59,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="containerName">The container name.</param>
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string tlsVersion)
-            : this(containerName, rootUrl, connectionString, "365", "true", "false", tlsVersion)
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString)
+            : this(containerName, rootUrl, connectionString, "365", "true", "false", "Tls")
         {
         }
 
@@ -71,8 +71,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string tlsVersion)
-            : this(containerName, rootUrl, connectionString, maxDays, "true", "false", tlsVersion)
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays)
+            : this(containerName, rootUrl, connectionString, maxDays, "true", "false", "Tls")
         {
         }
 
@@ -84,8 +84,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
-        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string tlsVersion)
-            : this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false", tlsVersion)
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
+            : this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false", "Tls")
         {
         }
 
@@ -98,7 +98,21 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <param name="usePrivateContainer">blob container can be private (no direct access) or public (direct access possible, default)</param>
-        /// <param name="tlsVersion">Version of TLS to use for connections</param>
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer)
+        {
+            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer, "Tls");
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
+        /// </summary>
+        /// <param name="containerName">The container name.</param>
+        /// <param name="rootUrl">The root url.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
+        /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
+        /// <param name="usePrivateContainer">blob container can be private (no direct access) or public (direct access possible, default)</param>
+        /// <param name="tlsVersion">Version of TLS to use for connections to Blob storage</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer, string tlsVersion)
         {
             this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer, tlsVersion);
