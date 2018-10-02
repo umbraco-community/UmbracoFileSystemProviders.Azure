@@ -17,6 +17,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.Net;
     using System.Text.RegularExpressions;
     using System.Web;
+    using global::Umbraco.Core.Configuration;
     using global::Umbraco.Core.IO;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -545,8 +546,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <returns>
         /// The <see cref="string"/> representing the relative path.
         /// </returns>
+        /// <remarks>
+        /// Umbraco 7.5.15 changed the way that relative paths are used for media upload. 
+        /// This is the fixing issue where uploading file to replace creates new folder.
+        /// </remarks>
         public string GetRelativePath(string fullPathOrUrl)
         {
+            var lastSafeVersion = new Version(7, 5, 14);
+  
+            if (UmbracoVersion.Current.CompareTo(lastSafeVersion) > 0)
+            {
+                return this.FixPath(fullPathOrUrl);
+            }
+
             return this.ResolveUrl(fullPathOrUrl, true);
         }
 
@@ -620,8 +632,28 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName.ToLowerInvariant());
-            container.CreateIfNotExists();
-            container.SetPermissions(new BlobContainerPermissions { PublicAccess = accessType });
+            if (cloudBlobClient.Credentials.IsSAS)
+            {
+                // Shared access signatures (SAS) have some limitations compared to shared access keys
+                // read more on: https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1
+                string[] sasTokenProperties = cloudBlobClient.Credentials.SASToken.Split("&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                bool isAccountSas = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("si=")).FirstOrDefault() == null;
+                if (isAccountSas)
+                {
+                    container.CreateIfNotExists();
+
+                    // permissions can't be set!
+                }
+
+                return container;
+            }
+
+            if (!container.Exists())
+            {
+                container.CreateIfNotExists();
+                container.SetPermissions(new BlobContainerPermissions { PublicAccess = accessType });
+            }
+
             return container;
         }
 
@@ -705,6 +737,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             if (appVirtualPath != null && path.StartsWith(appVirtualPath))
             {
                 path = path.Substring(appVirtualPath.Length);
+            }
+
+            // Strip ~  before any others
+            if (path.StartsWith("~", StringComparison.InvariantCultureIgnoreCase))
+            {
+                path = path.Substring(1);
             }
 
             if (path.StartsWith(Delimiter))
