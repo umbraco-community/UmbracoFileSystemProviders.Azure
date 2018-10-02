@@ -15,7 +15,7 @@ install:
   - ps: >-
       $msiPath = "$($env:USERPROFILE)\MicrosoftAzureStorageEmulator.msi"
 
-      (New-Object Net.WebClient).DownloadFile('https://download.microsoft.com/download/F/3/8/F3857A38-D344-43B4-8E5B-2D03489909B9/MicrosoftAzureStorageEmulator.msi', $msiPath)
+      (New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/12905117/3bd7826884edd5468c8819a04e871dfe/MicrosoftAzureStorageEmulator.msi', $msiPath)
 
       cmd /c start /wait msiexec /i $msiPath /quiet
 
