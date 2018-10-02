@@ -29,7 +29,7 @@
       <!--
         Allows for TLS version to be specified for connections to blob storage, options are Tls, Tls11, Tls12
       -->
-      <add key="TlsVersion" value="Tls" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+      <add key="tlsVersion" value="Tls" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
     </Parameters>
   </Provider>
   <!--
