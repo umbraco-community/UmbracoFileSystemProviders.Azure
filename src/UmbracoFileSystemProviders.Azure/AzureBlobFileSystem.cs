@@ -9,7 +9,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.Collections.Generic;
     using System.Configuration;
     using System.IO;
-    using System.Net;
 
     using global::Umbraco.Core.IO;
 
@@ -138,7 +137,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     accessType = "true";
                 }
 
-	            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, accessType);
+                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, accessType);
             }
             else
             {
