@@ -113,7 +113,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             {
                 this.tlsVersion = SecurityProtocolType.Tls;
             }
-
             ServicePointManager.SecurityProtocol = this.tlsVersion;
 
             CloudStorageAccount cloudStorageAccount;

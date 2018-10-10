@@ -36,12 +36,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             string maxDays = "30";
             string useDefaultRoute = "true";
             string usePrivateContainer = "false";
-            string tlsVersion = "Tls12";
 
             Mock<ILogHelper> logHelper = new Mock<ILogHelper>();
             Mock<IMimeTypeResolver> mimeTypeHelper = new Mock<IMimeTypeResolver>();
 
-            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer, tlsVersion)
+            return new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer)
             {
                 FileSystem =
                 {
