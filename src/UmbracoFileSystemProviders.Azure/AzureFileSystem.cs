@@ -615,61 +615,61 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName.ToLowerInvariant());
-            if (!container.Exists())
+
+
+            if (cloudBlobClient.Credentials.IsSAS)
             {
-                if (cloudBlobClient.Credentials.IsSAS)
+                // Shared access signatures (SAS) have some limitations compared to shared access keys
+                // read more on: https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1
+                string[] sasTokenProperties = cloudBlobClient.Credentials.SASToken.Split("&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                bool isAccountSas = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("ss=")).FirstOrDefault() != null;
+
+                string allowedServices = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("ss=")).FirstOrDefault();
+                if (allowedServices != null)
                 {
-                    // Shared access signatures (SAS) have some limitations compared to shared access keys
-                    // read more on: https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1
-                    string[] sasTokenProperties = cloudBlobClient.Credentials.SASToken.Split("&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    bool isAccountSas = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("ss=")).FirstOrDefault() != null;
-
-                    string allowedServices = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("ss=")).FirstOrDefault();
-                    if (allowedServices != null)
-                    {
-                        allowedServices = allowedServices.Split('=')[1].ToLower();
-                    }
-                    else
-                    {
-                        allowedServices = string.Empty;
-                    }
-
-                    string resourceTypes = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("srt=")).FirstOrDefault();
-                    if (resourceTypes != null)
-                    {
-                        resourceTypes = resourceTypes.Split('=')[1].ToLower();
-                    }
-                    else
-                    {
-                        resourceTypes = string.Empty;
-                    }
-
-                    string permissions = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("sp=")).FirstOrDefault();
-                    if (permissions != null)
-                    {
-                        permissions = permissions.Split('=')[1].ToLower();
-                    }
-                    else
-                    {
-                        permissions = string.Empty;
-                    }
-
-                    bool canCreateContainer = allowedServices.Contains('b') && resourceTypes.Contains('c') && permissions.Contains('c');
-                    if (canCreateContainer)
-                    {
-                        container.CreateIfNotExists();
-
-                        // cannot set permissions with sas access
-                    }
+                    allowedServices = allowedServices.Split('=')[1].ToLower();
                 }
                 else
                 {
+                    allowedServices = string.Empty;
+                }
+
+                string resourceTypes = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("srt=")).FirstOrDefault();
+                if (resourceTypes != null)
+                {
+                    resourceTypes = resourceTypes.Split('=')[1].ToLower();
+                }
+                else
+                {
+                    resourceTypes = string.Empty;
+                }
+
+                string permissions = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("sp=")).FirstOrDefault();
+                if (permissions != null)
+                {
+                    permissions = permissions.Split('=')[1].ToLower();
+                }
+                else
+                {
+                    permissions = string.Empty;
+                }
+
+                bool canCreateContainer = allowedServices.Contains('b') && resourceTypes.Contains('c') && permissions.Contains('c');
+                if (canCreateContainer)
+                {
                     container.CreateIfNotExists();
-                    BlobContainerPermissions newPermissions = container.GetPermissions();
-                    newPermissions.PublicAccess = accessType;
-                    container.SetPermissions(newPermissions);
+
+                    // cannot set permissions with sas access
                 }
             }
+            else if (!container.Exists())
+            {
+                container.CreateIfNotExists();
+                BlobContainerPermissions newPermissions = container.GetPermissions();
+                newPermissions.PublicAccess = accessType;
+                container.SetPermissions(newPermissions);
+            }
+
 
             return container;
         }
