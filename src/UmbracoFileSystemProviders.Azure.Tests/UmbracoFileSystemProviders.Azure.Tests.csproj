@@ -262,6 +262,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureBlobFileSystemAbsoluteTests.cs" />
+    <Compile Include="AzureBlobFileSystemCommonTest.cs" />
     <Compile Include="AzureBlobFileSystemTestsBase.cs" />
     <Compile Include="AzureBlobFileSystemRelativeTests.cs" />
     <Compile Include="FileSystemVirtualPathProviderTests.cs" />
