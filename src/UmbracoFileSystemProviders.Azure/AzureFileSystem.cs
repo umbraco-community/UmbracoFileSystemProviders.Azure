@@ -83,6 +83,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="containerName"/> is null or whitespace.
         /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="connectionString"/> is invalid.
+        /// </exception>
         internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType accessType)
         {
             if (string.IsNullOrWhiteSpace(containerName))
@@ -111,6 +114,52 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
             this.cloudBlobContainer = CreateContainer(cloudBlobClient, containerName, accessType);
+            if (cloudStorageAccount.Credentials.IsSAS)
+            {
+                bool isValidSas = true;
+                var sasTokenParts = cloudStorageAccount.Credentials.SASToken.Split('&');
+                var si = sasTokenParts.Where(t => t.StartsWith("si=")).FirstOrDefault();
+                if (si != null)
+                {
+                    var siValue = si.Split('=')[1];
+
+                    // I could not find a way how to get the permissions of a referenced access policy
+                    // var permissions = this.cloudBlobContainer.GetPermissions(AccessCondition.GenerateIfExistsCondition());
+                }
+                else
+                {
+                    var sr = sasTokenParts.Where(t => t.StartsWith("sr=")).FirstOrDefault();
+                    var ss = sasTokenParts.Where(t => t.StartsWith("ss=")).FirstOrDefault();
+                    var srt = sasTokenParts.Where(t => t.StartsWith("srt=")).FirstOrDefault();
+                    var sp = sasTokenParts.Where(t => t.StartsWith("sp=")).FirstOrDefault();
+                    if ((ss == null || !ss.Contains("b")) && (sr == null || !sr.Contains("c")))
+                    {
+                        isValidSas = false;
+                    }
+                    else if (sp != null)
+                    {
+                        var value = sp.Split('=')[1].ToCharArray();
+                        if (!value.Contains('r') || !value.Contains('w') || !value.Contains('d') || !value.Contains('l'))
+                        {
+                            isValidSas = false;
+                        }
+                        else if (srt != null)
+                        {
+                            value = srt.Split('=')[1].ToCharArray();
+                            if (!value.Contains('s') || !value.Contains('c') || !value.Contains('o'))
+                            {
+                                isValidSas = false;
+                            }
+                        }
+                    }
+
+                }
+
+                if (!isValidSas)
+                {
+                    throw new Exception("SAS token permissions do NOT grant full functionality for UmbracoFileSystemProviders.Azure.");
+                }
+            }
 
             // First assign a local copy before editing. We use that to track the type.
             // TODO: Do we need this? The container should be an identifer.
@@ -184,20 +233,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
                 if (fileSystem == null)
                 {
-                    int max;
-                    if (!int.TryParse(maxDays, out max))
+                    if (!int.TryParse(maxDays, out int max))
                     {
                         max = 365;
                     }
 
-                    bool defaultRoute;
-                    if (!bool.TryParse(useDefaultRoute, out defaultRoute))
+                    if (!bool.TryParse(useDefaultRoute, out bool defaultRoute))
                     {
                         defaultRoute = true;
                     }
 
-                    bool privateContainer;
-                    if (!bool.TryParse(usePrivateContainer, out privateContainer))
+                    if (!bool.TryParse(usePrivateContainer, out bool privateContainer))
                     {
                         privateContainer = true;
                     }
@@ -628,14 +674,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName.ToLowerInvariant());
 
-
             if (cloudBlobClient.Credentials.IsSAS)
             {
                 // Shared access signatures (SAS) have some limitations compared to shared access keys
                 // read more on: https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1
                 string[] sasTokenProperties = cloudBlobClient.Credentials.SASToken.Split("&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 bool isAccountSas = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("ss=")).FirstOrDefault() != null;
-
                 string allowedServices = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("ss=")).FirstOrDefault();
                 if (allowedServices != null)
                 {
@@ -669,9 +713,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 bool canCreateContainer = allowedServices.Contains('b') && resourceTypes.Contains('c') && permissions.Contains('c');
                 if (canCreateContainer)
                 {
-                    container.CreateIfNotExists();
-
-                    // cannot set permissions with sas access
+                    container.CreateIfNotExists(accessType);
                 }
             }
             else if (!container.Exists())
@@ -681,7 +723,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 newPermissions.PublicAccess = accessType;
                 container.SetPermissions(newPermissions);
             }
-
 
             return container;
         }

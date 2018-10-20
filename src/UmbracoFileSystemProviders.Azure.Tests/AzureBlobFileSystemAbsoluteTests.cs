@@ -23,10 +23,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem(true);
 
             // Act
-            string actual = provider.GetUrl("1010/media.jpg");
+            string actual = provider.GetUrl("110/image.jpg");
 
             // Assert
-            Assert.AreEqual("http://127.0.0.1:10000/devstoreaccount1/media/1010/media.jpg", actual);
+            Assert.AreEqual($"{this.RootUrl}{this.ContainerName}/110/image.jpg", actual);
         }
 
         /// <summary>
@@ -40,10 +40,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem(true);
 
             // Act
-            string actual = provider.GetUrl("media/1010/media.jpg");
+            string actual = provider.GetUrl($"{this.ContainerName}/110/image.jpg");
 
             // Assert
-            Assert.AreEqual("http://127.0.0.1:10000/devstoreaccount1/media/1010/media.jpg", actual);
+            Assert.AreEqual($"{this.RootUrl}{this.ContainerName}/110/image.jpg", actual);
         }
     }
 }
