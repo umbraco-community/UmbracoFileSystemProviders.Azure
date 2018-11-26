@@ -714,6 +714,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 path = path.Substring(appVirtualPath.Length);
             }
 
+            // Strip ~  before any others
+            if (path.StartsWith("~", StringComparison.InvariantCultureIgnoreCase))
+            {
+                path = path.Substring(1);
+            }
+
             if (path.StartsWith(Delimiter))
             {
                 path = path.Substring(1);
