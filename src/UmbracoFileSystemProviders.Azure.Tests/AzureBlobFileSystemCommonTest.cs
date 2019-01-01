@@ -1,4 +1,4 @@
-﻿// <copyright file="AzureBlobFileSystemTestsBase.cs" company="James Jackson-South and contributors">
+﻿// <copyright file="AzureBlobFileSystemCommonTest.cs" company="James Jackson-South and contributors">
 // Copyright (c) James Jackson-South and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
