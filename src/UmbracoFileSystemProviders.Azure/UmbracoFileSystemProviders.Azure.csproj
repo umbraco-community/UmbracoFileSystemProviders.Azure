@@ -246,13 +246,13 @@
   <ItemGroup>
     <Compile Include="AzureBlobFileSystem.cs" />
     <Compile Include="AzureFileSystem.cs" />
+    <Compile Include="AzureFileSystemComponent.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Helpers\IMimeTypeResolver.cs" />
     <Compile Include="Helpers\MimeTypeResolver.cs" />
     <Compile Include="Helpers\WrappedLogHelper.cs" />
     <Compile Include="Helpers\ILogHelper.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
-    <Compile Include="VirtualPathProviderController.cs" />
     <Compile Include="FileSystemVirtualPathProvider.cs" />
     <Compile Include="FileSystemVirtualFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
