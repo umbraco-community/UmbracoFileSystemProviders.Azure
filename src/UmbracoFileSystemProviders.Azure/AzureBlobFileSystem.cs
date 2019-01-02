@@ -150,6 +150,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         internal AzureFileSystem FileSystem { get; }
 
+        public bool CanAddPhysical => throw new NotImplementedException();
+
         /// <summary>
         /// Adds a file to the file system.
         /// </summary>
@@ -344,6 +346,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public Stream OpenFile(string path)
         {
             return this.FileSystem.OpenFile(path);
+        }
+
+        /// <inheritdoc/>
+        public long GetSize(string path)
+        {
+            return this.FileSystem.GetSize(path);
+        }
+
+        /// <inheritdoc/>
+        public void AddFile(string path, string physicalPath, bool overrideIfExists = true, bool copy = false)
+        {
+            this.FileSystem.AddFile(path, physicalPath, overrideIfExists, copy);
         }
     }
 }

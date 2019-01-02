@@ -214,6 +214,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         public string ApplicationVirtualPath { get; internal set; } = HttpRuntime.AppDomainAppVirtualPath;
 
+        public bool CanAddPhysical => throw new NotImplementedException();
+
         /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
@@ -843,6 +845,20 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             return path.TrimStart(Delimiter.ToCharArray()).TrimEnd(Delimiter.ToCharArray());
+        }
+
+        /// <inheritdoc/>
+        public long GetSize(string path)
+        {
+            // TODO V8 implement
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public void AddFile(string path, string physicalPath, bool overrideIfExists = true, bool copy = false)
+        {
+            // TODO V8 implement
+            throw new NotImplementedException();
         }
     }
 }
