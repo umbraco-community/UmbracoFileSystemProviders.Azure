@@ -836,8 +836,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <inheritdoc/>
         public long GetSize(string path)
         {
-            // TODO V8 implement
-            throw new NotImplementedException();
+            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+
+            if (blockBlob != null)
+            {
+                return blockBlob.Properties.Length; //Gets the blob in bytes
+            }
+
+            return long.MinValue;
         }
 
         /// <inheritdoc/>
