@@ -17,14 +17,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using System.Xml;
     using Enums;
     using global::Umbraco.Core;
+    using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Logging;
+    using global::Umbraco.Core.Xml;
+    using global::Umbraco.Web._Legacy.PackageActions;
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.WebApi;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
-
     using Models;
-    using umbraco.cms.businesslogic.packager.standardPackageActions;
 
     /// <summary>
     /// The installer controller for managing installer logic.
@@ -191,8 +192,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             catch (Exception e)
             {
                 // Log error message
-                string message = "Error saving XDT Parameters: " + e.Message;
-                LogHelper.Error(typeof(InstallerController), message, e);
+                Current.Logger.Error<InstallerController>(e, "Error saving XDT Parameters");
             }
 
             return result;
@@ -230,8 +230,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             catch (Exception e)
             {
                 // Log error message
-                string message = "Error saving XDT Parameters: " + e.Message;
-                LogHelper.Error(typeof(InstallerController), message, e);
+                Current.Logger.Error<InstallerController>(e, "Error saving XDT Parameters");
             }
 
             return result;
@@ -292,8 +291,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             catch (Exception e)
             {
                 // Log error message
-                string message = "Error saving XDT Settings: " + e.Message;
-                LogHelper.Error(typeof(InstallerController), message, e);
+                Current.Logger.Error<InstallerController>(e, "Error saving XDT Parameters");
             }
 
             return result;
@@ -362,7 +360,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         private static bool ExecuteFileSystemConfigTransform()
         {
             XmlNode transFormConfigAction =
-                helper.parseStringToXmlNode("<Action runat=\"install\" "
+                PackageHelper.ParseStringToXmlNode("<Action runat=\"install\" "
                                             + "undo=\"true\" "
                                             + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
                                             + "file=\"~/Config/FileSystemProviders.config\" "
@@ -376,7 +374,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         private static bool ExecuteWebConfigTransform()
         {
             XmlNode transFormConfigAction =
-                helper.parseStringToXmlNode("<Action runat=\"install\" "
+                PackageHelper.ParseStringToXmlNode("<Action runat=\"install\" "
                                             + "undo=\"true\" "
                                             + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
                                             + "file=\"~/web.config\" "
@@ -392,7 +390,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             if (File.Exists(HttpContext.Current.Server.MapPath("~/Media/web.config")))
             {
                 XmlNode transFormConfigAction =
-    helper.parseStringToXmlNode("<Action runat=\"install\" "
+                    PackageHelper.ParseStringToXmlNode("<Action runat=\"install\" "
                                 + "undo=\"true\" "
                                 + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
                                 + "file=\"~/Media/web.config\" "
@@ -420,7 +418,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             }
 
             XmlNode transFormConfigAction =
-                helper.parseStringToXmlNode("<Action runat=\"install\" "
+                PackageHelper.ParseStringToXmlNode("<Action runat=\"install\" "
                                             + "undo=\"false\" "
                                             + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
                                             + "file=\"~/config/imageprocessor/security.config\" "
@@ -434,7 +432,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         private static bool ExecuteImageProcessorWebConfigTransform()
         {
             XmlNode transFormConfigAction =
-                helper.parseStringToXmlNode("<Action runat=\"install\" "
+                PackageHelper.ParseStringToXmlNode("<Action runat=\"install\" "
                                             + "undo=\"false\" "
                                             + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
                                             + "file=\"~/web.config\" "
@@ -463,7 +461,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             }
             catch (Exception e)
             {
-                LogHelper.Error<InstallerController>($"Error validating Azure storage connection: {e.Message}", e);
+                Current.Logger.Error<InstallerController>(e, "Error validating Azure storage connection");
                 return false;
             }
         }
