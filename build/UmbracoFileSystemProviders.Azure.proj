@@ -17,7 +17,7 @@
   <!-- SHARED PROPERTIES -->
   <PropertyGroup>
     <PackageName>UmbracoFileSystemProviders.Azure</PackageName>
-    <MinUmbracoVersion>7.1.9</MinUmbracoVersion>
+    <MinUmbracoVersion>8.0.0</MinUmbracoVersion>
     <Readme>An Azure Blob Storage IFileSystem provider for Umbraco.</Readme>
     <AuthorName>James Jackson-South, Dirk Seefeld, Lars-Erik Aabech, Jeavon Leopold</AuthorName>
     <AuthorUrl>https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/graphs/contributors</AuthorUrl>
