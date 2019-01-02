@@ -11,6 +11,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.Web;
     using System.Web.Compilation;
     using System.Web.Hosting;
+    using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.IO;
 
     /// <summary>
@@ -82,7 +83,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 throw new ArgumentNullException(nameof(pathPrefix));
             }
 
-            Lazy<IFileSystem> fileSystem = new Lazy<IFileSystem>(() => FileSystemProviderManager.Current.GetFileSystemProvider<TProviderTypeFilter>());
+            Lazy<IFileSystem> fileSystem = new Lazy<IFileSystem>(() => Current.FileSystems.GetFileSystemProvider<TProviderTypeFilter>());
             FileSystemVirtualPathProvider provider = new FileSystemVirtualPathProvider(pathPrefix, fileSystem);
 
             // The standard HostingEnvironment.RegisterVirtualPathProvider(virtualPathProvider) method is ignored when

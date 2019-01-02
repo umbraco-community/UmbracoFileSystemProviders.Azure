@@ -16,8 +16,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Web;
+    using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Configuration;
     using global::Umbraco.Core.IO;
+    using global::Umbraco.Core.Logging;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
 
@@ -174,14 +176,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             this.MaxDays = maxDays;
             this.UseDefaultRoute = useDefaultRoute;
 
-            this.LogHelper = new WrappedLogHelper();
             this.MimeTypeResolver = new MimeTypeResolver();
         }
-
-        /// <summary>
-        /// Gets or sets the log helper.
-        /// </summary>
-        public ILogHelper LogHelper { get; set; }
 
         /// <summary>
         /// Gets or sets the MIME type resolver.
@@ -277,7 +273,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 if (!overrideIfExists && exists)
                 {
                     InvalidOperationException error = new InvalidOperationException($"File already exists at {blockBlob.Uri}");
-                    this.LogHelper.Error<AzureBlobFileSystem>($"File already exists at {path}", error);
+                    Current.Logger.Error<AzureBlobFileSystem>(error, "File already exists as {Path}", path);
                     return;
                 }
 
@@ -325,7 +321,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 }
                 catch (Exception ex)
                 {
-                    this.LogHelper.Error<AzureBlobFileSystem>($"Unable to upload file at {path}", ex);
+                    Current.Logger.Error<AzureBlobFileSystem>(ex, "Unable to upload file at {Path}", path);
                 }
             }
         }
@@ -385,7 +381,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     }
                     catch (Exception ex)
                     {
-                        this.LogHelper.Error<AzureBlobFileSystem>($"Unable to delete directory at {path}", ex);
+                        Current.Logger.Error<AzureBlobFileSystem>(ex, "Unable to delete directory at {Path}", path);
                     }
                 }
 
@@ -422,7 +418,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 }
                 catch (Exception ex)
                 {
-                    this.LogHelper.Error<AzureBlobFileSystem>($"Unable to delete file at {path}", ex);
+                    Current.Logger.Error<AzureBlobFileSystem>(ex, "Unable to delete file at {Path}", path);
                 }
             }
         }
@@ -513,7 +509,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (!blobList.Any())
             {
-                this.LogHelper.Error<AzureFileSystem>("Blob not found", new DirectoryNotFoundException($"Blob not found at '{path}'"));
+                var ex = new DirectoryNotFoundException($"Blob not found at '{path}'");
+                Current.Logger.Error<AzureBlobFileSystem>(ex, "Blob not found at {Path}", path);
                 return Enumerable.Empty<string>();
             }
 
@@ -637,7 +634,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             {
                 if (!blockBlob.Exists())
                 {
-                    this.LogHelper.Info<AzureBlobFileSystem>($"No file exists at {path}.");
+                    Current.Logger.Info<AzureBlobFileSystem>("No file exists at {Path}", path);
                     return null;
                 }
 
