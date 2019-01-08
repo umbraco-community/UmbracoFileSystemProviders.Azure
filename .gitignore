@@ -4,7 +4,7 @@
 #VS 2015 hidden folder
 src/.vs/*
 
-build/tools/vswhere.2.0.2
+build/tools/vswhere*
 build/tools/vswhere.exe
 
 artifacts/*
