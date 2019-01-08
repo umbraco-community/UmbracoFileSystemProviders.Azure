@@ -16,9 +16,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// The configuration key for disabling the virtual path provider.
         /// </summary>
         private const string DisableVirtualPathProviderKey = Constants.Configuration.DisableVirtualPathProviderKey;
-        private readonly MediaFileSystem mediaFileSystem;
+        private readonly IMediaFileSystem mediaFileSystem;
 
-        public AzureFileSystemComponent(MediaFileSystem mediaFileSystem)
+        public AzureFileSystemComponent(IMediaFileSystem mediaFileSystem)
         {
             this.mediaFileSystem = mediaFileSystem;
         }
