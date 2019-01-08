@@ -10,20 +10,27 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using global::Umbraco.Core.Components;
     using global::Umbraco.Core.IO;
 
-    public class AzureFileSystemComponent : UmbracoComponentBase, IUmbracoUserComponent
+    public class AzureFileSystemComponent : IComponent
     {
         /// <summary>
         /// The configuration key for disabling the virtual path provider.
         /// </summary>
         private const string DisableVirtualPathProviderKey = Constants.Configuration.DisableVirtualPathProviderKey;
+        private readonly MediaFileSystem mediaFileSystem;
 
-        public void Initialize(FileSystems fileSystems)
+        public AzureFileSystemComponent(MediaFileSystem mediaFileSystem)
+        {
+            this.mediaFileSystem = mediaFileSystem;
+        }
+
+        public void Initialize()
         {
             bool disable = ConfigurationManager.AppSettings[DisableVirtualPathProviderKey] != null
                            && ConfigurationManager.AppSettings[DisableVirtualPathProviderKey]
                                                   .Equals("true", StringComparison.InvariantCultureIgnoreCase);
 
-            IFileSystem fileSystem = fileSystems.GetUnderlyingFileSystemProvider(Constants.DefaultMediaRoute);
+
+            IFileSystem fileSystem = this.mediaFileSystem.Unwrap();
             bool isAzureBlobFileSystem = fileSystem is AzureBlobFileSystem;
 
             if (!disable && isAzureBlobFileSystem)
@@ -40,6 +47,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     FileSystemVirtualPathProvider.ConfigureMedia(azureFileSystem.ContainerName);
                 }
             }
+        }
+
+        public void Terminate()
+        {
+
         }
     }
 }
