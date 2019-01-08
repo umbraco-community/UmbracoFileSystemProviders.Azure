@@ -336,6 +336,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             this.AddFile(path, stream, true);
         }
 
+        /// <inheritdoc/>
+        public void AddFile(string path, string physicalPath, bool overrideIfExists = true, bool copy = false)
+        {
+            //Valid as the property 'CanAddPhysical' is not implemented either
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Deletes the specified directory and, if indicated, any subdirectories and files in the directory.
         /// </summary>
@@ -608,6 +615,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             return this.ResolveUrl(path, true);
         }
 
+        /// <inheritdoc/>
+        public long GetSize(string path)
+        {
+            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+
+            if (blockBlob != null)
+            {
+                return blockBlob.Properties.Length;
+            }
+
+            return long.MinValue;
+        }
+
         /// <summary>
         /// Gets a <see cref="Stream"/> representing the file at the gieven path.
         /// </summary>
@@ -831,20 +851,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             return path.TrimStart(Delimiter.ToCharArray()).TrimEnd(Delimiter.ToCharArray());
-        }
-
-        /// <inheritdoc/>
-        public long GetSize(string path)
-        {
-            // TODO V8 implement
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public void AddFile(string path, string physicalPath, bool overrideIfExists = true, bool copy = false)
-        {
-            // TODO V8 implement
-            throw new NotImplementedException();
         }
     }
 }
