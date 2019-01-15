@@ -47,6 +47,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         private const string UsePrivateContainerKey = Constants.Configuration.UsePrivateContainer;
 
+
+        private AzureBlobFileSystemConfig config;
+
+        public AzureBlobFileSystem(AzureBlobFileSystemConfig config)
+        {
+            this.config = config;
+            this.FileSystem = AzureFileSystem.GetInstance(config.ContainerName, config.RootUrl, config.ConnectionString, config.MaxDays, config.UseDefaultRoute, config.UsePrivateContainer);
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
         /// </summary>
