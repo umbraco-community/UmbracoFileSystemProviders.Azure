@@ -274,7 +274,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureBlobFileSystem.cs" />
-    <Compile Include="AzureBlobFileSystemConfig.cs" />
     <Compile Include="AzureFileSystem.cs" />
     <Compile Include="AzureFileSystemComponent.cs" />
     <Compile Include="AzureFileSystemComposer.cs" />
