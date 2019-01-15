@@ -38,8 +38,7 @@
             if (string.IsNullOrEmpty(usePrivateContainer))
                 throw new ArgumentNullOrEmptyException("usePrivateContainer", $"The Azure File System is missing the value '{Constants.Configuration.UsePrivateContainer}' from AppSettings");
 
-
-            composition.RegisterFileSystem<IMediaFileSystem, MediaFileSystem>(_ => new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer));
+            composition.SetMediaFileSystem(_ => new AzureBlobFileSystem(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer));
             composition.Components().Append<AzureFileSystemComponent>();
         }
     }

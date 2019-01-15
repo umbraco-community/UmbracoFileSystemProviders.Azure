@@ -16,11 +16,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// The configuration key for disabling the virtual path provider.
         /// </summary>
         private const string DisableVirtualPathProviderKey = Constants.Configuration.DisableVirtualPathProviderKey;
-        private readonly IMediaFileSystem mediaFileSystem;
+        private readonly SupportingFileSystems supportingFileSystems;
 
-        public AzureFileSystemComponent(IMediaFileSystem mediaFileSystem)
+        public AzureFileSystemComponent(SupportingFileSystems supportingFileSystems)
         {
-            this.mediaFileSystem = mediaFileSystem;
+            this.supportingFileSystems = supportingFileSystems;
         }
 
         public void Initialize()
@@ -29,13 +29,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                            && ConfigurationManager.AppSettings[DisableVirtualPathProviderKey]
                                                   .Equals("true", StringComparison.InvariantCultureIgnoreCase);
 
-
-            IFileSystem fileSystem = this.mediaFileSystem.Unwrap();
-            bool isAzureBlobFileSystem = fileSystem is AzureBlobFileSystem;
-
-            if (!disable && isAzureBlobFileSystem)
+            var azureFs = this.supportingFileSystems.For<IMediaFileSystem>() as AzureBlobFileSystem;
+            if (!disable && azureFs != null)
             {
-                AzureFileSystem azureFileSystem = ((AzureBlobFileSystem)fileSystem).FileSystem;
+                AzureFileSystem azureFileSystem = azureFs.FileSystem;
 
                 // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                 if (azureFileSystem.UseDefaultRoute)
