@@ -42,7 +42,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                           + "undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
                           + "file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">"
                           + "</Action>";
-                return PackageHelper.ParseStringToXmlNode(xml);
+                //return PackageHelper.ParseStringToXmlNode(xml);
+                return null;
             }
 
             /// <inheritdoc/>
