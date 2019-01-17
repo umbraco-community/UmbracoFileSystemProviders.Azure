@@ -47,6 +47,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         private const string UsePrivateContainerKey = Constants.Configuration.UsePrivateContainer;
 
+
+        private AzureBlobFileSystemConfig config;
+
+        public AzureBlobFileSystem(AzureBlobFileSystemConfig config)
+        {
+            this.config = config;
+            this.FileSystem = AzureFileSystem.GetInstance(config.ContainerName, config.RootUrl, config.ConnectionString, config.MaxDays, config.UseDefaultRoute, config.UsePrivateContainer);
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
         /// </summary>
@@ -149,6 +158,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// Gets a singleton instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
         internal AzureFileSystem FileSystem { get; }
+
+        public bool CanAddPhysical => throw new NotImplementedException();
 
         /// <summary>
         /// Adds a file to the file system.
@@ -344,6 +355,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public Stream OpenFile(string path)
         {
             return this.FileSystem.OpenFile(path);
+        }
+
+        /// <inheritdoc/>
+        public long GetSize(string path)
+        {
+            return this.FileSystem.GetSize(path);
+        }
+
+        /// <inheritdoc/>
+        public void AddFile(string path, string physicalPath, bool overrideIfExists = true, bool copy = false)
+        {
+            this.FileSystem.AddFile(path, physicalPath, overrideIfExists, copy);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.Web;
     using System.Web.Compilation;
     using System.Web.Hosting;
+    using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.IO;
 
     /// <summary>
@@ -68,21 +69,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="pathPrefix">
         /// The path prefix.
         /// </param>
-        /// <typeparam name="TProviderTypeFilter">
-        /// The provider type filter.
-        /// </typeparam>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="pathPrefix"/> is null.
         /// </exception>
-        public static void Configure<TProviderTypeFilter>(string pathPrefix = Constants.DefaultMediaRoute)
-            where TProviderTypeFilter : FileSystemWrapper
+        public static void Configure(string pathPrefix = Constants.DefaultMediaRoute)
         {
             if (string.IsNullOrEmpty(pathPrefix))
             {
                 throw new ArgumentNullException(nameof(pathPrefix));
             }
 
-            Lazy<IFileSystem> fileSystem = new Lazy<IFileSystem>(() => FileSystemProviderManager.Current.GetFileSystemProvider<TProviderTypeFilter>());
+            Lazy<IFileSystem> fileSystem = new Lazy<IFileSystem>(() => Current.MediaFileSystem.Unwrap());
             FileSystemVirtualPathProvider provider = new FileSystemVirtualPathProvider(pathPrefix, fileSystem);
 
             // The standard HostingEnvironment.RegisterVirtualPathProvider(virtualPathProvider) method is ignored when
@@ -125,7 +122,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Resharper seems drunk.")]
         public static void ConfigureMedia(string pathPrefix = Constants.DefaultMediaRoute)
         {
-            Configure<MediaFileSystem>(pathPrefix);
+            Configure(pathPrefix);
         }
 
         /// <summary>

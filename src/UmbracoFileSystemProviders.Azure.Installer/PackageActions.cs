@@ -7,11 +7,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using System;
     using System.Web;
     using System.Xml;
-
+    using global::Umbraco.Core._Legacy.PackageActions;
+    using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Logging;
+    using global::Umbraco.Web._Legacy.PackageActions;
     using Microsoft.Web.XmlTransform;
-    using umbraco.cms.businesslogic.packager.standardPackageActions;
-    using umbraco.interfaces;
 
     /// <summary>
     /// Handles installer package actions.
@@ -42,7 +42,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                           + "undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
                           + "file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">"
                           + "</Action>";
-                return helper.parseStringToXmlNode(xml);
+                //return PackageHelper.ParseStringToXmlNode(xml);
+                return null;
             }
 
             /// <inheritdoc/>
@@ -97,8 +98,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                                 catch (Exception e)
                                 {
                                     // Log error message
-                                    string message = "Error executing TransformConfig package action (check file write permissions): " + e.Message;
-                                    LogHelper.Error(typeof(TransformConfig), message, e);
+                                    Current.Logger.Error<TransformConfig>(e, "Error executing TransformConfig package action (check file write permissions)");
                                     return false;
                                 }
                             }

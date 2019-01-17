@@ -1,4 +1,4 @@
-﻿// <copyright file="AzureBlobFileSystemTestsBase.cs" company="James Jackson-South and contributors">
+﻿// <copyright file="AzureBlobFileSystemCommonTest.cs" company="James Jackson-South and contributors">
 // Copyright (c) James Jackson-South and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
@@ -113,7 +113,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             string actual = provider.GetRelativePath("1010/image.jpg");
 
             // Assert
-            Assert.AreEqual($"/{this.ContainerName}/1010/image.jpg", actual);
+            Assert.AreEqual($"1010/image.jpg", actual);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             string actual = provider.GetRelativePath("1010/image.jpg");
 
             // Assert
-            Assert.AreEqual($"/test/{this.ContainerName}/1010/image.jpg", actual);
+            Assert.AreEqual($"1010/image.jpg", actual);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             string actual = provider.GetRelativePath($"{this.ContainerName}/1010/image.jpg");
 
             // Assert
-            Assert.AreEqual($"/{this.ContainerName}/1010/image.jpg", actual);
+            Assert.AreEqual($"1010/image.jpg", actual);
         }
 
         /// <summary>

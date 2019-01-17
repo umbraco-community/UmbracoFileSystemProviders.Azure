@@ -81,14 +81,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
 #else
             connectionString = connectionString ?? "UseDevelopmentStorage=true";
 #endif
-            Mock<ILogHelper> logHelper = new Mock<ILogHelper>();
             Mock<IMimeTypeResolver> mimeTypeHelper = new Mock<IMimeTypeResolver>();
-
-            if (logHelper.Object == null)
-            {
-                throw new Exception("logHelper.Object null");
-            }
-
+            
             if (mimeTypeHelper.Object == null)
             {
                 throw new Exception("mimeTypeHelper.Object null");
@@ -98,7 +92,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             {
                 FileSystem =
                 {
-                    LogHelper = logHelper.Object,
                     MimeTypeResolver = mimeTypeHelper.Object,
                     DisableVirtualPathProvider = disableVirtualPathProvider,
                     ApplicationVirtualPath = appVirtualPath

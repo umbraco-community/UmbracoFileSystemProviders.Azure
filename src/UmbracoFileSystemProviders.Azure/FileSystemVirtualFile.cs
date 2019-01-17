@@ -9,7 +9,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.IO;
     using System.Web;
     using System.Web.Hosting;
-
+    using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.IO;
 
     /// <summary>
@@ -28,6 +28,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="virtualPath">The virtual path.</param>
         /// <param name="fileSystem">The lazy file system implementation.</param>
         /// <param name="fileSystemPath">The modified file system path.</param>
+        /// <param name="fileSystems"></param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="fileSystem"/> is null.
         /// </exception>
@@ -68,7 +69,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 // Add Accept-Ranges header to fix videos not playing on Safari
                 HttpContext.Current.Response.AppendHeader("Accept-Ranges", "bytes");
 
-                IFileSystem azureBlobFileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider("media");
+                IFileSystem azureBlobFileSystem = Current.MediaFileSystem.Unwrap();
                 int maxDays = ((AzureBlobFileSystem)azureBlobFileSystem).FileSystem.MaxDays;
 
                 cache.SetExpires(DateTime.Now.ToUniversalTime().AddDays(maxDays));

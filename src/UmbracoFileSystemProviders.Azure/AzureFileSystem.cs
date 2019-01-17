@@ -16,8 +16,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Web;
+    using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Configuration;
     using global::Umbraco.Core.IO;
+    using global::Umbraco.Core.Logging;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
 
@@ -152,7 +154,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                             }
                         }
                     }
-
                 }
 
                 if (!isValidSas)
@@ -175,14 +176,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             this.MaxDays = maxDays;
             this.UseDefaultRoute = useDefaultRoute;
 
-            this.LogHelper = new WrappedLogHelper();
             this.MimeTypeResolver = new MimeTypeResolver();
         }
-
-        /// <summary>
-        /// Gets or sets the log helper.
-        /// </summary>
-        public ILogHelper LogHelper { get; set; }
 
         /// <summary>
         /// Gets or sets the MIME type resolver.
@@ -214,6 +209,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// Gets or sets func to calculate application virtual path
         /// </summary>
         public string ApplicationVirtualPath { get; internal set; } = HttpRuntime.AppDomainAppVirtualPath;
+
+        public bool CanAddPhysical => throw new NotImplementedException();
 
         /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
@@ -276,7 +273,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 if (!overrideIfExists && exists)
                 {
                     InvalidOperationException error = new InvalidOperationException($"File already exists at {blockBlob.Uri}");
-                    this.LogHelper.Error<AzureBlobFileSystem>($"File already exists at {path}", error);
+                    Current.Logger.Error<AzureBlobFileSystem>(error, "File already exists as {Path}", path);
                     return;
                 }
 
@@ -324,7 +321,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 }
                 catch (Exception ex)
                 {
-                    this.LogHelper.Error<AzureBlobFileSystem>($"Unable to upload file at {path}", ex);
+                    Current.Logger.Error<AzureBlobFileSystem>(ex, "Unable to upload file at {Path}", path);
                 }
             }
         }
@@ -337,6 +334,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public void AddFile(string path, Stream stream)
         {
             this.AddFile(path, stream, true);
+        }
+
+        /// <inheritdoc/>
+        public void AddFile(string path, string physicalPath, bool overrideIfExists = true, bool copy = false)
+        {
+            //Valid as the property 'CanAddPhysical' is not implemented either
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -384,7 +388,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     }
                     catch (Exception ex)
                     {
-                        this.LogHelper.Error<AzureBlobFileSystem>($"Unable to delete directory at {path}", ex);
+                        Current.Logger.Error<AzureBlobFileSystem>(ex, "Unable to delete directory at {Path}", path);
                     }
                 }
 
@@ -421,7 +425,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 }
                 catch (Exception ex)
                 {
-                    this.LogHelper.Error<AzureBlobFileSystem>($"Unable to delete file at {path}", ex);
+                    Current.Logger.Error<AzureBlobFileSystem>(ex, "Unable to delete file at {Path}", path);
                 }
             }
         }
@@ -512,7 +516,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             if (!blobList.Any())
             {
-                this.LogHelper.Error<AzureFileSystem>("Blob not found", new DirectoryNotFoundException($"Blob not found at '{path}'"));
+                var ex = new DirectoryNotFoundException($"Blob not found at '{path}'");
+                Current.Logger.Error<AzureBlobFileSystem>(ex, "Blob not found at {Path}", path);
                 return Enumerable.Empty<string>();
             }
 
@@ -587,20 +592,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <returns>
         /// The <see cref="string"/> representing the relative path.
         /// </returns>
-        /// <remarks>
-        /// Umbraco 7.5.15 changed the way that relative paths are used for media upload. 
-        /// This is the fixing issue where uploading file to replace creates new folder.
-        /// </remarks>
         public string GetRelativePath(string fullPathOrUrl)
         {
-            var lastSafeVersion = new Version(7, 5, 14);
-  
-            if (UmbracoVersion.Current.CompareTo(lastSafeVersion) > 0)
-            {
-                return this.FixPath(fullPathOrUrl);
-            }
-
-            return this.ResolveUrl(fullPathOrUrl, true);
+            return this.FixPath(fullPathOrUrl);
         }
 
         /// <summary>
@@ -621,6 +615,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             return this.ResolveUrl(path, true);
         }
 
+        /// <inheritdoc/>
+        public long GetSize(string path)
+        {
+            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+
+            if (blockBlob != null)
+            {
+                return blockBlob.Properties.Length;
+            }
+
+            return long.MinValue;
+        }
+
         /// <summary>
         /// Gets a <see cref="Stream"/> representing the file at the gieven path.
         /// </summary>
@@ -636,7 +643,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             {
                 if (!blockBlob.Exists())
                 {
-                    this.LogHelper.Info<AzureBlobFileSystem>($"No file exists at {path}.");
+                    Current.Logger.Info<AzureBlobFileSystem>("No file exists at {Path}", path);
                     return null;
                 }
 
