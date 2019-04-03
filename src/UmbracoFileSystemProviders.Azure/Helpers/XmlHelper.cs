@@ -1,4 +1,4 @@
-﻿namespace Our.Umbraco.FileSystemProviders.Azure.Helpers
+﻿namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
     using System.Collections.Generic;

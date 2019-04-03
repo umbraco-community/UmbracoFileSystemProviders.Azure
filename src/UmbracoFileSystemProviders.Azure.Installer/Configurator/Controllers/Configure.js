@@ -5,8 +5,8 @@
     $scope.saved = false;
 
     // Ajax request to controller for data-
-    $http.get(getDataUrl).success(function (data) {
-        $scope.parameters = data;
+    $http.get(getDataUrl).then(function (response) {
+        $scope.parameters = response.data;
     });
 
     $scope.submitForm = function (e) {
