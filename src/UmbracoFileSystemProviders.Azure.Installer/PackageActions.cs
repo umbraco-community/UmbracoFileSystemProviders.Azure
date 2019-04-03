@@ -2,15 +2,19 @@
 // Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
+
 namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 {
     using System;
     using System.Web;
     using System.Xml;
-    using global::Umbraco.Core._Legacy.PackageActions;
+    using System.Xml.Linq;
+
     using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Logging;
-    using global::Umbraco.Web._Legacy.PackageActions;
+    using global::Umbraco.Core.PackageActions;
+    using global::Umbraco.Core;
+
     using Microsoft.Web.XmlTransform;
 
     /// <summary>
@@ -30,7 +34,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             }
 
             /// <inheritdoc/>
-            public bool Execute(string packageName, XmlNode xmlData)
+            public bool Execute(string packageName, XElement xmlData)
             {
                 return this.Transform(packageName, xmlData);
             }
@@ -47,7 +51,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             }
 
             /// <inheritdoc/>
-            public bool Undo(string packageName, XmlNode xmlData)
+            public bool Undo(string packageName, XElement xmlData)
             {
                 return this.Transform(packageName, xmlData, true);
             }
@@ -59,12 +63,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             /// <param name="xmlData">The XML data</param>
             /// <param name="uninstall">Whether to uninstall.</param>
             /// <returns><c>true</c> if the transform is sucessful.</returns>
-            private bool Transform(string packageName, XmlNode xmlData, bool uninstall = false)
+            private bool Transform(string packageName, XElement xmlData, bool uninstall = false)
             {
                 // The config file we want to modify
-                if (xmlData.Attributes != null)
+                if (xmlData.Attributes() != null)
                 {
-                    string file = xmlData.Attributes.GetNamedItem("file").Value;
+                    var file = AttributeValue<string>(xmlData, "file");
 
                     string sourceDocFileName = VirtualPathUtility.ToAbsolute(file);
 
@@ -74,8 +78,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                     {
                         fileEnd = $"un{fileEnd}";
                     }
-
-                    string xdtfile = $"{xmlData.Attributes.GetNamedItem("xdtfile").Value}.{fileEnd}";
+                    
+                    string xdtfile = $"{AttributeValue<string>(xmlData, "xdtfile")}.{fileEnd}";
                     string xdtFileName = VirtualPathUtility.ToAbsolute(xdtfile);
 
                     // The translation at-hand
@@ -107,6 +111,22 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 }
 
                 return true;
+            }
+
+            public static T AttributeValue<T>(XElement xml, string attributeName)
+            {
+                if (xml == null) throw new ArgumentNullException("xml");
+                if (xml.HasAttributes == false) return default(T);
+
+                if (xml.Attribute(attributeName) == null)
+                    return default(T);
+
+                var val = xml.Attribute(attributeName).Value;
+                var result = val.TryConvertTo<T>();
+                if (result.Success)
+                    return result.Result;
+
+                return default(T);
             }
         }
     }

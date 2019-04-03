@@ -20,17 +20,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Logging;
     using global::Umbraco.Core.Xml;
-    using global::Umbraco.Web._Legacy.PackageActions;
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.WebApi;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
     using Models;
+    using System.Runtime.CompilerServices;
+    using Our.Umbraco.FileSystemProviders.Azure.Helpers;
 
     /// <summary>
     /// The installer controller for managing installer logic.
     /// </summary>
     [PluginController("FileSystemProviders")]
+
     public class InstallerController : UmbracoAuthorizedApiController
     {
         private static readonly string ImageProcessorWebAssemblyPath = HostingEnvironment.MapPath(Constants.ImageProcessor.WebAssemblyPath);

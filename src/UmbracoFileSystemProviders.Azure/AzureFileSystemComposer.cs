@@ -3,7 +3,6 @@
     using System;
     using System.Configuration;
     using global::Umbraco.Core;
-    using global::Umbraco.Core.Components;
     using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Exceptions;
 

@@ -16,7 +16,8 @@
         <language></language>
         <tags></tags>
         <dependencies>
-            <dependency id="UmbracoCms.Core" version="0.0.0" />
+            <dependency id="UmbracoCms.Core" version="8.0.1" />
+            <dependency id="UmbracoCms.Web" version="8.0.1" />
             <dependency id="WindowsAzure.Storage" version="8.7.0" />
             <dependency id="Microsoft.WindowsAzure.ConfigurationManager" version="3.2.3" />
             <dependency id="Microsoft.Azure.KeyVault.Core" version="2.0.4" />

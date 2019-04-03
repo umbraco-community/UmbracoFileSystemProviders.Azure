@@ -2,10 +2,9 @@
 // Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
-
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
-    using global::Umbraco.Core.Components;
+    using global:: Umbraco.Core.Composing;
     using global::Umbraco.Core.IO;
 
     public class AzureFileSystemComponent : IComponent
