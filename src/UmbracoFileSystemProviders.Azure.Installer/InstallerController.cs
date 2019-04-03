@@ -332,8 +332,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         /// <param name="xmlPath">The file path</param>
         /// <returns>The <see cref="IEnumerable{Parameter}"/>.</returns>
         internal static IEnumerable<Parameter> GetParametersFromXml(string xmlPath)
-        {
+        {           
             List<Parameter> settings = new List<Parameter>();
+
+            // *** TEMP for testing ***
+
+            settings.Add(new Parameter(){Key = "ContainerName", Value = ""});
+            settings.Add(new Parameter() { Key = "ConnectionString", Value = "" });
+            return settings;
+
+
             XmlDocument document = XmlHelper.OpenAsXmlDocument(xmlPath);
 
             XmlNodeList parameters = document.SelectNodes($"//Provider[@type = '{Constants.ProviderType}']/Parameters/add");

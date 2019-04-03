@@ -1,6 +1,4 @@
-﻿var configApp = angular.module("UFSPLoader", []);
-
-configApp.controller("Loader", function ($scope, $http, $log) {
+﻿angular.module("umbraco").controller("Loader", function ($scope, $http, $log) {
     var getDataUrl = "/Umbraco/backoffice/FileSystemProviders/Installer/GetParameters";
     var postDataUrl = "/Umbraco/backoffice/FileSystemProviders/Installer/PostParameters";
 

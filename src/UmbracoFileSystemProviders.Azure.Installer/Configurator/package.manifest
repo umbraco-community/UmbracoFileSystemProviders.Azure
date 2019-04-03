@@ -1,0 +1,5 @@
+﻿{
+    "javascript": [
+        "/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Controllers/Configure.js"
+    ]
+}

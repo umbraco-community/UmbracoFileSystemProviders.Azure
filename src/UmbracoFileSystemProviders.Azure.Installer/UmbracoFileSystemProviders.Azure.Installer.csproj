@@ -305,6 +305,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Configurator\package.manifest" />
     <None Include="config\imageprocessor\cache.config" />
     <None Include="config\imageprocessor\processing.config" />
     <None Include="config\imageprocessor\security.config" />
@@ -316,9 +317,7 @@
   <ItemGroup>
     <Content Include="Configurator\Controllers\Configure.js" />
     <Content Include="Configurator\Views\checkbox.htm" />
-    <Content Include="Configurator\Views\Configure.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
+    <Content Include="Configurator\Views\configure.htm" />
     <Content Include="Configurator\Views\textfield.htm" />
   </ItemGroup>
   <ItemGroup>

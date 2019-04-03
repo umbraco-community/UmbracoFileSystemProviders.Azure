@@ -11,17 +11,22 @@
     {
         public void Compose(Composition composition)
         {
-            //Configuration
-            var config = CreateConfiguration();
+            // if no connectionString appSetting then Umbraco installer hasn't completed yet
+            var connectionString = ConfigurationManager.AppSettings[Constants.Configuration.ConnectionStringKey];
+            if (connectionString != null)
+            {
+                //Configuration
+                var config = CreateConfiguration();
 
-            //Reads config from AppSetting keys
-            composition.RegisterUnique(config);
+                //Reads config from AppSetting keys
+                composition.RegisterUnique(config);
 
-            //Set the Media FS to use our Azure FS with our config from AppSettings
-            composition.SetMediaFileSystem(_ => new AzureBlobFileSystem(config));
+                //Set the Media FS to use our Azure FS with our config from AppSettings
+                composition.SetMediaFileSystem(_ => new AzureBlobFileSystem(config));
 
-            //Register component that deals with the VirtualPathProvider
-            composition.Components().Append<AzureFileSystemComponent>();
+                //Register component that deals with the VirtualPathProvider
+                composition.Components().Append<AzureFileSystemComponent>();
+            }        
         }
 
         private AzureBlobFileSystemConfig CreateConfiguration()
