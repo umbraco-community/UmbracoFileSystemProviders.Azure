@@ -295,9 +295,10 @@
     <Compile Include="AzureBlobFileSystem.cs" />
     <Compile Include="AzureBlobFileSystemConfig.cs" />
     <Compile Include="AzureFileSystem.cs" />
-    <Compile Include="AzureFileSystemComponent.cs" />
-    <Compile Include="AzureFileSystemComposer.cs" />
+    <Compile Include="AzureMediaFileSystemComponent.cs" />
+    <Compile Include="AzureMediaFileSystemComposer.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Helpers\IMimeTypeResolver.cs" />
     <Compile Include="Helpers\MimeTypeResolver.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />

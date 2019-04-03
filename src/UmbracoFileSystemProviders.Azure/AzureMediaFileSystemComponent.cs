@@ -7,13 +7,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using global:: Umbraco.Core.Composing;
     using global::Umbraco.Core.IO;
 
-    public class AzureFileSystemComponent : IComponent
+    public class AzureMediaFileSystemComponent : IComponent
     {
 
         private readonly SupportingFileSystems supportingFileSystems;
         private readonly AzureBlobFileSystemConfig config;
 
-        public AzureFileSystemComponent(SupportingFileSystems supportingFileSystems, AzureBlobFileSystemConfig config)
+        public AzureMediaFileSystemComponent(SupportingFileSystems supportingFileSystems, AzureBlobFileSystemConfig config)
         {
             this.supportingFileSystems = supportingFileSystems;
             this.config = config;
