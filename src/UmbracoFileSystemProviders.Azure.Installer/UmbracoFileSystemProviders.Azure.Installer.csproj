@@ -316,9 +316,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Configurator\Controllers\Configure.js" />
-    <Content Include="Configurator\Views\checkbox.htm" />
     <Content Include="Configurator\Views\configure.htm" />
-    <Content Include="Configurator\Views\textfield.htm" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UmbracoFileSystemProviders.Azure\UmbracoFileSystemProviders.Azure.csproj">

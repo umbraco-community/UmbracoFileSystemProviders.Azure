@@ -12,19 +12,34 @@
         <div>
             <fieldset>
                 <legend><h4>To complete installation, please enter the required parameters for the Azure storage provider below</h4></legend>
-                <form name="paramForm" class="form-horizontal" role="form">
+                <ng-form name="paramForm" class="form-horizontal" role="form">
                     <div ng-repeat="param in parameters" class="control-group">
-                        <ng-form name="form">
-                            <label class="control-label" for="{{param.key}}" style="width:160px">{{ capitalizeFirstLetter(param.key) }}</label>
-                            <div class="controls">
-                                <span ng-if="getInputType(param.key) === 'checkbox'" ng-include="'/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/checkbox.htm'"></span>
-                                <span ng-if="getInputType(param.key) === 'text'" ng-include="'/App_Plugins/UmbracoFileSystemProviders/Azure/Install/Configurator/Views/textfield.htm'"></span>
-                            </div>
-                            <span data-ng-show="{{'form.' + param.key + '.$dirty && form.' + param.key + '.$error.required'}}">Required!</span>
-                        </ng-form>
+                        <label class="control-label" for="{{param.key}}" style="width:160px">{{ capitalizeFirstLetter(param.key) }}</label>
+                        <div class="controls">
+                            <span ng-if="getInputType(param.key) === 'checkbox'">
+                                <input class="input-block-level"
+                                       style="width:600px"
+                                       name="{{param.key}}"
+                                       type="checkbox"
+                                       ng-model="param.value"
+                                       ng-true-value="'true'"
+                                       ng-false-value="'false'"
+                                       ng-init="param.value">
+                            </span>
+                            <span ng-if="getInputType(param.key) === 'text'">
+                                <input class="input-block-level"
+                                       style="width:600px"
+                                       name="{{param.key}}"
+                                       type="text"
+                                       ng-model="param.value"
+                                       required>
+                            </span>
+                        </div>
+                        <span data-ng-show="{{'paramForm.' + param.key + '.$dirty && paramForm.' + param.key + '.$error.required'}}">Required!</span>
+
                     </div>
-                    <button preventDefault class="btn btn-primary" ng-disabled="paramForm.$invalid" ng-click="submitForm($event)">Save</button>
-                </form>
+                    <button preventDefault class="btn btn-primary" ng-click="paramForm.$valid && submitForm($event)">Save</button>
+                </ng-form>
             </fieldset>
         </div>
     </div>
