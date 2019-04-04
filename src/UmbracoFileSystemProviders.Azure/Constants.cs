@@ -21,6 +21,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public static class Configuration
         {
             /// <summary>
+            /// The prefix for all appSettings
+            /// </summary>
+            public const string ConfigrationSettingPrefix = "AzureBlobFileSystem";
+            
+            /// <summary>
             /// The configuration key for disabling the virtual path provider.
             /// </summary>
             public const string DisableVirtualPathProviderKey = "AzureBlobFileSystem.DisableVirtualPathProvider";

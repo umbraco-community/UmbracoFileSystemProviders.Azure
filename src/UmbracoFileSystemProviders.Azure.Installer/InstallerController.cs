@@ -45,8 +45,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         private readonly string fileSystemProvidersConfigPath = HostingEnvironment.MapPath($"{Constants.UmbracoConfigPath}{Constants.FileSystemProvidersConfigFile}");
 
         private readonly string webConfigXdtPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.WebConfigFile}.install.xdt");
+        private readonly string webConfigPath = HostingEnvironment.MapPath($"/{Constants.WebConfigFile}");
+
 
         private readonly string mediaWebConfigXdtPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.MediaWebConfigXdtFile}.install.xdt");
+
+        public InstallerController()
+        {
+
+        }
 
         /// <summary>
         /// Gets the parameters from the XDT transform file.
@@ -57,7 +64,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         /// <returns>The <see cref="IEnumerable{Parameter}"/></returns>
         public IEnumerable<Parameter> GetParameters()
         {
-            return GetParametersFromXdt(this.fileSystemProvidersConfigInstallXdtPath, this.fileSystemProvidersConfigPath);
+            return GetParametersFromXdt(this.webConfigXdtPath, this.webConfigPath);
         }
 
         /// <summary>
@@ -304,9 +311,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
         /// <returns>The <see cref="IEnumerable{Parameter}"/>.</returns>
         internal static IEnumerable<Parameter> GetParametersFromXdt(string xdtPath, string configPath)
         {
-            // For package upgrades check for configured values in existing FileSystemProviders.config and merge with the Parameters from the XDT file (there could be new ones)
-            List<Parameter> xdtParameters = GetParametersFromXml(xdtPath).ToList();
-            List<Parameter> currentConfigParameters = GetParametersFromXml(configPath).ToList();
+            // For package upgrades check for configured values in existing Web.Config and merge with the settings from the XDT file (there could be new ones)
+            List<Parameter> xdtParameters = GetAppSettingsFromConfig(xdtPath).ToList();
+            List<Parameter> currentConfigParameters = GetAppSettingsFromConfig(configPath).ToList();
 
             foreach (Parameter parameter in xdtParameters)
             {
@@ -320,7 +327,46 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 }
             }
 
+            foreach (var setting in xdtParameters)
+            {
+                setting.Key = setting.Key.TrimEnd(":media");
+                setting.Key = setting.Key.TrimStart($"{Azure.Constants.Configuration.ConfigrationSettingPrefix}.");
+            }
+
             return xdtParameters;
+        }
+
+        /// <summary>
+        /// Gets the parameter collection from the XML file.
+        /// </summary>
+        /// <param name="xmlPath">The file path</param>
+        /// <returns>The <see cref="IEnumerable{Parameter}"/>.</returns>
+        internal static IEnumerable<Parameter> GetAppSettingsFromConfig(string xmlPath)
+        {
+            List<Parameter> settings = new List<Parameter>();
+
+            XmlDocument document = XmlHelper.OpenAsXmlDocument(xmlPath);
+
+            XmlNodeList parameters = document.SelectNodes($"//appSettings/add");
+
+            if (parameters == null)
+            {
+                return settings;
+            }
+
+            foreach (XmlElement parameter in parameters)
+            {
+                if (parameter.GetAttribute("key").StartsWith(Azure.Constants.Configuration.ConfigrationSettingPrefix) && parameter.GetAttribute("key").EndsWith($":{Constants.MediaProviderPostFix}"))
+                {
+                    settings.Add(new Parameter
+                    {
+                        Key = parameter.GetAttribute("key"),
+                        Value = parameter.GetAttribute("value")
+                    });
+                }
+            }
+
+            return settings;
         }
 
         /// <summary>

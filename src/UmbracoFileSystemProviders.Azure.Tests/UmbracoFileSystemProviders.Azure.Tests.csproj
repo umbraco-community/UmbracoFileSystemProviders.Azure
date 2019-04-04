@@ -314,6 +314,7 @@
     <None Include="FileSystemProviders.upgrade.config" />
     <None Include="packages.config" />
     <AdditionalFiles Include="stylecop.json" />
+    <None Include="web.default.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UmbracoFileSystemProviders.Azure.Installer\UmbracoFileSystemProviders.Azure.Installer.csproj">

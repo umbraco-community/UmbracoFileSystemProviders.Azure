@@ -53,8 +53,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         [Test]
         public void CheckNewInstallDefaultConfig()
         {
-            IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXdt("..\\..\\build\\transforms\\FileSystemProviders.config.install.xdt", "FileSystemProviders.default.config");
-            Assert.AreEqual("http://[myAccountName].blob.core.windows.net/", parameters.Single(k => k.Key == "rootUrl").Value);
+            IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXdt("..\\..\\build\\transforms\\web.config.install.xdt", "web.default.config");
+            Assert.AreEqual("https://[myAccountName].blob.core.windows.net/", parameters.Single(k => k.Key == "RootUrl").Value);
+        }
+
+        [Test]
+        public void CheckGetAppSettingsFromXDT()
+        {
+            IEnumerable<Parameter> settings = InstallerController.GetAppSettingsFromConfig("..\\..\\build\\transforms\\web.config.install.xdt");
+            Assert.AreEqual(6, settings.Count());
         }
     }
 }

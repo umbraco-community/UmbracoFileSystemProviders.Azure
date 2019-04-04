@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.FileSystemProviders.Azure
+﻿// Duplicated from Umbraco source code as XmlHelper is internal in v8, can be removed in v8.1 as has been made public
+
+namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
     using System.Collections.Generic;

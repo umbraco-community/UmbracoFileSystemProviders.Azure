@@ -10,6 +10,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     /// </summary>
     public static class Constants
     {
+        public const string MediaProviderPostFix = "media";
         /// <summary>
         /// The installer path for the plugin.
         /// </summary>
