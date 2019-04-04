@@ -13,14 +13,10 @@
         e.preventDefault();
 
         $http.post(postDataUrl, $scope.parameters)
-            .success(function (data) {
+            .then(function (response) {
 
-                var status;
-                if (typeof data === "string") {
-                    status = JSON.parse(data);
-                } else {
-                    status = data;
-                }
+                var status;              
+                status = response.data;
 
                 $scope.status = status;
 
