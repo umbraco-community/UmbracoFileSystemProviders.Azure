@@ -23,8 +23,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         [Test]
         public void CheckXdtFirstParameterKey()
         {
-            IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXml("..\\..\\build\\transforms\\FileSystemProviders.config.install.xdt");
-            Assert.AreEqual("containerName", parameters.First().Key);
+            IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXdt("..\\..\\build\\transforms\\web.config.install.xdt", "web.default.config");
+            Assert.AreEqual("ContainerName", parameters.First().Key);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         [Test]
         public void CheckXdtNumberOfParameters()
         {
-            IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXml("..\\..\\build\\transforms\\FileSystemProviders.config.install.xdt");
+            IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXdt("..\\..\\build\\transforms\\web.config.install.xdt", "web.default.config");
             Assert.AreEqual(6, parameters.Count());
         }
 
@@ -43,8 +43,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         [Test]
         public void CheckUpgradeRootUrlParameter()
         {
-            IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXdt("..\\..\\build\\transforms\\FileSystemProviders.config.install.xdt", "FileSystemProviders.upgrade.config");
-            Assert.AreEqual("http://existing123456789.blob.core.windows.net/", parameters.Single(k => k.Key == "rootUrl").Value);
+            IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXdt("..\\..\\build\\transforms\\web.config.install.xdt", "web.existing.config");
+            Assert.AreEqual("https://existing123456789.blob.core.windows.net/", parameters.Single(k => k.Key == "RootUrl").Value);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         [Test]
         public void CheckGetAppSettingsFromXDT()
         {
-            IEnumerable<Parameter> settings = InstallerController.GetAppSettingsFromConfig("..\\..\\build\\transforms\\web.config.install.xdt");
+            IEnumerable<Parameter> settings = InstallerController.GetAppSettingsFromConfig("..\\..\\build\\transforms\\web.config.install.xdt", true);
             Assert.AreEqual(6, settings.Count());
         }
     }
