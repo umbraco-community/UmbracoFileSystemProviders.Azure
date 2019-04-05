@@ -9,6 +9,8 @@ Used to offload static files in the media section to the cloud.
 
 Designed to supersede [UmbracoAzureBlobStorage](https://github.com/idseefeld/UmbracoAzureBlobStorage) by [Dirk Seefeld](https://twitter.com/dseefeld65) (With his blessing) this package allows the storage and retrieval of media items using Azure Blob Storage while retaining the relative paths to the files expected in the back office.
 
+**v2 requires Umbraco v8.0.1+**
+
 ## Installation
 
 Both NuGet and Umbraco packages are available. If you use NuGet but would like the benefit of the Umbraco configuration wizard you can install the Umbraco package first, use the wizard, then install the NuGet package, the configuration will be maintained.
@@ -16,7 +18,8 @@ Both NuGet and Umbraco packages are available. If you use NuGet but would like t
 |NuGet Packages    |Version           |
 |:-----------------|:-----------------|
 |**Release**|[![NuGet download](http://img.shields.io/nuget/v/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|
-|**Pre-release**|[![MyGet download](https://img.shields.io/myget/umbracofilesystemproviders-azure/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbracofilesystemproviders-azure)|[![MyGet count](https://img.shields.io/myget/umbracofilesystemproviders-azure/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbracofilesystemproviders-azure)|
+|**Pre-release v1**|[![MyGet download](https://img.shields.io/myget/umbracofilesystemproviders-azure/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbracofilesystemproviders-azure)|[![MyGet count](https://img.shields.io/myget/umbracofilesystemproviders-azure/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbracofilesystemproviders-azure)|
+|**Pre-release v2**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbraco-packages)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbraco-packages)|
 
 |Umbraco Packages  |                  |
 |:-----------------|:-----------------|
