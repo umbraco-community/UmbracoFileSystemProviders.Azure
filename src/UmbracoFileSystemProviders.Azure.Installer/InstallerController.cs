@@ -2,29 +2,29 @@
 // Copyright (c) James Jackson-South, Jeavon Leopold, and contributors. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
-
-using System.Xml.Linq;
-
 namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 {
     using System;
     using System.Collections.Generic;
     using System.Configuration;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Xml.Linq;
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Http;
     using System.Xml;
-    using Enums;
+
+    using Microsoft.WindowsAzure.Storage;
+    using Microsoft.WindowsAzure.Storage.Blob;
+
     using global::Umbraco.Core;
     using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Logging;
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.WebApi;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Blob;
+
+    using Enums;
     using Models;
 
     /// <summary>
