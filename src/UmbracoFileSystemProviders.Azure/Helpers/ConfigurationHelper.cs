@@ -4,15 +4,9 @@
 
     public class ConfigurationHelper
     {
-        public static string GetAppSetting(string key, string providerAlias)
+        internal static string GetAppSetting(string key, string providerAlias)
         {
-            var settingValue = ConfigurationManager.AppSettings[key];
-            if (settingValue != null)
-            {
-                return $"{settingValue}:{providerAlias}";
-            }
-
-            return null;
+            return ConfigurationManager.AppSettings[$"{key}:{providerAlias}"];
         }
     }
 }

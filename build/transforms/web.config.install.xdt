@@ -1,17 +1,11 @@
 ﻿<?xml version="1.0"?>
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <appSettings>
-    <add key="AzureBlobFileSystem.ContainerName:media" xdt:Locator="Match(key)" xdt:Transform="Remove" />
     <add key="AzureBlobFileSystem.ContainerName:media" value="media" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
-    <add key="AzureBlobFileSystem.RootUrl:media" xdt:Locator="Match(key)" xdt:Transform="Remove" />
     <add key="AzureBlobFileSystem.RootUrl:media" value="https://[myAccountName].blob.core.windows.net/"  xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing"/>
-    <add key="AzureBlobFileSystem.ConnectionString:media" xdt:Locator="Match(key)" xdt:Transform="Remove" />
     <add key="AzureBlobFileSystem.ConnectionString:media" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing"/>
-    <add key="AzureBlobFileSystem.MaxDays:media" xdt:Locator="Match(key)" xdt:Transform="Remove" />
     <add key="AzureBlobFileSystem.MaxDays:media" value="365" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
-    <add key="AzureBlobFileSystem.UseDefaultRoute:media" xdt:Locator="Match(key)" xdt:Transform="Remove" />
     <add key="AzureBlobFileSystem.UseDefaultRoute:media" value="true" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
-    <add key="AzureBlobFileSystem.UsePrivateContainer:media" xdt:Locator="Match(key)" xdt:Transform="Remove" />
     <add key="AzureBlobFileSystem.UsePrivateContainer:media" value="false" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
   </appSettings>
 

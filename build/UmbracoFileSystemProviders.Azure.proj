@@ -125,10 +125,6 @@
       <PdbFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.pdb" />
       <WebConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\web.config.*.xdt" />
       <UmbPakWebConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\umbpak-web.config.*.xdt" />
-      <FileSystemProvidersConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\FileSystemProviders.config.install.xdt" />
-
-      <!-- The FileSystemProviders.config.uninstall.xdt needs to be excluded from the NuGet package so that upgrades don't overwrite parameter values due to NuGet upgrades actually executing uninstall/install -->
-      <FileSystemProvidersConfigXDTUninstallFile Include="$(MSBuildProjectDirectory)\transforms\FileSystemProviders.config.uninstall.xdt" />
 
       <MediaWebConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\media-web.config.install.xdt" />
       <MediaWebConfigXDTUninstallFile Include="$(MSBuildProjectDirectory)\transforms\media-web.config.uninstall.xdt" />
@@ -142,8 +138,6 @@
       <PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
       <ImageProcessorSecurityConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\security.config.install.xdt" />
       <ImageProcessorSecurityConfigDefaultFile Include="$(InstallerProjectDir)\config\imageprocessor\security.config" />
-      <ImageProcessorWebConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\imageprocessor.web.config.install.xdt" />
-
       <!-- NuGet specific -->
       <SrcFiles Include="$(ProjectDir)\**\*.cs" Exclude="$(ProjectDir)\obj\**"/>
       <NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
@@ -158,11 +152,8 @@
     <Copy SourceFiles="@(MediaWebConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
     <Copy SourceFiles="@(MediaWebConfigXDTUninstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
 
-    <Copy SourceFiles="@(FileSystemProvidersConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
-    <Copy SourceFiles="@(FileSystemProvidersConfigXDTUninstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
     <Copy SourceFiles="@(ImageProcessorSecurityConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
     <Copy SourceFiles="@(ImageProcessorSecurityConfigDefaultFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
-    <Copy SourceFiles="@(ImageProcessorWebConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
 
     <Copy SourceFiles="@(UmbracoInstallerFiles)" DestinationFiles="@(UmbracoInstallerFiles->'$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install\Configurator\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(UmbracoInstallerLogo)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
@@ -175,7 +166,6 @@
     <Copy SourceFiles="@(MediaWebConfigXDTInstallFile)" DestinationFiles="$(BuildNuGetDir)\Content\Media\web.config.install.xdt" />
     <Copy SourceFiles="@(MediaWebConfigXDTUninstallFile)" DestinationFiles="$(BuildNuGetDir)\Content\Media\web.config.uninstall.xdt" />
 
-    <Copy SourceFiles="@(FileSystemProvidersConfigXDTInstallFile)" DestinationFolder="$(BuildNuGetDir)\Content\Config" />
     <Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
   </Target>

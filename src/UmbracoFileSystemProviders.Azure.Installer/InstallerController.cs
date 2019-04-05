@@ -34,17 +34,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
     public class InstallerController : UmbracoAuthorizedApiController
     {
-        private static readonly string ImageProcessorWebAssemblyPath = HostingEnvironment.MapPath(Constants.ImageProcessor.WebAssemblyPath);
-        private static readonly Version ImageProcessorWebMinRequiredVersion = new Version(Constants.ImageProcessor.WebMinRequiredVersion);
-
         private static readonly string ImageProcessorConfigPath = HostingEnvironment.MapPath(Constants.ImageProcessor.ConfigPath);
 
         private static readonly string ImageProcessorSecurityConfigPath = HostingEnvironment.MapPath($"{Constants.ImageProcessor.ConfigPath}{Constants.ImageProcessor.SecurityConfigFile}");
         private static readonly string ImageProcessorSecurityDefaultConfigPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.ImageProcessor.SecurityConfigFile}");
         private static readonly string ImageProcessorSecurityInstallXdtPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.ImageProcessor.SecurityConfigFile}.install.xdt");
-
-        private readonly string fileSystemProvidersConfigInstallXdtPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.FileSystemProvidersConfigFile}.install.xdt");
-        private readonly string fileSystemProvidersConfigPath = HostingEnvironment.MapPath($"{Constants.UmbracoConfigPath}{Constants.FileSystemProvidersConfigFile}");
 
         private readonly string webConfigXdtPath = HostingEnvironment.MapPath($"{Constants.InstallerPath}{Constants.WebConfigFile}.install.xdt");
         private readonly string webConfigPath = HostingEnvironment.MapPath($"/{Constants.WebConfigFile}");
@@ -107,18 +101,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 SaveBlobPathToImageProcessorSecurityXdt(ImageProcessorSecurityInstallXdtPath, rootUrl, routePrefix, containerName);
 
                 // Transform ImageProcessor security.config
-                if (ExecuteImageProcessorSecurityConfigTransform())
-                {
-                    if (!ExecuteImageProcessorWebConfigTransform())
-                    {
-                        return InstallerStatus.ImageProcessorWebConfigError;
-                    }
-                }
-                else
+                if (!ExecuteImageProcessorSecurityConfigTransform())
                 {
                     return InstallerStatus.ImageProcessorWebConfigError;
-                }
-            
+
+                }          
 
                 return InstallerStatus.Ok;
             }
@@ -153,6 +140,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 return false;
             }
 
+            var removeNodesExist = false;
+            var removeNodes = document.SelectNodes($"//appSettings/add[@xdt:Transform='Remove']", nsMgr);
+            if (removeNodes != null && removeNodes.Count > 0)
+            {
+                removeNodesExist = true;
+            }
+
             XmlNodeList settings = document.SelectNodes($"//appSettings/add");
             if (settings == null)
             {
@@ -175,22 +169,24 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                     }
                 }
 
-                //XmlNode settingRemoveElement = document.CreateNode("element", "add", null);
+                if (!removeNodesExist)
+                {
+                    XmlNode settingRemoveElement = document.CreateNode("element", "add", null);
 
-                //XmlAttribute keyAttr = document.CreateAttribute("key");
-                //keyAttr.Value = setting.GetAttribute("key");
-                //settingRemoveElement.Attributes.Append(keyAttr);
+                    XmlAttribute keyAttr = document.CreateAttribute("key");
+                    keyAttr.Value = setting.GetAttribute("key");
+                    settingRemoveElement.Attributes.Append(keyAttr);
 
-                //XmlAttribute locatorAttr = document.CreateAttribute("Locator", strNamespace);
-                //locatorAttr.Value = "Match(key)";
-                //settingRemoveElement.Attributes.Append(locatorAttr);
+                    XmlAttribute locatorAttr = document.CreateAttribute("Locator", strNamespace);
+                    locatorAttr.Value = "Match(key)";
+                    settingRemoveElement.Attributes.Append(locatorAttr);
 
-                //XmlAttribute transformAttr = document.CreateAttribute("Transform", strNamespace);
-                //transformAttr.Value = "Remove";
-                //settingRemoveElement.Attributes.Append(transformAttr);
+                    XmlAttribute transformAttr = document.CreateAttribute("Transform", strNamespace);
+                    transformAttr.Value = "Remove";
+                    settingRemoveElement.Attributes.Append(transformAttr);
 
-                //providerElement.InsertBefore(settingRemoveElement, setting);
-
+                    providerElement.InsertBefore(settingRemoveElement, setting);
+                }
             }
 
             try
@@ -439,21 +435,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                                             + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
                                             + "file=\"~/config/imageprocessor/security.config\" "
                                             + "xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/security.config\">"
-                                            + "</Action>").FirstChild;
-
-            PackageActions.TransformConfig transformConfig = new PackageActions.TransformConfig();
-            return transformConfig.Execute("UmbracoFileSystemProviders.Azure", ToXElement(transFormConfigAction));
-            return true;
-        }
-
-        private static bool ExecuteImageProcessorWebConfigTransform()
-        {
-            XmlNode transFormConfigAction =
-                ParseStringToXmlNode("<Action runat=\"install\" "
-                                            + "undo=\"false\" "
-                                            + "alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" "
-                                            + "file=\"~/web.config\" "
-                                            + "xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/imageprocessor.web.config\">"
                                             + "</Action>").FirstChild;
 
             PackageActions.TransformConfig transformConfig = new PackageActions.TransformConfig();
