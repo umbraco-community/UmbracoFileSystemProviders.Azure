@@ -1,4 +1,6 @@
-# UmbracoFileSystemProviders.Azure
+# UmbracoFileSystemProviders.Azure v2
+
+**This version is for Umbraco v8 only**. For the v1 package for **Umbraco v7** please visit the [main branch](https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure)
 
 ![Image Alt](build/assets/logo/azure-logo-256.png)
 
@@ -17,9 +19,8 @@ Both NuGet and Umbraco packages are available. If you use NuGet but would like t
 
 |NuGet Packages    |Version           |
 |:-----------------|:-----------------|
-|**Release**|[![NuGet download](http://img.shields.io/nuget/v/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|
-|**Pre-release v1**|[![MyGet download](https://img.shields.io/myget/umbracofilesystemproviders-azure/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbracofilesystemproviders-azure)|[![MyGet count](https://img.shields.io/myget/umbracofilesystemproviders-azure/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbracofilesystemproviders-azure)|
-|**Pre-release v2**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|
+|**Pre-Release**|[![NuGet download](http://img.shields.io/nuget/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|
+|**Bleeding edge v2**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|
 
 |Umbraco Packages  |                  |
 |:-----------------|:-----------------|
