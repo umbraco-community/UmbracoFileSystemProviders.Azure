@@ -4,10 +4,10 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/mn5hxj5ijurwih7q?svg=true)](https://ci.appveyor.com/project/JamesSouth/umbracofilesystemproviders-azure)
 
-An [Azure Blob Storage](http://azure.microsoft.com/en-gb/develop/net/) IFileSystem provider for [Umbraco](https://umbraco.com) 7.1.9+. 
+An [Azure Blob Storage](http://azure.microsoft.com/en-gb/develop/net/) IFileSystem provider for [Umbraco](https://umbraco.com) 
 Used to offload static files in the media section to the cloud.
 
-Designed to supersede [UmbracoAzureBlobStorage](https://github.com/idseefeld/UmbracoAzureBlobStorage) by [Dirk Seefeld](https://twitter.com/dseefeld65) (With his blessing) this package allows the storage and retrieval of media items using Azure Blob Storage while retaining the relative paths to the files expected in the back office.
+This package allows the storage and retrieval of media items using Azure Blob Storage while retaining the relative paths to the files expected in the back office.
 
 **v2 requires Umbraco v8.0.1+**
 
@@ -30,7 +30,7 @@ Both NuGet and Umbraco packages are available. If you use NuGet but would like t
 
 If you prefer, you can compile UmbracoFileSystemProviders.Azure yourself, you'll need:
 
-* Visual Studio 2015 (or above)
+* Visual Studio 2017 (or above)
 
 To clone it locally click the "Clone in Windows" button above or run the following git commands.
 
@@ -42,52 +42,17 @@ cd UmbracoFileSystemProviders.Azure
 
 In the interim code reviews and pull requests would be most welcome!
 
-## Usage
+### Configuration via Web.Config
 
-**Note:** Upon release most of configuration this will be automated.
-
-Update `~/Config/FileSystemProviders.config` replacing the default provider with the following:
+In `Web.config` create the new application keys 
 
 ```xml
-<?xml version="1.0"?>
-<FileSystemProviders>
-  <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure">
-    <Parameters>
-      <add key="containerName" value="media" />
-      <add key="rootUrl" value="http://[myAccountName].blob.core.windows.net/" />
-      <add key="connectionString" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]"/>
-      <!--
-        Optional configuration value determining the maximum number of days to cache items in the browser.
-        Defaults to 365 days.
-      -->
-      <add key="maxDays" value="365" />
-      <!--
-        When true this allows the VirtualPathProvider to use the default "media" route prefix regardless 
-        of the container name.
-      -->
-      <add key="useDefaultRoute" value="true" />
-      <!--
-        When true blob containers will be private instead of public what means that you can't access the original blob file directly from its blob url.
-      -->
-      <add key="usePrivateContainer" value="false" />
-    </Parameters>
-  </Provider>
-</FileSystemProviders>
-```
-
-Developmental mode configuration using the [Azure Storage Emulator](https://azure.microsoft.com/en-us/documentation/articles/storage-use-emulator/) for testing is as follows:
-
-```xml
-<?xml version="1.0"?>
-<FileSystemProviders>
-  <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure">
-    <Parameters>
-      <add key="containerName" value="media" />
-      <add key="rootUrl" value="http://127.0.0.1:10000/devstoreaccount1/" />
-      <add key="connectionString" value="UseDevelopmentStorage=true"/>
-    </Parameters>
-  </Provider>
-</FileSystemProviders>
+<add key="AzureBlobFileSystem.ConnectionString:media" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" />
+<add key="AzureBlobFileSystem.ContainerName:media" value="media" />
+<add key="AzureBlobFileSystem.RootUrl:media" value="http://[myAccountName].blob.core.windows.net/" />
+<add key="AzureBlobFileSystem.MaxDays:media" value="365" />
+<add key="AzureBlobFileSystem.UseDefaultRoute:media" value="true" />
+<add key="AzureBlobFileSystem.UsePrivateContainer:media" value="false" />
 ```
 
 Additionally the provider can be further configured with the following application setting in the `web.config`.
@@ -104,39 +69,6 @@ Additionally the provider can be further configured with the following applicati
     <add key="AzureBlobFileSystem.UseStorageEmulator" value="true" />
   </appSettings>
 </configuration>
-```
-
-### Configuration via Web.Config
-
-**Available in v0.5.4+**
-
-Optionally instead of having the configuration in `FileSystemProviders.config` it can be moved to `Web.config`
-
-In `FileSystemProviders.config` remove the default parameters and add a new one with the key `alias`, the value should match the provider alias
-
-```xml
-<?xml version="1.0"?>
-<FileSystemProviders>
-  
-  <!-- Media -->
-  <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure">
-  	<Parameters>
-  		<add key="alias" value="media"/>
-  	</Parameters>
-  </Provider>
-   
-</FileSystemProviders>
-```
-
-In `Web.config` create the new application keys and post fix each key with the `alias` defined in `FileSystemProviders.config` after a colon.
-
-```xml
-<add key="AzureBlobFileSystem.ConnectionString:media" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" />
-<add key="AzureBlobFileSystem.ContainerName:media" value="media" />
-<add key="AzureBlobFileSystem.RootUrl:media" value="http://[myAccountName].blob.core.windows.net/" />
-<add key="AzureBlobFileSystem.MaxDays:media" value="365" />
-<add key="AzureBlobFileSystem.UseDefaultRoute:media" value="true" />
-<add key="AzureBlobFileSystem.UsePrivateContainer:media" value="false" />
 ```
 
 ## Virtual Path Provider
@@ -160,7 +92,7 @@ The following configuration is required in your `web.config` to enable static fi
   </configuration>
 ```
 
-For **Umbraco v7.5+ you must add the the StaticFileHandler** to the new Web.config inside the `Media` folder instead of the root one or the VPP will not work!
+Also add this configuration to the `web.config` inside the `Media` folder
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -177,27 +109,8 @@ For **Umbraco v7.5+ you must add the the StaticFileHandler** to the new Web.conf
   
 ## Combining with ImageProcessor
 
-As of ImageProcessor.Web version [4.3.2](https://www.nuget.org/packages/ImageProcessor.Web/4.3.2) a new [`IImageService`](http://imageprocessor.org/imageprocessor-web/extending/#iimageservice) implementation has been available called `CloudImageService`. To enable that service and pull images directly from 
-the cloud simply install the [configuration package](https://www.nuget.org/packages/ImageProcessor.Web.Config/) and replace the `CloudImageService`setting with the following:
-
-```xml
-<?xml version="1.0"?>
-<security>
-  <services>
-    <service name="LocalFileImageService" type="ImageProcessor.Web.Services.LocalFileImageService, ImageProcessor.Web"/>
-    <service prefix="media/" name="CloudImageService" type="ImageProcessor.Web.Services.CloudImageService, ImageProcessor.Web">
-      <settings>
-        <setting key="MaxBytes" value="8194304"/>
-        <setting key="Timeout" value="30000"/>
-        <setting key="Host" value="http://[myAccountName].blob.core.windows.net/media/"/>
-      </settings>
-    </service>
-  </services>  
-</security>
-```
-**Note** The `CloudImageService`is not compatible with the FileSystemProvider when using private storage. You will have to build your own `IImageService` implementation.
-
-If using a version of ImageProcessor.Web version [4.5.0](https://www.nuget.org/packages/ImageProcessor.Web/4.5.0) the configuration details will need to be configured as follows:
+ImageProcessor.Web contains a [`IImageService`](http://imageprocessor.org/imageprocessor-web/extending/#iimageservice) called `CloudImageService`, to enable that service and pull images directly from 
+the cloud replace the `CloudImageService`setting with the following:
 
 ```xml
 <?xml version="1.0"?>
@@ -215,8 +128,10 @@ If using a version of ImageProcessor.Web version [4.5.0](https://www.nuget.org/p
   </services>  
 </security>
 ```
+**Note** The `CloudImageService`is not compatible with the FileSystemProvider when using private storage. You will have to build your own `IImageService` implementation.
 
-Be sure to install the [AzureBlobCache](http://imageprocessor.org/imageprocessor-web/plugins/azure-blob-cache/) plugin to get the most out of the package.
+
+Optionally install the [AzureBlobCache](http://imageprocessor.org/imageprocessor-web/plugins/azure-blob-cache/) plugin to get the most out of the package.
 
 ## Authors
 
