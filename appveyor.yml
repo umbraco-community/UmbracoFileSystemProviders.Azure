@@ -52,7 +52,7 @@ deploy:
     on:
       branch: develop-umbraco-version-8
 
-     # GitHub Deployment for releases
+    # GitHub Deployment for releases
   - provider: GitHub
     auth_token:
       secure: gnJNHw3btYiQ7G0GexIGpSyA3moAz/GuJvgGZvJmz63/+YVLFC+qew/xlniRLDSk
@@ -63,7 +63,7 @@ deploy:
       branch: master
       appveyor_repo_tag: true        # deploy on tag push only
 
-     # NuGet Deployment for releases
+    # NuGet Deployment for releases
   - provider: NuGet
     server:
     api_key:
@@ -71,4 +71,25 @@ deploy:
     artifact: /.*\.nupkg/
     on:
       branch: master
+      appveyor_repo_tag: true
+
+    # GitHub Deployment for releases
+  - provider: GitHub
+    auth_token:
+      secure: gnJNHw3btYiQ7G0GexIGpSyA3moAz/GuJvgGZvJmz63/+YVLFC+qew/xlniRLDSk
+    artifact: /.*\.zip/            # upload all Zip packages to release assets
+    draft: false
+    prerelease: false
+    on:
+      branch: master-umbraco-version-8
+      appveyor_repo_tag: true        # deploy on tag push only
+
+    # NuGet Deployment for releases
+  - provider: NuGet
+    server:
+    api_key:
+      secure: kHataLiMb9nmJEdwBE4BTXvA4nOpoD3Fw14zVeDP6Vs0ZXpL7c8qeegMv/jMZECP
+    artifact: /.*\.nupkg/
+    on:
+      branch: master-umbraco-version-8
       appveyor_repo_tag: true
