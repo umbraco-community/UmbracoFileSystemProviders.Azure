@@ -23,6 +23,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using global::Umbraco.Core.Logging;
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.WebApi;
+    using global::Umbraco.Core.Xml;
 
     using Enums;
     using Models;

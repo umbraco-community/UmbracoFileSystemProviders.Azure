@@ -24,6 +24,7 @@
                                        ng-model="param.value"
                                        ng-true-value="'true'"
                                        ng-false-value="'false'"
+                                       no-dirty-check
                                        ng-init="param.value">
                             </span>
                             <span ng-if="getInputType(param.key) === 'text'">
@@ -32,6 +33,7 @@
                                        name="{{param.key}}"
                                        type="text"
                                        ng-model="param.value"
+                                       no-dirty-check
                                        required>
                             </span>
                         </div>
