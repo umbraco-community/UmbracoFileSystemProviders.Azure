@@ -463,6 +463,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 {
                     return true;
                 }
+
+                return false;
             }
             catch (Exception e)
             {
