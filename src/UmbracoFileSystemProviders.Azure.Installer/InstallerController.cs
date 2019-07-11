@@ -84,7 +84,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             bool usePrivateContainer = bool.Parse(newParameters.SingleOrDefault(k => k.Key == "UsePrivateContainer").Value);
             string rootUrl = newParameters.SingleOrDefault(k => k.Key == "RootUrl").Value;
 
-            if (!TestAzureCredentials(connection, containerName))
+            BlobContainerPublicAccessType blobContainerPublicAccessType = usePrivateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
+
+            if (!TestAzureCredentials(connection, containerName, blobContainerPublicAccessType))
             {
                 return InstallerStatus.ConnectionError;
             }
@@ -443,7 +445,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return true;
         }
 
-        private static bool TestAzureCredentials(string connectionString, string containerName)
+        private static bool TestAzureCredentials(string connectionString, string containerName, BlobContainerPublicAccessType accessType)
         {
             bool useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
                                && ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey]
@@ -453,11 +455,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 CloudStorageAccount cloudStorageAccount = useEmulator ? CloudStorageAccount.DevelopmentStorageAccount : CloudStorageAccount.Parse(connectionString);
 
                 CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-                CloudBlobContainer blobContainer = cloudBlobClient.GetContainerReference(containerName);
 
                 // This should fully check that the connection works.
-                blobContainer.CreateIfNotExists();
-                return true;
+                var testContainer = AzureFileSystem.CreateContainer(cloudBlobClient, containerName, accessType);
+
+                if (testContainer.Exists())
+                {
+                    return true;
+                }
             }
             catch (Exception e)
             {

@@ -6,6 +6,8 @@
 // <summary>
 // A singleton class for communicating with Azure Blob Storage.
 // </summary>
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("Our.Umbraco.FileSystemProviders.Azure.Installer")]
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -668,7 +670,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="containerName">The name of the container.</param>
         /// <param name="accessType"><see cref="BlobContainerPublicAccessType"/> indicating the access permissions.</param>
         /// <returns>The <see cref="CloudBlobContainer"/></returns>
-        private static CloudBlobContainer CreateContainer(CloudBlobClient cloudBlobClient, string containerName, BlobContainerPublicAccessType accessType)
+        internal static CloudBlobContainer CreateContainer(CloudBlobClient cloudBlobClient, string containerName, BlobContainerPublicAccessType accessType)
         {
             containerName = containerName.ToLowerInvariant();
 
