@@ -1,6 +1,6 @@
 # UmbracoFileSystemProviders.Azure v2
 
-**This version is for Umbraco v8 only**. For the v1 package for **Umbraco v7** please visit the [main branch](https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure)
+**This version is for Umbraco v8 only**. For the v1 package for **Umbraco v7** please visit the [main branch](https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure)
 
 ![Image Alt](build/assets/logo/azure-logo-256.png)
 
@@ -130,7 +130,6 @@ the cloud replace the `CloudImageService`setting with the following:
 </security>
 ```
 **Note** The `CloudImageService`is not compatible with the FileSystemProvider when using private storage. You will have to build your own `IImageService` implementation.
-
 
 Optionally install the [AzureBlobCache](http://imageprocessor.org/imageprocessor-web/plugins/azure-blob-cache/) plugin to get the most out of the package.
 
