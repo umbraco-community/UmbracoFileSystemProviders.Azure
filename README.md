@@ -4,7 +4,7 @@
 
 ![Image Alt](build/assets/logo/azure-logo-256.png)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/mn5hxj5ijurwih7q?svg=true)](https://ci.appveyor.com/project/JamesSouth/umbracofilesystemproviders-azure)
+[![Build status](https://ci.appveyor.com/api/projects/status/oicfg95tvptrhntn/branch/develop-umbraco-version-8?svg=true)](https://ci.appveyor.com/project/Umbraco-Community/umbracofilesystemproviders-azure/branch/develop-umbraco-version-8)
 
 An [Azure Blob Storage](http://azure.microsoft.com/en-gb/develop/net/) IFileSystem provider for [Umbraco](https://umbraco.com) 
 Used to offload static files in the media section to the cloud.
@@ -25,7 +25,7 @@ Both NuGet and Umbraco packages are available. If you use NuGet but would like t
 |Umbraco Packages  |                  |
 |:-----------------|:-----------------|
 |**Release**|[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/collaboration/umbracofilesystemprovidersazure/) 
-|**Pre-release**| [![AppVeyor Artifacts](https://img.shields.io/badge/appveyor-umbraco-orange.svg)](https://ci.appveyor.com/project/JamesSouth/umbracofilesystemproviders-azure/build/artifacts)
+|**Pre-release**| [![AppVeyor Artifacts](https://img.shields.io/badge/appveyor-umbraco-orange.svg)](https://ci.appveyor.com/project/Umbraco-Community/umbracofilesystemproviders-azure/build/artifacts)
 
 ## Manual build
 
