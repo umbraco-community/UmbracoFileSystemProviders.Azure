@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoFileSystemProviders.Azure", "UmbracoFileSystemProviders.Azure\UmbracoFileSystemProviders.Azure.csproj", "{749BC432-144A-4250-9066-D1FE170AFE42}"
 EndProject
@@ -14,9 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildPackage", "BuildPackage", "{DDE4D2E6-E526-4CB3-BECE-D89DFFB37B10}"
 	ProjectSection(SolutionItems) = preProject
+		..\build\appveyor-semver.ps1 = ..\build\appveyor-semver.ps1
 		..\appveyor.yml = ..\appveyor.yml
 		..\build-appveyor.cmd = ..\build-appveyor.cmd
 		..\build.cmd = ..\build.cmd
+		..\build\check-release-version.ps1 = ..\build\check-release-version.ps1
 		..\build\transforms\media-web.config.install.xdt = ..\build\transforms\media-web.config.install.xdt
 		..\build\transforms\media-web.config.uninstall.xdt = ..\build\transforms\media-web.config.uninstall.xdt
 		..\build\package.nuspec = ..\build\package.nuspec

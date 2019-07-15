@@ -12,7 +12,6 @@
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
   <Import Project="$(MSBuildUmbracoTasksPath)\MSBuild.Umbraco.Tasks.Targets" />
   <Import Project="$(MSBuildNugetTasksPath)\MSBuild.NuGet.Tasks.Targets" />
-  <Import Project="$(AppVeyorUmbracoPath)\AppVeyorUmbraco.Targets" />
 
   <!-- SHARED PROPERTIES -->
   <PropertyGroup>
@@ -40,37 +39,12 @@
 
   <!-- APPVEYOR PROPERTIES -->
   <PropertyGroup>
-    <FileVersion>$(APPVEYOR_BUILD_VERSION)</FileVersion>
+    <FileVersion>$(mssemver)</FileVersion>
   </PropertyGroup>
-  <Choose>
-    <When Condition="$(APPVEYOR_BUILD_NUMBER) != '' And $(APPVEYOR_REPO_TAG) != 'true' ">
-      <PropertyGroup>
-        <Release>false</Release>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <Release>true</Release>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-
-  <Choose>
-    <When Condition="$(Release) == 'false' And $(UMBRACO_PACKAGE_PRERELEASE_SUFFIX) == 'rtm'">
-      <PropertyGroup>
-        <AbortBuild>true</AbortBuild>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <AbortBuild>false</AbortBuild>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-
+  
   <!-- PATHS -->
   <PropertyGroup>
-    <BuildConfig>Release</BuildConfig>
+    <BuildConfig>$(CONFIGURATION)</BuildConfig>
     <RootDir>$(MSBuildProjectDirectory)\..</RootDir>
     <BuildDir>$(MSBuildProjectDirectory)\_core</BuildDir>
     <BuildUmbDir>$(BuildDir)\_umbraco</BuildUmbDir>
@@ -81,16 +55,8 @@
     <TestsProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure.Tests</TestsProjectDir>
   </PropertyGroup>
 
-  <!-- TARGETS -->
-  <Target Name="GetProductVersion">
-    <Error Condition="$(AbortBuild) == 'true'" Text="Aborting the build as the UMBRACO_PACKAGE_PRERELEASE_SUFFIX suffix is set 'rtm' but APPVEYOR_REPO_TAG is not 'true'" />
-    <GetProductVersion BuildVersion="$(APPVEYOR_BUILD_VERSION)" BuildSuffix="$(UMBRACO_PACKAGE_PRERELEASE_SUFFIX)" Release="$(Release)">
-      <Output TaskParameter="ProductVersion" PropertyName="ProductVersion"/>
-    </GetProductVersion>
-  </Target>
-
   <!-- CLEAN -->
-  <Target Name="Clean" DependsOnTargets="GetProductVersion">
+  <Target Name="Clean">
     <RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
     <RemoveDir Directories="$(ArtifactsDir)" Condition="Exists('$(ArtifactsDir)')" />
     <MakeDir Directories="$(BuildDir)" />
@@ -99,19 +65,8 @@
     <MakeDir Directories="$(ArtifactsDir)" />
   </Target>
 
-  <!-- UPDATE PROJECT ASSEMBLEY VERSION -->
-  <Target Name="UpdateAssemblyInfo" DependsOnTargets="Clean">
-    <FileUpdate Encoding="ASCII" Files="$(ProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(ProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(ProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
-
-    <FileUpdate Encoding="ASCII" Files="$(InstallerProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(InstallerProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(InstallerProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
-  </Target>
-
   <!-- COMPILE -->
-  <Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
+  <Target Name="Compile" DependsOnTargets="Clean">
     <MSBuild Projects="$(ProjectDir)\UmbracoFileSystemProviders.Azure.csproj" Properties="Configuration=$(BuildConfig)" />
     <MSBuild Projects="$(TestsProjectDir)\UmbracoFileSystemProviders.Azure.Tests.csproj" Properties="Configuration=$(BuildConfig)" />
     <MSBuild Projects="$(InstallerProjectDir)\UmbracoFileSystemProviders.Azure.Installer.csproj" Properties="Configuration=$(BuildConfig)" />

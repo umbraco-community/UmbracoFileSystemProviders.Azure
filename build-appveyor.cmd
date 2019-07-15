@@ -2,6 +2,7 @@ ECHO APPVEYOR_REPO_BRANCH: %APPVEYOR_REPO_BRANCH%
 ECHO APPVEYOR_REPO_TAG: %APPVEYOR_REPO_TAG%
 ECHO APPVEYOR_BUILD_NUMBER : %APPVEYOR_BUILD_NUMBER%
 ECHO APPVEYOR_BUILD_VERSION : %APPVEYOR_BUILD_VERSION%
+ECHO CONFIGURATION : %CONFIGURATION%
 
 CALL NuGet.exe restore src\UmbracoFileSystemProviders.Azure.sln
 
@@ -14,22 +15,26 @@ IF NOT EXIST "%toolsFolder%" (
 
 IF NOT EXIST "%toolsFolder%vswhere.exe" (
 	ECHO vswhere not found - fetching now
-	tools\nuget.exe install vswhere -Version 2.5.9 -Source nuget.org -OutputDirectory tools
+	nuget install vswhere -Version 2.6.7 -Source nuget.org -OutputDirectory tools
 )
 
 FOR /f "delims=" %%A in ('dir "%toolsFolder%vswhere.*" /b') DO SET "vswhereExePath=%toolsFolder%%%A\"
 MOVE "%vswhereExePath%tools\vswhere.exe" "%toolsFolder%vswhere.exe"
 
-for /f "usebackq tokens=1* delims=: " %%i in (`"%CD%\tools\vswhere.exe" -latest -requires Microsoft.Component.MSBuild`) do (
-  if /i "%%i"=="installationPath" set InstallDir=%%j
+SETLOCAL EnableDelayedExpansion
+
+:: This string specifies vs 2019
+:: set vswherestr=^"!%CD%\tools\vswhere.exe^" -version [16.0,17.0^^) -latest -prerelease -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+
+set vswherestr=^"!%CD%\tools\vswhere.exe^" -latest -prerelease -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+for /f "usebackq tokens=*" %%i in (`!vswherestr!`) do (  
+  set MsBuildDir=%%i
 )
 
-SET VSWherePath="%InstallDir%\MSBuild"
-
 ECHO.
-ECHO Visual Studio is installed in: %InstallDir%
+ECHO MsBuild is installed in: %MsBuildDir%
 
-CALL "%InstallDir%\MSBuild\15.0\Bin\amd64\MsBuild.exe" package.proj %~1
+CALL "%MsBuildDir%" package.proj %~1
 
 @IF %ERRORLEVEL% NEQ 0 GOTO err
 @EXIT /B 0
