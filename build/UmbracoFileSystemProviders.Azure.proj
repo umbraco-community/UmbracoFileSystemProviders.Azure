@@ -135,7 +135,7 @@
       WorkingDirectory="$(BuildUmbDir)"
       MinimumRequiredUmbracoVersion="$(MinUmbracoVersion)"
       PackageName="$(PackageName)"
-      PackageVersion="$(ProductVersion)"
+      PackageVersion="$(FileVersion)"
       AuthorName="$(AuthorName)"
       AuthorUrl="$(AuthorUrl)"
       IconUrl="$(IconUrl)"
@@ -157,7 +157,7 @@
       Title="$(PackageName)"
       Description="$(Description)"
       Summary="$(Readme)"
-      Version="$(ProductVersion)"
+      Version="$(FileVersion)"
       Authors="$(AuthorName)"
       Owners="$(Owners)"
       Copyright="$(Copyright)"
@@ -185,7 +185,7 @@
     <MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\build\tools\NuGet.exe"
       ManifestFile="$(BuildNuGetDir)\package.nuspec"
       BasePath="$(BuildNuGetDir)"
-      Version="$(ProductVersion)"
+      Version="$(FileVersion)"
       OutputDirectory="$(ArtifactsDir)"
       Symbols="true" />
 
