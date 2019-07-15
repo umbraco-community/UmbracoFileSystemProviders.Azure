@@ -307,7 +307,6 @@
     <Compile Include="Models\Parameter.cs" />
     <Compile Include="InstallerController.cs" />
     <Compile Include="PackageActions.cs" />
-    <Compile Include="Properties\VersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
