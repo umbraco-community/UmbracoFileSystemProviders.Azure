@@ -50,7 +50,7 @@ In `Web.config` create the new application keys
 ```xml
 <add key="AzureBlobFileSystem.ConnectionString:media" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" />
 <add key="AzureBlobFileSystem.ContainerName:media" value="media" />
-<add key="AzureBlobFileSystem.RootUrl:media" value="http://[myAccountName].blob.core.windows.net/" />
+<add key="AzureBlobFileSystem.RootUrl:media" value="https://[myAccountName].blob.core.windows.net/" />
 <add key="AzureBlobFileSystem.MaxDays:media" value="365" />
 <add key="AzureBlobFileSystem.UseDefaultRoute:media" value="true" />
 <add key="AzureBlobFileSystem.UsePrivateContainer:media" value="false" />
@@ -123,7 +123,7 @@ the cloud replace the `CloudImageService`setting with the following:
         <setting key="Container" value="media"/>
         <setting key="MaxBytes" value="8194304"/>
         <setting key="Timeout" value="30000"/>
-        <setting key="Host" value="http://[myAccountName].blob.core.windows.net/media"/>
+        <setting key="Host" value="https://[myAccountName].blob.core.windows.net/media"/>
       </settings>
     </service>
   </services>  

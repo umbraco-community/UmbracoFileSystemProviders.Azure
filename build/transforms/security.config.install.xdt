@@ -6,8 +6,8 @@
       <settings xdt:Transform="InsertIfMissing">
         <setting key="Container" value="media" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
         <setting key="MaxBytes" value="8194304" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
-        <setting key="Timeout" value="30000" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing"/>
-        <setting key="Host" value="http://[myAccountName].blob.core.windows.net" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing"/>
+        <setting key="Timeout" value="30000" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+        <setting key="Host" value="https://[myAccountName].blob.core.windows.net" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
       </settings>
     </service>
   </services>
