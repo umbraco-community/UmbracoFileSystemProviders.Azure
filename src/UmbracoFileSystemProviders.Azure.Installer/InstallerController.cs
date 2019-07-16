@@ -15,8 +15,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using System.Web.Http;
     using System.Xml;
 
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Blob;
+    using Microsoft.Azure.Storage;
+    using Microsoft.Azure.Storage.Blob;
 
     using global::Umbraco.Core;
     using global::Umbraco.Core.Composing;

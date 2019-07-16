@@ -22,8 +22,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using global::Umbraco.Core.Configuration;
     using global::Umbraco.Core.IO;
     using global::Umbraco.Core.Logging;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Blob;
+    using Microsoft.Azure.Storage;
+    using Microsoft.Azure.Storage.Blob;
 
     /// <summary>
     /// A class for communicating with Azure Blob Storage.
