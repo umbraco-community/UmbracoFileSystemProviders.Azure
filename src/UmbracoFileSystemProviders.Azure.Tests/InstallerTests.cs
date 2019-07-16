@@ -44,7 +44,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         public void CheckUpgradeRootUrlParameter()
         {
             IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXdt("..\\..\\build\\transforms\\FileSystemProviders.config.install.xdt", "FileSystemProviders.upgrade.config");
-            Assert.AreEqual("http://existing123456789.blob.core.windows.net/", parameters.Single(k => k.Key == "rootUrl").Value);
+            Assert.AreEqual("https://existing123456789.blob.core.windows.net/", parameters.Single(k => k.Key == "rootUrl").Value);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         public void CheckNewInstallDefaultConfig()
         {
             IEnumerable<Parameter> parameters = InstallerController.GetParametersFromXdt("..\\..\\build\\transforms\\FileSystemProviders.config.install.xdt", "FileSystemProviders.default.config");
-            Assert.AreEqual("http://[myAccountName].blob.core.windows.net/", parameters.Single(k => k.Key == "rootUrl").Value);
+            Assert.AreEqual("https://[myAccountName].blob.core.windows.net/", parameters.Single(k => k.Key == "rootUrl").Value);
         }
     }
 }
