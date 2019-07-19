@@ -331,6 +331,10 @@
       <Project>{f67f3c8f-7b04-4d4f-a1fc-ad588e93afb4}</Project>
       <Name>UmbracoFileSystemProviders.Azure.Installer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UmbracoFileSystemProviders.Azure.Media\UmbracoFileSystemProviders.Azure.Media.csproj">
+      <Project>{c03c8759-6b23-4a3c-bf89-df8c5407b621}</Project>
+      <Name>UmbracoFileSystemProviders.Azure.Media</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UmbracoFileSystemProviders.Azure\UmbracoFileSystemProviders.Azure.csproj">
       <Project>{749bc432-144a-4250-9066-d1fe170afe42}</Project>
       <Name>UmbracoFileSystemProviders.Azure</Name>
