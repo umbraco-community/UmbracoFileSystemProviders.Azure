@@ -17,7 +17,9 @@ install:
   - ps: Update-AppveyorBuild -Version $Env:appveyor_version
   - cmd: >-
         cd build
+
         npm install
+
         node appveyor-nuspec-patch.js
   - ps: >-
       $msiPath = "$($env:USERPROFILE)\MicrosoftAzureStorageEmulator.msi"
