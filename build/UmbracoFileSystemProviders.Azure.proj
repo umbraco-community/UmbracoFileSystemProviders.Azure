@@ -99,7 +99,7 @@
       <ImageProcessorSecurityConfigDefaultFile Include="$(InstallerProjectDir)\config\imageprocessor\security.config" />
       <!-- NuGet specific -->
       <SrcFiles Include="$(ProjectDir)\**\*.cs" Exclude="$(ProjectDir)\obj\**"/>
-      <NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
+      <NuSpecFile Include="$(MSBuildProjectDirectory)\UmbracoFileSystemProviders.Azure.nuspec" />
     </ItemGroup>
 
     <!-- Umbraco -->
