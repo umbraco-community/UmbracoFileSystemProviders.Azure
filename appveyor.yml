@@ -21,6 +21,8 @@ install:
         npm install
 
         node appveyor-nuspec-patch.js
+
+        cd..
   - ps: >-
       $msiPath = "$($env:USERPROFILE)\MicrosoftAzureStorageEmulator.msi"
 
