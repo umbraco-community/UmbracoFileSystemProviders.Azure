@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
+    <AssemblyName>Our.Umbraco.FileSystemProviders.Azure.Media</AssemblyName>
+    <RootNamespace>Our.Umbraco.FileSystemProviders.Azure.Media</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

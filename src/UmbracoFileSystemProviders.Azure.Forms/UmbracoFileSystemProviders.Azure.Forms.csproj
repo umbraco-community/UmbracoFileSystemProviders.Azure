@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
+    <AssemblyName>Our.Umbraco.FileSystemProviders.Azure.Forms</AssemblyName>
+    <RootNamespace>Our.Umbraco.FileSystemProviders.Azure.Forms</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

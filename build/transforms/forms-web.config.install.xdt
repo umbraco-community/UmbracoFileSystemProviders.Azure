@@ -1,0 +1,9 @@
+﻿<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <appSettings>
+    <add key="AzureBlobFileSystem.ContainerName:forms" value="media" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+    <add key="AzureBlobFileSystem.RootUrl:forms" value="https://[myAccountName].blob.core.windows.net/"  xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing"/>
+    <add key="AzureBlobFileSystem.ConnectionString:forms" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing"/>
+    <add key="AzureBlobFileSystem.UsePrivateContainer:forms" value="false" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+  </appSettings>
+</configuration>

@@ -31,7 +31,7 @@
     <Copyright>Copyright &#169; James Jackson-South and contributors.</Copyright>
     <Owners>James Jackson-South</Owners>
     <Description>An Azure Blob Storage IFileSystem provider for Umbraco. Used to offload static files in the media section to the cloud.</Description>
-    <IconUrl>https://raw.githubusercontent.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/develop/build/assets/logo/azure-logo-128.png</IconUrl>
+    <IconUrl>https://raw.githubusercontent.com/umbraco-community/UmbracoFileSystemProviders.Azure/develop/build/assets/logo/azure-logo-128.png</IconUrl>
     <Tags>umbraco azure media blob imageprocessor</Tags>
     <Language>en-GB</Language>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -51,8 +51,6 @@
     <BuildNuGetDir>$(BuildDir)\_nuget</BuildNuGetDir>
     <ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
     <ProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure</ProjectDir>
-    <MediaProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure.Media</MediaProjectDir>
-    <FormsProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure.Forms</FormsProjectDir>
     <InstallerProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure.Installer</InstallerProjectDir>
     <TestsProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure.Tests</TestsProjectDir>
   </PropertyGroup>
@@ -60,7 +58,6 @@
   <!-- CLEAN -->
   <Target Name="Clean">
     <RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
-    <RemoveDir Directories="$(ArtifactsDir)" Condition="Exists('$(ArtifactsDir)')" />
     <MakeDir Directories="$(BuildDir)" />
     <MakeDir Directories="$(BuildUmbDir)" />
     <MakeDir Directories="$(BuildNuGetDir)" />
@@ -70,8 +67,6 @@
   <!-- COMPILE -->
   <Target Name="Compile" DependsOnTargets="Clean">
     <MSBuild Projects="$(ProjectDir)\UmbracoFileSystemProviders.Azure.csproj" Properties="Configuration=$(BuildConfig)" />
-    <MSBuild Projects="$(MediaProjectDir)\UmbracoFileSystemProviders.Azure.Media.csproj" Properties="Configuration=$(BuildConfig)" />
-    <MSBuild Projects="$(FormsProjectDir)\UmbracoFileSystemProviders.Azure.Forms.csproj" Properties="Configuration=$(BuildConfig)" />
     <MSBuild Projects="$(TestsProjectDir)\UmbracoFileSystemProviders.Azure.Tests.csproj" Properties="Configuration=$(BuildConfig)" />
     <MSBuild Projects="$(InstallerProjectDir)\UmbracoFileSystemProviders.Azure.Installer.csproj" Properties="Configuration=$(BuildConfig)" />
   </Target>
@@ -119,11 +114,11 @@
     <Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
 
     <!--NuGet -->
-    <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
-    <Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
-    <Copy SourceFiles="@(WebConfigXDTFiles)" DestinationFolder="$(BuildNuGetDir)\Content" />
+    <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net472" />
+    <Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net472" />
+    <!--<Copy SourceFiles="@(WebConfigXDTFiles)" DestinationFolder="$(BuildNuGetDir)\Content" />
     <Copy SourceFiles="@(MediaWebConfigXDTInstallFile)" DestinationFiles="$(BuildNuGetDir)\Content\Media\web.config.install.xdt" />
-    <Copy SourceFiles="@(MediaWebConfigXDTUninstallFile)" DestinationFiles="$(BuildNuGetDir)\Content\Media\web.config.uninstall.xdt" />
+    <Copy SourceFiles="@(MediaWebConfigXDTUninstallFile)" DestinationFiles="$(BuildNuGetDir)\Content\Media\web.config.uninstall.xdt" />-->
 
     <Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />

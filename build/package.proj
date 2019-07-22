@@ -4,6 +4,8 @@
 	<!-- TARGETS -->
 	<Target Name="BuildPackages">
 		<MSBuild Projects="$(MSBuildProjectDirectory)\UmbracoFileSystemProviders.Azure.proj" />
+		<MSBuild Projects="$(MSBuildProjectDirectory)\UmbracoFileSystemProviders.Azure.Media.proj" />
+		<MSBuild Projects="$(MSBuildProjectDirectory)\UmbracoFileSystemProviders.Azure.Forms.proj" />
 	</Target>
 
 </Project>

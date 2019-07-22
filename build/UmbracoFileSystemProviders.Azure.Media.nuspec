@@ -16,7 +16,7 @@
     <language/>
     <tags/>
     <dependencies>
-      <dependency id="UmbracoFileSystemProviders.Azure" version="1.1.1-beta.1000"/>
+      <dependency id="UmbracoFileSystemProviders.Azure" version="0.0.0"/>
       <dependency id="UmbracoCms.Core" version="0.0.0"/>
       <dependency id="UmbracoCms.Web" version="0.0.0"/>
     </dependencies>
