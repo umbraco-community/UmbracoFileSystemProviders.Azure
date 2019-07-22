@@ -17,7 +17,7 @@
   <PropertyGroup>
     <PackageName>UmbracoFileSystemProviders.Azure.Media</PackageName>
     <MinUmbracoVersion>8.1.0</MinUmbracoVersion>
-    <Readme>An Azure Blob Storage IFileSystem provider for Umbraco.</Readme>
+    <Readme>An Azure Blob Storage IFileSystem provider for Umbraco Media.</Readme>
     <AuthorName>James Jackson-South, Dirk Seefeld, Lars-Erik Aabech, Jeavon Leopold</AuthorName>
     <AuthorUrl>https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/graphs/contributors</AuthorUrl>
     <PackageLicenseName>Apache 2.0 license</PackageLicenseName>
@@ -30,7 +30,7 @@
     <PackageId>UmbracoFileSystemProviders.Azure.Media</PackageId>
     <Copyright>Copyright &#169; James Jackson-South and contributors.</Copyright>
     <Owners>James Jackson-South</Owners>
-    <Description>An Azure Blob Storage IFileSystem provider for Umbraco. Used to offload static files in the media section to the cloud.</Description>
+    <Description>An Azure Blob Storage IFileSystem provider for Umbraco Media. Used to offload static files in the media section to the cloud.</Description>
     <IconUrl>https://raw.githubusercontent.com/umbraco-community/UmbracoFileSystemProviders.Azure/develop/build/assets/logo/azure-logo-128.png</IconUrl>
     <Tags>umbraco azure media blob imageprocessor</Tags>
     <Language>en-GB</Language>
