@@ -156,7 +156,7 @@
       <ManifestFiles Include="$(BuildNuGetDir)\**\*" Exclude="$(BuildNuGetDir)\package.nuspec" />
     </ItemGroup>
     <MSBuild.NuGet.Tasks.ManifestUpdate
-      ManifestFile="$(BuildNuGetDir)\package.nuspec"
+      ManifestFile="$(BuildNuGetDir)\UmbracoFileSystemProviders.Azure.nuspec"
       WorkingDirectory="$(BuildNuGetDir)"
       Title="$(PackageName)"
       Description="$(Description)"
@@ -188,7 +188,7 @@
       Files="@(PackageFiles)" />
 
     <MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\build\tools\NuGet.exe"
-      ManifestFile="$(BuildNuGetDir)\package.nuspec"
+      ManifestFile="$(BuildNuGetDir)\UmbracoFileSystemProviders.Azure.nuspec"
       BasePath="$(BuildNuGetDir)"
       Version="$(FileVersion)"
       OutputDirectory="$(ArtifactsDir)"
