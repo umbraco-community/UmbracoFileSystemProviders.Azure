@@ -17,6 +17,11 @@ SET mssemver=%PACKAGE_VERISON%-beta-%APPVEYOR_BUILD_NUMBER%
 
 SET CONFIGURATION=Debug
 
+cd build
+call npm install
+call node appveyor-nuspec-patch.js
+cd..
+
 build-appveyor.cmd
 
 cd..
