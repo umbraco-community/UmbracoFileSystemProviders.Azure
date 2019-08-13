@@ -31,7 +31,7 @@
     <Copyright>Copyright &#169; James Jackson-South and contributors.</Copyright>
     <Owners>James Jackson-South, Jeavon Leopold</Owners>
     <Description>An Azure Blob Storage IFileSystem provider for Umbraco Umbraco Forms files.</Description>
-    <IconUrl>https://raw.githubusercontent.com/umbraco-community/UmbracoFileSystemProviders.Azure/blob/develop/build/assets/logo/azure-logo-128.png</IconUrl>
+    <IconUrl>https://raw.githubusercontent.com/umbraco-community/UmbracoFileSystemProviders.Azure/develop/build/assets/logo/azure-logo-128.png</IconUrl>
     <Tags>umbraco azure media blob imageprocessor forms</Tags>
     <Language>en-GB</Language>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
