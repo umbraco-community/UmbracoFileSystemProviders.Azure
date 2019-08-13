@@ -48,6 +48,8 @@ cd UmbracoFileSystemProviders.Azure
 
 In the interim code reviews and pull requests would be most welcome!
 
+## Media
+
 ### Configuration via Web.Config
 
 In `Web.config` create the new application keys 
@@ -77,7 +79,7 @@ Additionally the provider can be further configured with the following applicati
 </configuration>
 ```
 
-## Virtual Path Provider
+### Virtual Path Provider
 By default the plugin will serve files transparently from your domain or serve media directly from Azure. This is made possible by using a custom [Virtual Path Provider](https://msdn.microsoft.com/en-us/library/system.web.hosting.virtualpathprovider%28v=vs.110%29.aspx) included and automatically initialised upon application startup. This can be disabled by adding the configuration setting noted above.
 
 **Note:** Virtual Path Providers may affect performance/caching depending on your setup as the process differs from IIS's [unmanaged handler](http://www.paraesthesia.com/archive/2011/05/02/when-staticfilehandler-is-not-staticfilehandler.aspx/). Virtual files sent via the provider though are correctly cached in the browser so this shouldn't be an issue. VPP providers also **don't work** with **Precompiled sites** or when used in a **virtual directory/application**.
@@ -113,7 +115,7 @@ Also add this configuration to the `web.config` inside the `Media` folder
 </configuration>
 ```
   
-## Combining with ImageProcessor
+### Combining with ImageProcessor
 
 ImageProcessor.Web contains a [`IImageService`](http://imageprocessor.org/imageprocessor-web/extending/#iimageservice) called `CloudImageService`, to enable that service and pull images directly from 
 the cloud replace the `CloudImageService`setting with the following:
@@ -137,6 +139,23 @@ the cloud replace the `CloudImageService`setting with the following:
 **Note** The `CloudImageService`is not compatible with the FileSystemProvider when using private storage. You can instead use the `AzureImageService` which is included with the [AzureBlobCache](http://imageprocessor.org/imageprocessor-web/plugins/azure-blob-cache/) package
 
 Optionally install the [AzureBlobCache](http://imageprocessor.org/imageprocessor-web/plugins/azure-blob-cache/) plugin to get the most out of the package.
+
+## Umbraco Forms
+
+Currently this package is available only via NuGet
+
+    Install-Package UmbracoFileSystemProviders.Azure.Forms -pre
+
+### Configuration via Web.Config
+
+In `Web.config` update the new application keys with the required credentials
+
+```xml
+<add key="AzureBlobFileSystem.ContainerName:forms" value="forms-data" />
+<add key="AzureBlobFileSystem.RootUrl:forms" value="https://[myAccountName].blob.core.windows.net/" />
+<add key="AzureBlobFileSystem.ConnectionString:forms" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" />
+<add key="AzureBlobFileSystem.UsePrivateContainer:forms" value="false" />
+```
 
 ## Authors
 
