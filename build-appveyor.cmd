@@ -15,7 +15,7 @@ IF NOT EXIST "%toolsFolder%" (
 
 IF NOT EXIST "%toolsFolder%vswhere.exe" (
 	ECHO vswhere not found - fetching now
-	nuget install vswhere -Version 2.6.7 -Source nuget.org -OutputDirectory tools
+	nuget install vswhere -Version 2.7.1 -Source nuget.org -OutputDirectory tools
 )
 
 FOR /f "delims=" %%A in ('dir "%toolsFolder%vswhere.*" /b') DO SET "vswhereExePath=%toolsFolder%%%A\"
