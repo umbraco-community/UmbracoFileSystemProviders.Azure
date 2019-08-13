@@ -20,7 +20,9 @@ Both NuGet and Umbraco packages are available. If you use NuGet but would like t
 |NuGet Packages    |Version           |
 |:-----------------|:-----------------|
 |**Pre-Release**|[![NuGet download](http://img.shields.io/nuget/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|
-|**Bleeding edge v2**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|
+|**Bleeding edge Core**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|
+|**Bleeding edge Media**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.Media.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure.Media)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.Media.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure.Media)|
+|**Bleeding edge Forms**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.Forms.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure.Forms)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.Forms.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure.Forms)|
 
 |Umbraco Packages  |                  |
 |:-----------------|:-----------------|
@@ -31,12 +33,12 @@ Both NuGet and Umbraco packages are available. If you use NuGet but would like t
 
 If you prefer, you can compile UmbracoFileSystemProviders.Azure yourself, you'll need:
 
-* Visual Studio 2017 (or above)
+* Visual Studio 2019 (or above)
 
 To clone it locally click the "Clone in Windows" button above or run the following git commands.
 
 ```bash
-git clone https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure
+git clone https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure
 cd UmbracoFileSystemProviders.Azure
 .\build.cmd
 ```
