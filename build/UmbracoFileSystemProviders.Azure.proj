@@ -4,13 +4,11 @@
   <!-- IMPORTS -->
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
-    <MSBuildUmbracoTasksPath>$(MSBuildProjectDirectory)\tools\MSBuildUmbracoTasks</MSBuildUmbracoTasksPath>
     <MSBuildNugetTasksPath>$(MSBuildProjectDirectory)\tools\MSBuildNugetTasks</MSBuildNugetTasksPath>
     <AppVeyorUmbracoPath>$(MSBuildProjectDirectory)\tools\AppVeyorUmbraco</AppVeyorUmbracoPath>
   </PropertyGroup>
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
-  <Import Project="$(MSBuildUmbracoTasksPath)\MSBuild.Umbraco.Tasks.Targets" />
   <Import Project="$(MSBuildNugetTasksPath)\MSBuild.NuGet.Tasks.Targets" />
 
   <!-- SHARED PROPERTIES -->
@@ -19,17 +17,17 @@
     <MinUmbracoVersion>8.1.0</MinUmbracoVersion>
     <Readme>An Azure Blob Storage IFileSystem provider for Umbraco.</Readme>
     <AuthorName>James Jackson-South, Dirk Seefeld, Lars-Erik Aabech, Jeavon Leopold</AuthorName>
-    <AuthorUrl>https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/graphs/contributors</AuthorUrl>
+    <AuthorUrl>https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure/graphs/contributors</AuthorUrl>
     <PackageLicenseName>Apache 2.0 license</PackageLicenseName>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
-    <ProjectUrl>https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure</ProjectUrl>
+    <ProjectUrl>https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure</ProjectUrl>
   </PropertyGroup>
 
   <!-- NUGET ONLY PROPERTIES -->
   <PropertyGroup>
     <PackageId>UmbracoFileSystemProviders.Azure</PackageId>
     <Copyright>Copyright &#169; James Jackson-South and contributors.</Copyright>
-    <Owners>James Jackson-South</Owners>
+    <Owners>James Jackson-South, Jeavon Leopold</Owners>
     <Description>An Azure Blob Storage IFileSystem provider for Umbraco.</Description>
     <IconUrl>https://raw.githubusercontent.com/umbraco-community/UmbracoFileSystemProviders.Azure/develop/build/assets/logo/azure-logo-128.png</IconUrl>
     <Tags>umbraco azure media blob imageprocessor</Tags>
@@ -47,7 +45,6 @@
     <BuildConfig>$(CONFIGURATION)</BuildConfig>
     <RootDir>$(MSBuildProjectDirectory)\..</RootDir>
     <BuildDir>$(MSBuildProjectDirectory)\_core</BuildDir>
-    <BuildUmbDir>$(BuildDir)\_umbraco</BuildUmbDir>
     <BuildNuGetDir>$(BuildDir)\_nuget</BuildNuGetDir>
     <ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
     <ProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure</ProjectDir>
@@ -77,72 +74,17 @@
       <!-- Shared -->
       <BinFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.dll" />
       <PdbFiles Include="$(ProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.pdb" />
-      <WebConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\web.config.*.xdt" />
-      <UmbPakWebConfigXDTFiles Include="$(MSBuildProjectDirectory)\transforms\umbpak-web.config.*.xdt" />
 
-      <MediaWebConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\media-web.config.install.xdt" />
-      <MediaWebConfigXDTUninstallFile Include="$(MSBuildProjectDirectory)\transforms\media-web.config.uninstall.xdt" />
-
-        <!-- Umbraco specific -->
-      <!-- Newtonsoft.Json Excluded for now as Umbraco requires different major versions -->
-      <UmbracoOtherBinFiles Include="$(InstallerProjectDir)\bin\$(BuildConfig)\Microsoft.Web.XmlTransform.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Edm.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.OData.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Services.Client.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Azure.ConfigurationManager.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Azure.Storage.Blob.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Azure.Storage.Common.dll;$(ProjectDir)\bin\$(BuildConfig)\System.Spatial.dll;$(ProjectDir)\bin\$(BuildConfig)\Microsoft.Azure.KeyVault.Core.dll" />
-      <InstallerBinFiles Include="$(InstallerProjectDir)\bin\$(BuildConfig)\Our.Umbraco.FileSystemProviders.Azure.Installer.dll" />
-      <UmbracoInstallerFiles Include="$(InstallerProjectDir)\Configurator\**\*.*"/>
-      <UmbracoInstallerLogo Include="$(MSBuildProjectDirectory)\assets\logo\azure-logo-32.png"/>
-      <PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
-      <ImageProcessorSecurityConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\security.config.install.xdt" />
-      <ImageProcessorSecurityConfigDefaultFile Include="$(InstallerProjectDir)\config\imageprocessor\security.config" />
       <!-- NuGet specific -->
       <SrcFiles Include="$(ProjectDir)\**\*.cs" Exclude="$(ProjectDir)\obj\**"/>
       <NuSpecFile Include="$(MSBuildProjectDirectory)\UmbracoFileSystemProviders.Azure.nuspec" />
     </ItemGroup>
 
-    <!-- Umbraco -->
-    <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
-    <Copy SourceFiles="@(InstallerBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
-    <Copy SourceFiles="@(UmbracoOtherBinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
-    <Copy SourceFiles="@(WebConfigXDTFiles)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
-    <Copy SourceFiles="@(UmbPakWebConfigXDTFiles)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
-    <Copy SourceFiles="@(MediaWebConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
-    <Copy SourceFiles="@(MediaWebConfigXDTUninstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
-
-    <Copy SourceFiles="@(ImageProcessorSecurityConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
-    <Copy SourceFiles="@(ImageProcessorSecurityConfigDefaultFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
-
-    <Copy SourceFiles="@(UmbracoInstallerFiles)" DestinationFiles="@(UmbracoInstallerFiles->'$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install\Configurator\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(UmbracoInstallerLogo)" DestinationFolder="$(BuildUmbDir)\App_Plugins\UmbracoFileSystemProviders\Azure\Install" />
-    <Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
-
     <!--NuGet -->
     <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net472" />
     <Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net472" />
-    <!--<Copy SourceFiles="@(WebConfigXDTFiles)" DestinationFolder="$(BuildNuGetDir)\Content" />
-    <Copy SourceFiles="@(MediaWebConfigXDTInstallFile)" DestinationFiles="$(BuildNuGetDir)\Content\Media\web.config.install.xdt" />
-    <Copy SourceFiles="@(MediaWebConfigXDTUninstallFile)" DestinationFiles="$(BuildNuGetDir)\Content\Media\web.config.uninstall.xdt" />-->
-
     <Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
-  </Target>
-
-  <!-- MANIFEST UMBRACO -->
-  <Target Name="ManifestUmbraco" DependsOnTargets="PrepareFiles">
-    <ItemGroup>
-      <ManifestFiles Include="$(BuildUmbDir)\**\*" Exclude="$(BuildUmbDir)\package.xml" />
-    </ItemGroup>
-    <ManifestUpdate
-      ManifestFile="$(BuildUmbDir)\package.xml"
-      WorkingDirectory="$(BuildUmbDir)"
-      MinimumRequiredUmbracoVersion="$(MinUmbracoVersion)"
-      PackageName="$(PackageName)"
-      PackageVersion="$(FileVersion)"
-      AuthorName="$(AuthorName)"
-      AuthorUrl="$(AuthorUrl)"
-      IconUrl="$(IconUrl)"
-      Readme="$(Readme)"
-      PackageLicenseName="$(PackageLicenseName)"
-      PackageLicenseUrl="$(PackageLicenseUrl)"
-      PackageUrl="$(ProjectUrl)"
-      Files="@(ManifestFiles)" />
   </Target>
 
   <!-- MANIFEST FOR NUGET PACKAGE -->
@@ -172,15 +114,7 @@
   </Target>
 
   <!-- PACKAGE -->
-  <Target Name="Package" DependsOnTargets="ManifestUmbraco; ManifestNuGet">
-    <ItemGroup>
-      <PackageFiles Include="$(BuildUmbDir)\**\*.*" />
-    </ItemGroup>
-
-    <Package ManifestFile="$(BuildUmbDir)\package.xml"
-      WorkingDirectory="$(BuildUmbDir)"
-      OutputDirectory="$(ArtifactsDir)"
-      Files="@(PackageFiles)" />
+  <Target Name="Package" DependsOnTargets="ManifestNuGet">
 
     <MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\build\tools\NuGet.exe"
       ManifestFile="$(BuildNuGetDir)\UmbracoFileSystemProviders.Azure.nuspec"

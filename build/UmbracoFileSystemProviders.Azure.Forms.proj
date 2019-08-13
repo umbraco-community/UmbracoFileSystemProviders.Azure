@@ -19,17 +19,17 @@
     <MinUmbracoVersion>8.1.0</MinUmbracoVersion>
     <Readme>An Azure Blob Storage IFileSystem provider for Umbraco Forms files.</Readme>
     <AuthorName>James Jackson-South, Dirk Seefeld, Lars-Erik Aabech, Jeavon Leopold</AuthorName>
-    <AuthorUrl>https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/graphs/contributors</AuthorUrl>
+    <AuthorUrl>https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure/graphs/contributors</AuthorUrl>
     <PackageLicenseName>Apache 2.0 license</PackageLicenseName>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
-    <ProjectUrl>https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure</ProjectUrl>
+    <ProjectUrl>https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure</ProjectUrl>
   </PropertyGroup>
 
   <!-- NUGET ONLY PROPERTIES -->
   <PropertyGroup>
     <PackageId>UmbracoFileSystemProviders.Azure.Forms</PackageId>
     <Copyright>Copyright &#169; James Jackson-South and contributors.</Copyright>
-    <Owners>James Jackson-South</Owners>
+    <Owners>James Jackson-South, Jeavon Leopold</Owners>
     <Description>An Azure Blob Storage IFileSystem provider for Umbraco Umbraco Forms files.</Description>
     <IconUrl>https://raw.githubusercontent.com/umbraco-community/UmbracoFileSystemProviders.Azure/blob/develop/build/assets/logo/azure-logo-128.png</IconUrl>
     <Tags>umbraco azure media blob imageprocessor forms</Tags>
