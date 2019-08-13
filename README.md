@@ -11,7 +11,7 @@ Used to offload static files in the media section to the cloud.
 
 This package allows the storage and retrieval of media items using Azure Blob Storage while retaining the relative paths to the files expected in the back office.
 
-**v2 requires Umbraco v8.0.1+**
+**v2 requires Umbraco v8.1.0+**
 
 ## Installation
 
