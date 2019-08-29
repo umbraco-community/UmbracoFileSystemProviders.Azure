@@ -19,6 +19,7 @@ Both NuGet and Umbraco packages are available. If you use NuGet but would like t
 
 From **v2.0.0-alpha3** onwards this package was split into 2 NuGet packages and an additional one was added to support Umbraco Forms. When using NuGet install the `UmbracoFileSystemProviders.Azure.Media` package to swap Media storage to Blobs.
 
+**If upgrading from v2.0.0-alpha1 or v2.0.0-alpha2 to v2.0.0-alpha3 you will need to install `UmbracoFileSystemProviders.Azure.Media`**
 
 |NuGet Packages    |Version           |
 |:-----------------|:-----------------|
