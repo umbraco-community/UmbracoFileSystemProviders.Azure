@@ -1,17 +1,28 @@
-os: Visual Studio 2017
-
-# Version format
 version: 2.0.0.{build}
+
+os: Visual Studio 2019
 
 cache:
   - src\packages -> **\packages.config   # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
 
-# UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
-# example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
-init:
-  - set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=alpha2
+configuration: Release
+
+environment:
+  # Version Suffix
+  version_suffix: alpha3
 
 install:
+  - ps: .\build\appveyor-semver.ps1
+  - ps: .\build\check-release-version.ps1
+  - ps: Update-AppveyorBuild -Version $Env:appveyor_version
+  - cmd: >-
+        cd build
+
+        npm install
+
+        node appveyor-nuspec-patch.js
+
+        cd..
   - ps: >-
       $msiPath = "$($env:USERPROFILE)\MicrosoftAzureStorageEmulator.msi"
 
@@ -19,8 +30,18 @@ install:
 
       cmd /c start /wait msiexec /i $msiPath /quiet
 
+assembly_info:
+  patch: true
+  file: 'src\UmbracoFileSystemProviders.Azure**\AssemblyInfo.*'
+  assembly_version: '$(appveyor_file_version)'
+  assembly_file_version: '$(appveyor_file_version)'
+  assembly_informational_version: '$(mssemver)'
+
 build_script:
-- build-appveyor.cmd
+- cmd: >-
+    build-appveyor.cmd
+
+    cd..
 
 before_test:
 - cmd: '"%programfiles(x86)%\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start'
@@ -47,7 +68,7 @@ deploy:
     server: https://www.myget.org/F/umbraco-packages/api/v2/package
     symbol_server: https://www.myget.org/F/umbraco-packages/symbols/api/v2/package
     api_key:
-      secure: 9ggA53hO2o0/bXcLQoa+f9Kv9dduaStqg9Scxxq4nCbDK5ibg6rLUaTyf51Kl1aF
+      secure: yvlnQEq6tmxGOdbtTuKyAhcdY1GCD98/sG9+Qo7y7SNb89GAbjLXxueOMspkjvUh
     artifact: /.*\.nupkg/
     on:
       branch: develop-umbraco-version-8
@@ -55,7 +76,7 @@ deploy:
     # GitHub Deployment for releases
   - provider: GitHub
     auth_token:
-      secure: gnJNHw3btYiQ7G0GexIGpSyA3moAz/GuJvgGZvJmz63/+YVLFC+qew/xlniRLDSk
+      secure: Kucu1gQQf8bjRlkR72fyZUiUtmkz7rtZEIgK/RMT1pMnq700m5sSQTiFHOSQUdR5
     artifact: /.*\.zip/            # upload all Zip packages to release assets
     draft: false
     prerelease: false
@@ -67,7 +88,7 @@ deploy:
   - provider: NuGet
     server:
     api_key:
-      secure: kHataLiMb9nmJEdwBE4BTXvA4nOpoD3Fw14zVeDP6Vs0ZXpL7c8qeegMv/jMZECP
+      secure: TtE4dizVNNLoy4gfrJDGRH1/vfNMTXiAxuMW0va1bcO1ZPXCw0qy12PUfIB+h9O3
     artifact: /.*\.nupkg/
     on:
       branch: master
@@ -76,7 +97,7 @@ deploy:
     # GitHub Deployment for releases
   - provider: GitHub
     auth_token:
-      secure: gnJNHw3btYiQ7G0GexIGpSyA3moAz/GuJvgGZvJmz63/+YVLFC+qew/xlniRLDSk
+      secure: Kucu1gQQf8bjRlkR72fyZUiUtmkz7rtZEIgK/RMT1pMnq700m5sSQTiFHOSQUdR5
     artifact: /.*\.zip/            # upload all Zip packages to release assets
     draft: false
     prerelease: false
@@ -88,7 +109,7 @@ deploy:
   - provider: NuGet
     server:
     api_key:
-      secure: kHataLiMb9nmJEdwBE4BTXvA4nOpoD3Fw14zVeDP6Vs0ZXpL7c8qeegMv/jMZECP
+      secure: TtE4dizVNNLoy4gfrJDGRH1/vfNMTXiAxuMW0va1bcO1ZPXCw0qy12PUfIB+h9O3
     artifact: /.*\.nupkg/
     on:
       branch: master-umbraco-version-8

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>Our.Umbraco.FileSystemProviders.Azure.Media</AssemblyName>
+    <RootNamespace>Our.Umbraco.FileSystemProviders.Azure.Media</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="UmbracoCms.Web" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UmbracoFileSystemProviders.Azure\UmbracoFileSystemProviders.Azure.csproj" />
+  </ItemGroup>
+
+</Project>

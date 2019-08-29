@@ -2,9 +2,6 @@
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
     <runtime>
         <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1" xdt:Transform="InsertIfMissing">
-
-            <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.WindowsAzure.Storage')">
-            </dependentAssembly>
             <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.Services.Client')">
             </dependentAssembly>
             <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.OData')">
@@ -14,25 +11,21 @@
             <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Azure.KeyVault.Core')">
             </dependentAssembly>
 
-            <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.WindowsAzure.Storage')">
-                <assemblyIdentity name="Microsoft.WindowsAzure.Storage" publicKeyToken="31bf3856ad364e35" culture="neutral" />
-                <bindingRedirect oldVersion="0.0.0.0-8.7.0.0" newVersion="8.7.0.0" xdt:Transform="SetAttributes" />
-            </dependentAssembly>
             <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.Services.Client')">
                 <assemblyIdentity name="Microsoft.Data.Services.Client" publicKeyToken="31bf3856ad364e35" culture="neutral" />
-                <bindingRedirect oldVersion="0.0.0.0-5.8.3.0" newVersion="5.8.3.0" xdt:Transform="SetAttributes" />
+                <bindingRedirect oldVersion="0.0.0.0-5.8.4.0" newVersion="5.8.4.0" xdt:Transform="SetAttributes" />
             </dependentAssembly>
             <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.OData')">
                 <assemblyIdentity name="Microsoft.Data.OData" publicKeyToken="31bf3856ad364e35" culture="neutral" />
-                <bindingRedirect oldVersion="0.0.0.0-5.8.3.0" newVersion="5.8.3.0" xdt:Transform="SetAttributes" />
+                <bindingRedirect oldVersion="0.0.0.0-5.8.4.0" newVersion="5.8.4.0" xdt:Transform="SetAttributes" />
             </dependentAssembly>
             <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.Edm')">
                 <assemblyIdentity name="Microsoft.Data.Edm" publicKeyToken="31bf3856ad364e35" culture="neutral" />
-                <bindingRedirect oldVersion="0.0.0.0-5.8.3.0" newVersion="5.8.3.0" xdt:Transform="SetAttributes" />
+                <bindingRedirect oldVersion="0.0.0.0-5.8.4.0" newVersion="5.8.4.0" xdt:Transform="SetAttributes" />
             </dependentAssembly>
             <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Azure.KeyVault.Core')">
                 <assemblyIdentity name="Microsoft.Azure.KeyVault.Core" publicKeyToken="31bf3856ad364e35" culture="neutral" />
-                <bindingRedirect oldVersion="0.0.0.0-2.0.0.0" newVersion="2.0.0.0" xdt:Transform="SetAttributes" />
+                <bindingRedirect oldVersion="0.0.0.0-3.0.0.0" newVersion="3.0.0.0" xdt:Transform="SetAttributes" />
             </dependentAssembly>
         </assemblyBinding>
     </runtime>

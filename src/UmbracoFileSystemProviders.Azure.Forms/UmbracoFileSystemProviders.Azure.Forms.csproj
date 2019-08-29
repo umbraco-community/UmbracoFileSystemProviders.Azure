@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>Our.Umbraco.FileSystemProviders.Azure.Forms</AssemblyName>
+    <RootNamespace>Our.Umbraco.FileSystemProviders.Azure.Forms</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="UmbracoCms.Web" Version="8.1.0" />
+    <PackageReference Include="UmbracoForms.Core" Version="8.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UmbracoFileSystemProviders.Azure\UmbracoFileSystemProviders.Azure.csproj" />
+  </ItemGroup>
+
+</Project>

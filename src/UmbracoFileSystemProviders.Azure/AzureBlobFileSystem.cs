@@ -157,7 +157,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// Gets a singleton instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
-        internal AzureFileSystem FileSystem { get; }
+        public AzureFileSystem FileSystem { get; }
 
         public bool CanAddPhysical => throw new NotImplementedException();
 

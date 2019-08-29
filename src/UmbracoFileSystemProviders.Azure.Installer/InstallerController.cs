@@ -15,14 +15,15 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using System.Web.Http;
     using System.Xml;
 
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Blob;
+    using Microsoft.Azure.Storage;
+    using Microsoft.Azure.Storage.Blob;
 
     using global::Umbraco.Core;
     using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Logging;
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.WebApi;
+    using global::Umbraco.Core.Xml;
 
     using Enums;
     using Models;
@@ -83,7 +84,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             bool usePrivateContainer = bool.Parse(newParameters.SingleOrDefault(k => k.Key == "UsePrivateContainer").Value);
             string rootUrl = newParameters.SingleOrDefault(k => k.Key == "RootUrl").Value;
 
-            if (!TestAzureCredentials(connection, containerName))
+            BlobContainerPublicAccessType blobContainerPublicAccessType = usePrivateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
+
+            if (!TestAzureCredentials(connection, containerName, blobContainerPublicAccessType))
             {
                 return InstallerStatus.ConnectionError;
             }
@@ -442,7 +445,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return true;
         }
 
-        private static bool TestAzureCredentials(string connectionString, string containerName)
+        private static bool TestAzureCredentials(string connectionString, string containerName, BlobContainerPublicAccessType accessType)
         {
             bool useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
                                && ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey]
@@ -452,11 +455,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
                 CloudStorageAccount cloudStorageAccount = useEmulator ? CloudStorageAccount.DevelopmentStorageAccount : CloudStorageAccount.Parse(connectionString);
 
                 CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-                CloudBlobContainer blobContainer = cloudBlobClient.GetContainerReference(containerName);
 
                 // This should fully check that the connection works.
-                blobContainer.CreateIfNotExists();
-                return true;
+                var testContainer = AzureFileSystem.CreateContainer(cloudBlobClient, containerName, accessType);
+
+                if (testContainer.Exists())
+                {
+                    return true;
+                }
+
+                return false;
             }
             catch (Exception e)
             {
