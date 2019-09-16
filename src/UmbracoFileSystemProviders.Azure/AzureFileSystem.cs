@@ -263,6 +263,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="overrideIfExists">Whether to override the file if it already exists.</param>
         public void AddFile(string path, Stream stream, bool overrideIfExists)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"AddFile(path, steam, overrideIfExists) method executed with path:{path}");
+
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
@@ -333,6 +335,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="stream">The <see cref="Stream"/> containing the file contents.</param>
         public void AddFile(string path, Stream stream)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"AddFile(path, steam) method executed with path:{path}");
+
             this.AddFile(path, stream, true);
         }
 
@@ -353,6 +357,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </param>
         public void DeleteDirectory(string path, bool recursive)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"DeleteDirectory(path, recursive) method executed with path:{path}");
+
             path = this.FixPath(path);
 
             if (!this.DirectoryExists(path))
@@ -406,6 +412,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="path">The name of the directory to remove.</param>
         public void DeleteDirectory(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"DeleteDirectory(path) method executed with path:{path}");
+
             this.DeleteDirectory(path, false);
         }
 
@@ -415,6 +423,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="path">The name of the file to remove.</param>
         public void DeleteFile(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"DeleteFile(path) method executed with path:{path}");
+
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
@@ -439,6 +449,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public bool DirectoryExists(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"DirectoryExists(path) method executed with path:{path}");
+
             string fixedPath = this.FixPath(path);
             CloudBlobDirectory directory = this.cloudBlobContainer.GetDirectoryReference(fixedPath);
 
@@ -454,6 +466,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public bool FileExists(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"FileExists(path) method executed with path:{path}");
+
             CloudBlockBlob blockBlobReference = this.GetBlockBlobReference(path);
             return blockBlobReference?.Exists() ?? false;
         }
@@ -467,6 +481,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public DateTimeOffset GetCreated(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetCreated(path) method executed with path:{path}");
+
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
@@ -492,6 +508,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public IEnumerable<string> GetDirectories(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetDirectories(path) method executed with path:{path}");
+
             CloudBlobDirectory directory = this.GetDirectoryReference(path);
 
             IEnumerable<IListBlobItem> blobs = directory.ListBlobs().Where(blob => blob is CloudBlobDirectory).ToList();
@@ -510,6 +528,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public IEnumerable<string> GetFiles(string path, string filter)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetFiles(path, filter) method executed with path:{path} & filter {filter}");
+
             IEnumerable<IListBlobItem> blobs = this.cloudBlobContainer.ListBlobs(this.FixPath(path), true);
 
             var blobList = blobs as IList<IListBlobItem> ?? blobs.ToList();
@@ -550,6 +570,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public IEnumerable<string> GetFiles(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetFiles(path) method executed with path:{path}");
+
             return this.GetFiles(path, "*.*");
         }
 
@@ -562,6 +584,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public string GetFullPath(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetFullPath(path) method executed with path:{path}");
+
             return this.ResolveUrl(path, false);
         }
 
@@ -574,6 +598,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public DateTimeOffset GetLastModified(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetLastModified(path) method executed with path:{path}");
+
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
@@ -594,6 +620,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public string GetRelativePath(string fullPathOrUrl)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetRelativePath(path) method executed with fullPathOrUrl:{fullPathOrUrl}");
+
             return this.FixPath(fullPathOrUrl);
         }
 
@@ -607,6 +635,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public string GetUrl(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetUrl(path) method executed with path:{path}");
+
             if (this.DisableVirtualPathProvider)
             {
                 return this.ResolveUrl(path, false);
@@ -618,6 +648,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <inheritdoc/>
         public long GetSize(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetSize(path) method executed with path:{path}");
+
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
@@ -637,6 +669,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         public Stream OpenFile(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"OpenFile(path) method executed with path:{path}");
+
             CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
@@ -670,6 +704,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <returns>The <see cref="CloudBlobContainer"/></returns>
         public static CloudBlobContainer CreateContainer(CloudBlobClient cloudBlobClient, string containerName, BlobContainerPublicAccessType accessType)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"CreateContainer(cloudBlobClient, containerName, accessType) method executed with containerName:{containerName}");
+
             containerName = containerName.ToLowerInvariant();
 
             // Validate container name - from: http://stackoverflow.com/a/23364534/5018
@@ -743,6 +779,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         private CloudBlockBlob GetBlockBlobReference(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetBlockBlobReference(path) method executed with path:{path}");
+
             string blobPath = this.FixPath(path);
 
             // Only make the request if there is an actual path. See issue 8.
@@ -761,6 +799,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         private CloudBlobDirectory GetDirectoryReference(string path)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetDirectoryReference(path) method executed with path:{path}");
+
             string blobPath = this.FixPath(path);
             return this.cloudBlobContainer.GetDirectoryReference(blobPath);
         }
@@ -775,6 +815,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </returns>
         private string ResolveUrl(string path, bool relative)
         {
+            Current.Logger.Debug<AzureBlobFileSystem>($"ResolveUrl(path) method executed with path:{path}");
+
             // First create the full url
             string fixedPath = this.FixPath(path);
 
