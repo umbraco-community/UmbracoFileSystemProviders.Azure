@@ -22,6 +22,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using global::Umbraco.Core.Logging;
     using Microsoft.Azure.Storage;
     using Microsoft.Azure.Storage.Blob;
+    using Microsoft.Azure.Storage.Blob.Protocol;
 
     /// <summary>
     /// A class for communicating with Azure Blob Storage.
@@ -783,19 +784,41 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             string blobPath = this.FixPath(path);
 
-            var blobReference = this.cloudBlobContainer.GetBlobReferenceFromServer(blobPath);
-            // Only make the request if there is an actual path. See issue 8.
-            // https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/issues/8
-            if (blobReference.BlobType == BlobType.BlockBlob && !string.IsNullOrWhiteSpace(path))
+            try
             {
-                return blobReference as CloudBlockBlob;
+                var blobReference = this.cloudBlobContainer.GetBlobReferenceFromServer(blobPath);
+                // Only make the request if there is an actual path. See issue 8.
+                // https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/issues/8
+                if (blobReference.BlobType == BlobType.BlockBlob && !string.IsNullOrWhiteSpace(path))
+                {
+                    return blobReference as CloudBlockBlob;
+                }
+                else
+                {
+                    Current.Logger.Error<AzureBlobFileSystem>(
+                        $"A media item '{path}' was requested but it's blob type was {blobReference.BlobType} when it should be BlockBlob");
+                    return null;
+                }
             }
-            else
+            catch (StorageException ex) when (ex.RequestInformation.ErrorCode == BlobErrorCodeStrings.BlobNotFound)
             {
-                Current.Logger.Error<AzureBlobFileSystem>($"A media item '{path}' was requested but it's blob type was {blobReference.BlobType} when it should be BlockBlob");
+                // blob doesn't exist yet
+                var blobReference = this.cloudBlobContainer.GetBlockBlobReference(blobPath);
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    return blobReference;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (StorageException ex)
+            {
+                Current.Logger.Error<AzureBlobFileSystem>(
+                    $"GetBlockBlobReference exception {ex}");
                 return null;
             }
-
         }
 
         /// <summary>
