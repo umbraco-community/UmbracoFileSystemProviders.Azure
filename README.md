@@ -133,7 +133,7 @@ the cloud replace the `CloudImageService`setting with the following:
         <setting key="Container" value="media"/>
         <setting key="MaxBytes" value="8194304"/>
         <setting key="Timeout" value="30000"/>
-        <setting key="Host" value="https://[myAccountName].blob.core.windows.net/media"/>
+        <setting key="Host" value="https://[myAccountName].blob.core.windows.net/"/>
       </settings>
     </service>
   </services>  
