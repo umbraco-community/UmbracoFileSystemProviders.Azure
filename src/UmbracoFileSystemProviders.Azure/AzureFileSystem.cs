@@ -784,12 +784,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             string blobPath = this.FixPath(path);
 
+            // Only make the request if there is an actual path. See issue 8.
+            // https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/issues/8
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return null;
+            }
+
             try
             {
                 var blobReference = this.cloudBlobContainer.GetBlobReferenceFromServer(blobPath);
-                // Only make the request if there is an actual path. See issue 8.
-                // https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/issues/8
-                if (blobReference.BlobType == BlobType.BlockBlob && !string.IsNullOrWhiteSpace(path))
+                if (blobReference.BlobType == BlobType.BlockBlob)
                 {
                     return blobReference as CloudBlockBlob;
                 }
@@ -804,14 +809,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             {
                 // blob doesn't exist yet
                 var blobReference = this.cloudBlobContainer.GetBlockBlobReference(blobPath);
-                if (!string.IsNullOrWhiteSpace(path))
-                {
-                    return blobReference;
-                }
-                else
-                {
-                    return null;
-                }
+                return blobReference;
+                
             }
             catch (StorageException ex)
             {
