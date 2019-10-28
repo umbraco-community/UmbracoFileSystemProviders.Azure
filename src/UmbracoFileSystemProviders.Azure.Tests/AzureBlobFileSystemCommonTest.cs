@@ -46,7 +46,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem(containerName: "xxx", useDefaultRoute: "false");
 
             // Act & Assert
-            Assert.Throws<Microsoft.WindowsAzure.Storage.StorageException>(() => provider.AddFile("1010/image.jpg", Stream.Null));
+            Assert.Throws<Microsoft.WindowsAzure.Storage.StorageException>(() => provider.AddFile("1y3jw4gd/image.jpg", Stream.Null));
         }
 #elif SASAccountLevel
         /// <summary>
@@ -59,11 +59,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem(containerName: "xxx", useDefaultRoute: "false");
 
             // Act
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
 
             // Assert
-            Assert.IsTrue(provider.FileExists("1010/image.jpg"));
-            Assert.IsFalse(provider.FileExists("1010/media1.jpg"));
+            Assert.IsTrue(provider.FileExists("1y3jw4gd/image.jpg"));
+            Assert.IsFalse(provider.FileExists("1y3jw4gd/media1.jpg"));
         }
 #endif
 
@@ -77,10 +77,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            string actual = provider.GetFullPath("1010/image.jpg");
+            string actual = provider.GetFullPath("1y3jw4gd/image.jpg");
 
             // Assert
-            Assert.AreEqual($"{this.RootUrl}{this.ContainerName}/1010/image.jpg", actual);
+            Assert.AreEqual($"{this.RootUrl}{this.ContainerName}/1y3jw4gd/image.jpg", actual);
         }
 
         /// <summary>
@@ -94,10 +94,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            string actual = provider.GetFullPath($"{this.ContainerName}/1010/image.jpg");
+            string actual = provider.GetFullPath($"{this.ContainerName}/1y3jw4gd/image.jpg");
 
             // Assert
-            Assert.AreEqual($"{this.RootUrl}{this.ContainerName}/1010/image.jpg", actual);
+            Assert.AreEqual($"{this.RootUrl}{this.ContainerName}/1y3jw4gd/image.jpg", actual);
         }
 
         /// <summary>
@@ -110,10 +110,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            string actual = provider.GetRelativePath("1010/image.jpg");
+            string actual = provider.GetRelativePath("1y3jw4gd/image.jpg");
 
             // Assert
-            Assert.AreEqual($"1010/image.jpg", actual);
+            Assert.AreEqual($"1y3jw4gd/image.jpg", actual);
         }
 
         /// <summary>
@@ -126,10 +126,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem(false, "/test");
 
             // Act
-            string actual = provider.GetRelativePath("1010/image.jpg");
+            string actual = provider.GetRelativePath("1y3jw4gd/image.jpg");
 
             // Assert
-            Assert.AreEqual($"1010/image.jpg", actual);
+            Assert.AreEqual($"1y3jw4gd/image.jpg", actual);
         }
 
         /// <summary>
@@ -143,10 +143,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            string actual = provider.GetRelativePath($"{this.ContainerName}/1010/image.jpg");
+            string actual = provider.GetRelativePath($"{this.ContainerName}/1y3jw4gd/image.jpg");
 
             // Assert
-            Assert.AreEqual($"1010/image.jpg", actual);
+            Assert.AreEqual($"1y3jw4gd/image.jpg", actual);
         }
 
         /// <summary>
@@ -159,11 +159,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
 
             // Assert
-            Assert.IsTrue(provider.FileExists("1010/image.jpg"));
-            Assert.IsFalse(provider.FileExists("1010/media1.jpg"));
+            Assert.IsTrue(provider.FileExists("1y3jw4gd/image.jpg"));
+            Assert.IsFalse(provider.FileExists("1y3jw4gd/media1.jpg"));
         }
 
         /// <summary>
@@ -177,11 +177,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            provider.AddFile($"{this.ContainerName}/1010/image.jpg", Stream.Null);
+            provider.AddFile($"{this.ContainerName}/1y3jw4gd/image.jpg", Stream.Null);
 
             // Assert
-            Assert.IsTrue(provider.FileExists("1010/image.jpg"));
-            Assert.IsFalse(provider.FileExists("1010/media1.jpg"));
+            Assert.IsTrue(provider.FileExists("1y3jw4gd/image.jpg"));
+            Assert.IsFalse(provider.FileExists("1y3jw4gd/media1.jpg"));
         }
 
         /// <summary>
@@ -193,11 +193,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             // Arrange
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
+            var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var path = string.Format("{0}\\{1}", directory, "church.jpg");
+
             // Act
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            using (FileStream fs = File.OpenRead(path))
+            {
+                provider.AddFile("1y3jw4gd/image.jpg", fs);
+            }
 
             // Assert
-            Assert.IsTrue(provider.FileExists("1010/image.jpg"));
+            Assert.IsTrue(provider.FileExists("1y3jw4gd/image.jpg"));
         }
 
         /// <summary>
@@ -210,10 +216,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            provider.AddFile($"{this.ContainerName}/1010/image.jpg", Stream.Null);
+            provider.AddFile($"{this.ContainerName}/1y3jw4gd/image.jpg", Stream.Null);
 
             // Assert
-            Assert.IsTrue(provider.FileExists("1010/image.jpg"));
+            Assert.IsTrue(provider.FileExists("1y3jw4gd/image.jpg"));
         }
 
         /// <summary>
@@ -226,16 +232,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
 
             // Assert
-            Assert.IsTrue(provider.FileExists("1010/image.jpg"));
+            Assert.IsTrue(provider.FileExists("1y3jw4gd/image.jpg"));
 
             // Act
-            provider.DeleteFile("1010/image.jpg");
+            provider.DeleteFile("1y3jw4gd/image.jpg");
 
             // Assert
-            Assert.IsFalse(provider.FileExists("1010/image.jpg"));
+            Assert.IsFalse(provider.FileExists("1y3jw4gd/image.jpg"));
         }
 
         /// <summary>
@@ -248,16 +254,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            provider.AddFile($"{this.ContainerName}/1010/image.jpg", Stream.Null);
+            provider.AddFile($"{this.ContainerName}/1y3jw4gd/image.jpg", Stream.Null);
 
             // Assert
-            Assert.IsTrue(provider.FileExists("1010/image.jpg"));
+            Assert.IsTrue(provider.FileExists("1y3jw4gd/image.jpg"));
 
             // Act
-            provider.DeleteFile($"{this.ContainerName}/1010/image.jpg");
+            provider.DeleteFile($"{this.ContainerName}/1y3jw4gd/image.jpg");
 
             // Assert
-            Assert.IsFalse(provider.FileExists("1010/image.jpg"));
+            Assert.IsFalse(provider.FileExists("1y3jw4gd/image.jpg"));
         }
 
         /// <summary>
@@ -271,10 +277,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             using (MemoryStream expected = new MemoryStream(Encoding.UTF8.GetBytes("test")))
             {
                 // Act
-                provider.AddFile("1010/image.jpg", expected);
+                provider.AddFile("1y3jw4gd/image.jpg", expected);
 
                 // Assert
-                using (Stream actual = provider.OpenFile("1010/image.jpg"))
+                using (Stream actual = provider.OpenFile("1y3jw4gd/image.jpg"))
                 {
                     Assert.AreEqual(expected, actual);
                 }
@@ -293,10 +299,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             using (MemoryStream expected = new MemoryStream(Encoding.UTF8.GetBytes("test")))
             {
                 // Act
-                provider.AddFile($"{this.ContainerName}/1010/image.jpg", expected);
+                provider.AddFile($"{this.ContainerName}/1y3jw4gd/image.jpg", expected);
 
                 // Assert
-                using (Stream actual = provider.OpenFile($"{this.ContainerName}/1010/image.jpg"))
+                using (Stream actual = provider.OpenFile($"{this.ContainerName}/1y3jw4gd/image.jpg"))
                 {
                     Assert.AreEqual(expected, actual);
                 }
@@ -312,7 +318,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         {
             // Arrange
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
             provider.AddFile("1011/image.jpg", Stream.Null);
             provider.AddFile("1012/image.jpg", Stream.Null);
 
@@ -320,7 +326,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetDirectories("/");
 
             // Assert
-            string[] expected = { "1010", "1011", "1012" };
+            string[] expected = { "1011", "1012", "1y3jw4gd" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -333,7 +339,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         {
             // Arrange
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
-            provider.AddFile($"{this.ContainerName}/1010/image.jpg", Stream.Null);
+            provider.AddFile($"{this.ContainerName}/1y3jw4gd/image.jpg", Stream.Null);
             provider.AddFile($"{this.ContainerName}/1011/image.jpg", Stream.Null);
             provider.AddFile($"{this.ContainerName}/1012/image.jpg", Stream.Null);
 
@@ -341,7 +347,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetDirectories("/");
 
             // Assert
-            string[] expected = { "1010", "1011", "1012" };
+            string[] expected = { "1011", "1012", "1y3jw4gd" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -354,7 +360,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         {
             // Arrange
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
             provider.AddFile("1011/image.jpg", Stream.Null);
             provider.AddFile("1012/image.jpg", Stream.Null);
 
@@ -362,7 +368,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> actual = provider.GetFiles("/");
 
             // Assert
-            string[] expected = { "1010/image.jpg", "1011/image.jpg", "1012/image.jpg" };
+            string[] expected = { "1011/image.jpg", "1012/image.jpg", "1y3jw4gd/image.jpg" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -391,7 +397,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         {
             // Arrange
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
             provider.AddFile("1011/image.jpg", Stream.Null);
             provider.AddFile("1012/image.jpg", Stream.Null);
 
@@ -400,7 +406,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             IEnumerable<string> alternate = provider.GetFiles("/", "*.png");
 
             // Assert
-            string[] expected = { "1010/image.jpg", "1011/image.jpg", "1012/image.jpg" };
+            string[] expected = { "1011/image.jpg", "1012/image.jpg", "1y3jw4gd/image.jpg" };
             Assert.IsTrue(expected.SequenceEqual(actual));
             Assert.IsFalse(expected.SequenceEqual(alternate));
         }
@@ -414,13 +420,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         {
             // Arrange
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
 
             // Act
-            IEnumerable<string> actual = provider.GetFiles("/1010");
+            IEnumerable<string> actual = provider.GetFiles("/1y3jw4gd");
 
             // Assert
-            string[] expected = { "1010/image.jpg" };
+            string[] expected = { "1y3jw4gd/image.jpg" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
@@ -432,17 +438,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         {
             // Arrange
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
 
             // Act
-            DateTimeOffset original = provider.GetCreated("1010/image.jpg");
+            DateTimeOffset original = provider.GetCreated("1y3jw4gd/image.jpg");
 
             // Assert
             Assert.AreNotEqual(original, DateTimeOffset.MinValue);
 
             // Act
-            provider.AddFile("1010/image.jpg", Stream.Null);
-            DateTimeOffset updated = provider.GetCreated("1010/image.jpg");
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
+            DateTimeOffset updated = provider.GetCreated("1y3jw4gd/image.jpg");
 
             // Assert
             Assert.AreEqual(original, updated);
@@ -456,10 +462,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
         {
             // Arrange
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
 
             // Act
-            DateTimeOffset original = provider.GetLastModified("1010/image.jpg");
+            DateTimeOffset original = provider.GetLastModified("1y3jw4gd/image.jpg");
 
             // Assert
             Assert.AreNotEqual(original, DateTimeOffset.MinValue);
@@ -467,8 +473,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             Thread.Sleep(TimeSpan.FromSeconds(1.1));
 
             // Act
-            provider.AddFile("1010/image.jpg", Stream.Null);
-            DateTimeOffset updated = provider.GetLastModified("1010/image.jpg");
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
+            DateTimeOffset updated = provider.GetLastModified("1y3jw4gd/image.jpg");
 
             // Assert
             Assert.AreNotEqual(original, updated);
@@ -484,17 +490,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            provider.AddFile("1010/image.jpg", Stream.Null);
+            provider.AddFile("1y3jw4gd/image.jpg", Stream.Null);
 
             // Assert
-            Assert.IsTrue(provider.DirectoryExists("1010/"));
+            Assert.IsTrue(provider.DirectoryExists("1y3jw4gd/"));
 
             // Act
-            provider.DeleteDirectory("1010/");
+            provider.DeleteDirectory("1y3jw4gd/");
 
             // Assert
-            Assert.IsFalse(provider.DirectoryExists("1010/"));
-            Assert.IsFalse(provider.FileExists("1010/image.jpg"));
+            Assert.IsFalse(provider.DirectoryExists("1y3jw4gd/"));
+            Assert.IsFalse(provider.FileExists("1y3jw4gd/image.jpg"));
         }
 
         /// <summary>
@@ -531,18 +537,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            provider.AddFile($"{this.ContainerName}/1010/image.jpg", Stream.Null);
+            provider.AddFile($"{this.ContainerName}/1y3jw4gd/image.jpg", Stream.Null);
 
             // Assert
-            Assert.IsTrue(provider.DirectoryExists($"{this.ContainerName}/1010/"));
-            Assert.IsTrue(provider.FileExists($"{this.ContainerName}/1010/image.jpg"));
+            Assert.IsTrue(provider.DirectoryExists($"{this.ContainerName}/1y3jw4gd/"));
+            Assert.IsTrue(provider.FileExists($"{this.ContainerName}/1y3jw4gd/image.jpg"));
 
             // Act
-            provider.DeleteDirectory($"{this.ContainerName}/1010/");
+            provider.DeleteDirectory($"{this.ContainerName}/1y3jw4gd/");
 
             // Assert
-            Assert.IsFalse(provider.DirectoryExists($"{this.ContainerName}/1010/"));
-            Assert.IsFalse(provider.FileExists($"{this.ContainerName}/1010/image.jpg"));
+            Assert.IsFalse(provider.DirectoryExists($"{this.ContainerName}/1y3jw4gd/"));
+            Assert.IsFalse(provider.FileExists($"{this.ContainerName}/1y3jw4gd/image.jpg"));
         }
 
         /// <summary>
@@ -555,17 +561,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem();
 
             // Act
-            provider.AddFile($"{this.ContainerName}/1010/image.jpg", Stream.Null);
+            provider.AddFile($"{this.ContainerName}/1y3jw4gd/image.jpg", Stream.Null);
 
             // Assert
-            Assert.IsTrue(provider.DirectoryExists($"{this.ContainerName}/1010"));
+            Assert.IsTrue(provider.DirectoryExists($"{this.ContainerName}/1y3jw4gd"));
 
             // Act
-            provider.DeleteDirectory($"\\{this.ContainerName}\\1010");
+            provider.DeleteDirectory($"\\{this.ContainerName}\\1y3jw4gd");
 
             // Assert
-            Assert.IsFalse(provider.DirectoryExists($"{this.ContainerName}/1010/"));
-            Assert.IsFalse(provider.FileExists($"{this.ContainerName}/1010/image.jpg"));
+            Assert.IsFalse(provider.DirectoryExists($"{this.ContainerName}/1y3jw4gd/"));
+            Assert.IsFalse(provider.FileExists($"{this.ContainerName}/1y3jw4gd/image.jpg"));
         }
 
         /// <summary>
