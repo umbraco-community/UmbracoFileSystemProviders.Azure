@@ -426,9 +426,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"DeleteFile(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
-
-            if (blockBlob != null)
+            return this.BlobFetch(path, blockBlob =>
             {
                 try
                 {
@@ -438,7 +436,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 {
                     Current.Logger.Error<AzureBlobFileSystem>(ex, "Unable to delete file at {Path}", path);
                 }
-            }
+            });
         }
 
         /// <summary>
@@ -484,20 +482,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetCreated(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
-
-            if (blockBlob != null)
+            return this.BlobFetch(path, blockBlob =>
             {
                 // Populate the blob's attributes.
                 blockBlob.FetchAttributes();
                 if (blockBlob.Metadata.ContainsKey("CreatedDate"))
                 {
                     // We store the creation date in meta data.
-                    return DateTimeOffset.Parse(blockBlob.Metadata["CreatedDate"], CultureInfo.InvariantCulture).ToUniversalTime();
+                    return DateTimeOffset.Parse(blockBlob.Metadata["CreatedDate"], CultureInfo.InvariantCulture)
+                        .ToUniversalTime();
                 }
-            }
 
-            return DateTimeOffset.MinValue;
+                return default;
+            });
         }
 
         /// <summary>
@@ -601,15 +598,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetLastModified(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
-
-            if (blockBlob != null)
+            return this.BlobFetch(path, blockBlob =>
             {
                 blockBlob.FetchAttributes();
                 return blockBlob.Properties.LastModified.GetValueOrDefault();
-            }
-
-            return DateTimeOffset.MinValue;
+            });
         }
 
         /// <summary>
@@ -651,14 +644,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetSize(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
-
-            if (blockBlob != null)
-            {
-                return blockBlob.Properties.Length;
-            }
-
-            return long.MinValue;
+            return this.BlobFetch(path, blockBlob => blockBlob.Properties.Length);
         }
 
         /// <summary>
@@ -672,9 +658,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"OpenFile(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
-
-            if (blockBlob != null)
+            return this.BlobFetch(path, blockBlob =>
             {
                 if (!blockBlob.Exists())
                 {
@@ -682,7 +666,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     return null;
                 }
 
-                MemoryStream stream = new MemoryStream();
+                var stream = new MemoryStream();
                 blockBlob.DownloadToStream(stream);
 
                 if (stream.CanSeek)
@@ -691,9 +675,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 }
 
                 return stream;
-            }
-
-            return null;
+            });
         }
 
         /// <summary>
@@ -923,6 +905,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             return path.TrimStart(Delimiter.ToCharArray()).TrimEnd(Delimiter.ToCharArray());
+        }
+
+        private T BlobFetch<T>(string path, Func<CloudBlockBlob, T> func)
+        {
+            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+            return blockBlob != null ? func(blockBlob) : default;
         }
     }
 }
