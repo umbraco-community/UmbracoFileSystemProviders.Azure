@@ -426,7 +426,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"DeleteFile(path) method executed with path:{path}");
 
-            return this.BlobFetch(path, blockBlob =>
+            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+
+            if (blockBlob != null)
             {
                 try
                 {
@@ -436,7 +438,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 {
                     Current.Logger.Error<AzureBlobFileSystem>(ex, "Unable to delete file at {Path}", path);
                 }
-            });
+            }
         }
 
         /// <summary>
