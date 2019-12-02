@@ -9,7 +9,7 @@ configuration: Release
 
 environment:
   # Version Suffix
-  version_suffix: alpha4
+  version_suffix: alpha5
 
 install:
   - ps: .\build\appveyor-semver.ps1
