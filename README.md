@@ -18,7 +18,7 @@ Both NuGet and Umbraco packages are available. If you use NuGet but would like t
 |NuGet Packages    |Version           |
 |:-----------------|:-----------------|
 |**Release**|[![NuGet download](http://img.shields.io/nuget/v/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|
-|**Pre-release**|[![MyGet download](https://img.shields.io/myget/umbracofilesystemproviders-azure/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbracofilesystemproviders-azure)|[![MyGet count](https://img.shields.io/myget/umbracofilesystemproviders-azure/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/gallery/umbracofilesystemproviders-azure)|
+|**Pre-release**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|
 
 |Umbraco Packages  |                  |
 |:-----------------|:-----------------|
