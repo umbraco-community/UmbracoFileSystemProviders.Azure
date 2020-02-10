@@ -160,6 +160,10 @@ In `Web.config` update the new application keys with the required credentials
 <add key="AzureBlobFileSystem.UsePrivateContainer:forms" value="false" />
 ```
 
+### Warning
+
+The Azure Blob container cannot be called `forms` as this will give unexpected behaviour, and we recommend you call it `form-data` or similar.
+
 ## Authors
 
  - James Jackson-South
