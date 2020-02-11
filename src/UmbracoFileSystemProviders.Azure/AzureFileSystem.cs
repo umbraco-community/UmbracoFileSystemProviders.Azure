@@ -211,7 +211,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         public string ApplicationVirtualPath { get; internal set; } = HttpRuntime.AppDomainAppVirtualPath;
 
-        public bool CanAddPhysical => throw new NotImplementedException();
+        public bool CanAddPhysical => false;
 
         /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
@@ -344,7 +344,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <inheritdoc/>
         public void AddFile(string path, string physicalPath, bool overrideIfExists = true, bool copy = false)
         {
-            //Valid as the property 'CanAddPhysical' is not implemented either
+            var fullPath = GetFullPath(path);
+            Current.Logger.Debug<AzureBlobFileSystem>($"NotImplemented! AddFile(path, physicalPath, overrideIfExists, copy) method executed with path:{path}, {physicalPath}, {overrideIfExists}, {copy} - fullPath: {fullPath}");
+
             throw new NotImplementedException();
         }
 
@@ -542,23 +544,23 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             return blobList.OfType<CloudBlockBlob>().Select(cd =>
+            {
+                string url = cd.Uri.AbsoluteUri;
+
+                if (filter.Equals("*.*", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    string url = cd.Uri.AbsoluteUri;
+                    return url.Substring(this.rootContainerUrl.Length);
+                }
 
-                    if (filter.Equals("*.*", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return url.Substring(this.rootContainerUrl.Length);
-                    }
+                // Filter by name.
+                filter = filter.TrimStart('*');
+                if (url.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) > -1)
+                {
+                    return url.Substring(this.rootContainerUrl.Length);
+                }
 
-                    // Filter by name.
-                    filter = filter.TrimStart('*');
-                    if (url.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) > -1)
-                    {
-                        return url.Substring(this.rootContainerUrl.Length);
-                    }
-
-                    return null;
-                }).Where(x => x != null);
+                return null;
+            }).Where(x => x != null);
         }
 
         /// <summary>
@@ -668,9 +670,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     return null;
                 }
 
-                var stream = new MemoryStream();
-                blockBlob.DownloadToStream(stream);
-
+                Stream stream = blockBlob.OpenRead();
                 if (stream.CanSeek)
                 {
                     stream.Seek(0, SeekOrigin.Begin);
@@ -794,7 +794,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 // blob doesn't exist yet
                 var blobReference = this.cloudBlobContainer.GetBlockBlobReference(blobPath);
                 return blobReference;
-                
+
             }
             catch (StorageException ex)
             {

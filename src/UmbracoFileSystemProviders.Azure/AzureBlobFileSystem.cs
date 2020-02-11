@@ -159,7 +159,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         public AzureFileSystem FileSystem { get; }
 
-        public bool CanAddPhysical => throw new NotImplementedException();
+        /// <summary>
+        /// Indicates whether the filesystem can add/copy a file that is on local disk, in a fast and efficient way.
+        /// We can't so always returns false.
+        /// </summary>
+        public bool CanAddPhysical => false;
 
         /// <summary>
         /// Adds a file to the file system.
