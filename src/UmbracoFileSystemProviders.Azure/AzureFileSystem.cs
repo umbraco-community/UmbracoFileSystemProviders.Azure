@@ -684,7 +684,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     return null;
                 }
 
-                Stream stream = blockBlob.OpenRead();
+                MemoryStream stream = new MemoryStream();
+                blockBlob.DownloadToStream(stream);
 
                 if (stream.CanSeek)
                 {
