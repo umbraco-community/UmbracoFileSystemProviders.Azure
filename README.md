@@ -1,6 +1,6 @@
 # UmbracoFileSystemProviders.Azure v2
 
-**This version is for Umbraco v8 only**. For the v1 package for **Umbraco v7** please visit the [main branch](https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure)
+**This version is for Umbraco v8 only**. For the v1 package for **Umbraco v7** please visit the [main branch](https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure/tree/develop)
 
 ![Image Alt](build/assets/logo/azure-logo-256.png)
 
