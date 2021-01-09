@@ -15,9 +15,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
     using System.Web.Http;
     using System.Xml;
 
-    using Microsoft.Azure.Storage;
-    using Microsoft.Azure.Storage.Blob;
-
     using global::Umbraco.Core;
     using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Logging;
@@ -27,6 +24,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
     using Enums;
     using Models;
+    using global::Azure.Storage.Blobs;
+    using global::Azure.Storage.Blobs.Models;
 
     /// <summary>
     /// The installer controller for managing installer logic.
@@ -84,7 +83,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             bool usePrivateContainer = bool.Parse(newParameters.SingleOrDefault(k => k.Key == "UsePrivateContainer").Value);
             string rootUrl = newParameters.SingleOrDefault(k => k.Key == "RootUrl").Value;
 
-            BlobContainerPublicAccessType blobContainerPublicAccessType = usePrivateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
+            var blobContainerPublicAccessType = usePrivateContainer ? PublicAccessType.None : PublicAccessType.Blob;
 
             if (!TestAzureCredentials(connection, containerName, blobContainerPublicAccessType))
             {
@@ -445,19 +444,18 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
             return true;
         }
 
-        private static bool TestAzureCredentials(string connectionString, string containerName, BlobContainerPublicAccessType accessType)
+        private static bool TestAzureCredentials(string connectionString, string containerName, PublicAccessType accessType)
         {
             bool useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
                                && ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey]
                                                       .Equals("true", StringComparison.InvariantCultureIgnoreCase);
             try
             {
-                CloudStorageAccount cloudStorageAccount = useEmulator ? CloudStorageAccount.DevelopmentStorageAccount : CloudStorageAccount.Parse(connectionString);
-
-                CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+                var cloudStorageAccount = connectionString;
 
                 // This should fully check that the connection works.
-                var testContainer = AzureFileSystem.CreateContainer(cloudBlobClient, containerName, accessType);
+                var azf = AzureFileSystem.GetInstance(containerName, "", connectionString, "", "", "");
+                var testContainer = azf.CreateContainer( containerName, accessType);
 
                 if (testContainer.Exists())
                 {

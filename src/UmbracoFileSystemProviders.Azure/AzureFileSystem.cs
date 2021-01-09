@@ -16,13 +16,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Web;
+    using global::Azure;
+    using global::Azure.Storage.Blobs;
+    using global::Azure.Storage.Blobs.Models;
     using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.Configuration;
     using global::Umbraco.Core.IO;
     using global::Umbraco.Core.Logging;
-    using Microsoft.Azure.Storage;
-    using Microsoft.Azure.Storage.Blob;
-    using Microsoft.Azure.Storage.Blob.Protocol;
 
     /// <summary>
     /// A class for communicating with Azure Blob Storage.
@@ -72,7 +72,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// The cloud media blob container.
         /// </summary>
-        private readonly CloudBlobContainer cloudBlobContainer;
+        private readonly BlobContainerClient cloudBlobContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AzureFileSystem"/> class.
@@ -89,7 +89,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="connectionString"/> is invalid.
         /// </exception>
-        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType accessType)
+        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, PublicAccessType accessType)
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
@@ -104,64 +104,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                                && ConfigurationManager.AppSettings[UseStorageEmulatorKey]
                                                       .Equals("true", StringComparison.InvariantCultureIgnoreCase);
 
-            CloudStorageAccount cloudStorageAccount;
             if (useEmulator)
             {
-                cloudStorageAccount = CloudStorageAccount.DevelopmentStorageAccount;
-                rootUrl = cloudStorageAccount.BlobStorageUri.PrimaryUri.AbsoluteUri;
+                _connectionString = "UseDevelopmentStorage=true";
+                rootUrl = "http://127.0.0.1:10000/devstoreaccount1/";
             }
             else
             {
-                cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+                _connectionString = connectionString;
             }
 
-            CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-            this.cloudBlobContainer = CreateContainer(cloudBlobClient, containerName, accessType);
-            if (cloudStorageAccount.Credentials.IsSAS)
-            {
-                bool isValidSas = true;
-                var sasTokenParts = cloudStorageAccount.Credentials.SASToken.Split('&');
-                var si = sasTokenParts.Where(t => t.StartsWith("si=")).FirstOrDefault();
-                if (si != null)
-                {
-                    var siValue = si.Split('=')[1];
+            
 
-                    // I could not find a way how to get the permissions of a referenced access policy
-                    // var permissions = this.cloudBlobContainer.GetPermissions(AccessCondition.GenerateIfExistsCondition());
-                }
-                else
-                {
-                    var sr = sasTokenParts.Where(t => t.StartsWith("sr=")).FirstOrDefault();
-                    var ss = sasTokenParts.Where(t => t.StartsWith("ss=")).FirstOrDefault();
-                    var srt = sasTokenParts.Where(t => t.StartsWith("srt=")).FirstOrDefault();
-                    var sp = sasTokenParts.Where(t => t.StartsWith("sp=")).FirstOrDefault();
-                    if ((ss == null || !ss.Contains("b")) && (sr == null || !sr.Contains("c")))
-                    {
-                        isValidSas = false;
-                    }
-                    else if (sp != null)
-                    {
-                        var value = sp.Split('=')[1].ToCharArray();
-                        if (!value.Contains('r') || !value.Contains('w') || !value.Contains('d') || !value.Contains('l'))
-                        {
-                            isValidSas = false;
-                        }
-                        else if (srt != null)
-                        {
-                            value = srt.Split('=')[1].ToCharArray();
-                            if (!value.Contains('s') || !value.Contains('c') || !value.Contains('o'))
-                            {
-                                isValidSas = false;
-                            }
-                        }
-                    }
-                }
-
-                if (!isValidSas)
-                {
-                    throw new Exception("SAS token permissions do NOT grant full functionality for UmbracoFileSystemProviders.Azure.");
-                }
-            }
+            this.cloudBlobContainer = CreateContainer(containerName, accessType);
 
             // First assign a local copy before editing. We use that to track the type.
             // TODO: Do we need this? The container should be an identifer.
@@ -178,6 +133,53 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             this.UseDefaultRoute = useDefaultRoute;
 
             this.MimeTypeResolver = new MimeTypeResolver();
+        }
+
+        private static void ValidateSasToken(string cloudStorageAccount)
+        {
+            throw new NotImplementedException();
+            //bool isValidSas = true;
+            //var sasTokenParts = cloudStorageAccount.Credentials.SASToken.Split('&');
+            //var si = sasTokenParts.Where(t => t.StartsWith("si=")).FirstOrDefault();
+            //if (si != null)
+            //{
+            //    var siValue = si.Split('=')[1];
+
+            //    // I could not find a way how to get the permissions of a referenced access policy
+            //    // var permissions = this.cloudBlobContainer.GetPermissions(AccessCondition.GenerateIfExistsCondition());
+            //}
+            //else
+            //{
+            //    var sr = sasTokenParts.Where(t => t.StartsWith("sr=")).FirstOrDefault();
+            //    var ss = sasTokenParts.Where(t => t.StartsWith("ss=")).FirstOrDefault();
+            //    var srt = sasTokenParts.Where(t => t.StartsWith("srt=")).FirstOrDefault();
+            //    var sp = sasTokenParts.Where(t => t.StartsWith("sp=")).FirstOrDefault();
+            //    if ((ss == null || !ss.Contains("b")) && (sr == null || !sr.Contains("c")))
+            //    {
+            //        isValidSas = false;
+            //    }
+            //    else if (sp != null)
+            //    {
+            //        var value = sp.Split('=')[1].ToCharArray();
+            //        if (!value.Contains('r') || !value.Contains('w') || !value.Contains('d') || !value.Contains('l'))
+            //        {
+            //            isValidSas = false;
+            //        }
+            //        else if (srt != null)
+            //        {
+            //            value = srt.Split('=')[1].ToCharArray();
+            //            if (!value.Contains('s') || !value.Contains('c') || !value.Contains('o'))
+            //            {
+            //                isValidSas = false;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //if (!isValidSas)
+            //{
+            //    throw new Exception("SAS token permissions do NOT grant full functionality for UmbracoFileSystemProviders.Azure.");
+            //}
         }
 
         /// <summary>
@@ -246,7 +248,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         privateContainer = true;
                     }
 
-                    BlobContainerPublicAccessType blobContainerPublicAccessType = privateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
+                    PublicAccessType blobContainerPublicAccessType = privateContainer ? PublicAccessType.None : PublicAccessType.Blob;
 
                     fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType);
                     FileSystems.Add(fileSystem);
@@ -266,7 +268,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"AddFile(path, steam, overrideIfExists) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+            BlobClient blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
             {
@@ -282,45 +284,43 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
                 try
                 {
+                    BlobProperties properties = null;
                     if (exists)
                     {
                         // Ensure original created date is preserved.
-                        blockBlob.FetchAttributes();
-                        if (blockBlob.Metadata.ContainsKey("CreatedDate"))
+                        properties = blockBlob.GetProperties().Value;
+                        if (properties.Metadata.ContainsKey("CreatedDate"))
                         {
                             // We store the creation date in meta data.
-                            created = DateTime.Parse(blockBlob.Metadata["CreatedDate"], CultureInfo.InvariantCulture).ToUniversalTime();
+                            created = DateTime.Parse(properties.Metadata["CreatedDate"], CultureInfo.InvariantCulture).ToUniversalTime();
                         }
                     }
 
-                    blockBlob.UploadFromStream(stream);
+                    blockBlob.Upload(stream,overrideIfExists);
 
                     string contentType = this.MimeTypeResolver.Resolve(path);
 
+                    properties = blockBlob.GetProperties().Value;
+                    var updatedHeaders = new BlobHttpHeaders();
                     if (!string.IsNullOrWhiteSpace(contentType))
                     {
-                        blockBlob.Properties.ContentType = contentType;
+                        updatedHeaders.ContentType = contentType;
                     }
 
-                    blockBlob.Properties.CacheControl = $"public, max-age={this.MaxDays * 86400}";
-                    blockBlob.SetProperties();
+                    updatedHeaders.CacheControl = $"public, max-age={this.MaxDays * 86400}";
+
+                    blockBlob.SetHttpHeaders(updatedHeaders);
 
                     if (created == DateTimeOffset.MinValue)
                     {
                         created = DateTimeOffset.UtcNow;
                     }
 
+                    var updatedProps = new Dictionary<string, string>();
                     // Store the creation date in meta data.
-                    if (blockBlob.Metadata.ContainsKey("CreatedDate"))
-                    {
-                        blockBlob.Metadata["CreatedDate"] = created.ToString(CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        blockBlob.Metadata.Add("CreatedDate", created.ToString(CultureInfo.InvariantCulture));
-                    }
+                    updatedProps.Add("CreatedDate",created.ToString(CultureInfo.InvariantCulture));
 
-                    blockBlob.SetMetadata();
+                    blockBlob.SetMetadata(updatedProps);
                 }
                 catch (Exception ex)
                 {
@@ -369,21 +369,22 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 return;
             }
 
-            CloudBlobDirectory directory = this.GetDirectoryReference(path);
+            var directory = this.GetDirectoryReference(path);
 
             // WB: This will only delete a folder if it only has files & not sub directories
-            // IEnumerable<CloudBlockBlob> blobs = directory.ListBlobs().OfType<CloudBlockBlob>();
-            IEnumerable<IListBlobItem> blobs = directory.ListBlobs();
+            // IEnumerable<BlobClient> blobs = directory.ListBlobs().OfType<BlobClient>();
+            var blobs = directory.ListBlobs();
 
             if (recursive)
             {
-                foreach (IListBlobItem blobItem in blobs)
+                foreach (var blobItem in blobs)
                 {
                     try
                     {
-                        if (blobItem is CloudBlobDirectory)
+                        
+                        if (blobItem.IsPrefix)
                         {
-                            CloudBlobDirectory blobFolder = blobItem as CloudBlobDirectory;
+                            var blobFolder = new AzureBlobDirectory(directory.Container, blobItem.Prefix);
 
                             // Resursively call this method
                             this.DeleteDirectory(blobFolder.Prefix);
@@ -391,7 +392,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         else
                         {
                             // Can assume its a file aka CloudBlob
-                            CloudBlockBlob blobFile = blobItem as CloudBlockBlob;
+                            var blobFile = GetBlockBlobReference(blobItem.Blob.Name);
                             blobFile?.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
                         }
                     }
@@ -428,7 +429,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"DeleteFile(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+            var blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
             {
@@ -455,7 +456,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             Current.Logger.Debug<AzureBlobFileSystem>($"DirectoryExists(path) method executed with path:{path}");
 
             string fixedPath = this.FixPath(path);
-            CloudBlobDirectory directory = this.cloudBlobContainer.GetDirectoryReference(fixedPath);
+            var directory = new AzureBlobDirectory(cloudBlobContainer,fixedPath);
 
             return directory.ListBlobs().Any();
         }
@@ -471,7 +472,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"FileExists(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlobReference = this.GetBlockBlobReference(path);
+            var blockBlobReference = this.GetBlockBlobReference(path);
             return blockBlobReference?.Exists() ?? false;
         }
 
@@ -486,16 +487,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetCreated(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+            var blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
             {
                 // Populate the blob's attributes.
-                blockBlob.FetchAttributes();
-                if (blockBlob.Metadata.ContainsKey("CreatedDate"))
+                var properties = blockBlob.GetProperties().Value;
+                if (properties.Metadata.ContainsKey("CreatedDate"))
                 {
                     // We store the creation date in meta data.
-                    return DateTimeOffset.Parse(blockBlob.Metadata["CreatedDate"], CultureInfo.InvariantCulture).ToUniversalTime();
+                    return DateTimeOffset.Parse(properties.Metadata["CreatedDate"], CultureInfo.InvariantCulture).ToUniversalTime();
                 }
             }
 
@@ -513,12 +514,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetDirectories(path) method executed with path:{path}");
 
-            CloudBlobDirectory directory = this.GetDirectoryReference(path);
+            var directory = this.GetDirectoryReference(path);
 
-            IEnumerable<IListBlobItem> blobs = directory.ListBlobs().Where(blob => blob is CloudBlobDirectory).ToList();
+            var listedBlobs = directory.ListBlobs();
+            var prefixes = listedBlobs.Where(blob => blob.IsPrefix).Select(x=>x.Prefix).ToList();
+            var blobPrefixes = listedBlobs.Where(x => x.IsBlob && x.Blob.Name.LastIndexOf('/') >= 0).Select(x => x.Blob.Name.Substring(0, x.Blob.Name.LastIndexOf('/') + 1));
+
 
             // Always get last segment for media sub folder simulation. E.g 1001, 1002
-            return blobs.Cast<CloudBlobDirectory>().Select(cd => cd.Prefix.TrimEnd('/'));
+            var all = prefixes.Union(blobPrefixes);
+            return all.Select(cd => cd.TrimEnd('/'));
         }
 
         /// <summary>
@@ -533,9 +538,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetFiles(path, filter) method executed with path:{path} & filter {filter}");
 
-            IEnumerable<IListBlobItem> blobs = this.cloudBlobContainer.ListBlobs(this.FixPath(path), true);
+            IEnumerable<BlobHierarchyItem> blobs = this.cloudBlobContainer.GetBlobsByHierarchy(prefix:this.FixPath(path));
 
-            var blobList = blobs as IList<IListBlobItem> ?? blobs.ToList();
+            var blobList = blobs as IList<BlobHierarchyItem> ?? blobs.ToList();
 
             if (!blobList.Any())
             {
@@ -544,9 +549,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 return Enumerable.Empty<string>();
             }
 
-            return blobList.OfType<CloudBlockBlob>().Select(cd =>
+            return blobList.Where(x=>x.IsBlob).Select(cd =>
             {
-                string url = cd.Uri.AbsoluteUri;
+                string url = cloudBlobContainer.Uri.AbsoluteUri + "/" + cd.Blob.Name;
 
                 if (filter.Equals("*.*", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -603,12 +608,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetLastModified(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+            var blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
             {
-                blockBlob.FetchAttributes();
-                return blockBlob.Properties.LastModified.GetValueOrDefault();
+                var properties = blockBlob.GetProperties().Value;
+                return properties.LastModified;
             }
 
             return DateTimeOffset.MinValue;
@@ -653,11 +658,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetSize(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+            var blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
             {
-                return blockBlob.Properties.Length;
+                var properties = blockBlob.GetProperties().Value;
+                return properties.ContentLength;
             }
 
             return long.MinValue;
@@ -674,7 +680,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"OpenFile(path) method executed with path:{path}");
 
-            CloudBlockBlob blockBlob = this.GetBlockBlobReference(path);
+            var blockBlob = this.GetBlockBlobReference(path);
 
             if (blockBlob != null)
             {
@@ -685,7 +691,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 }
 
                 MemoryStream stream = new MemoryStream();
-                blockBlob.DownloadToStream(stream);
+                blockBlob.DownloadTo(stream);
 
                 if (stream.CanSeek)
                 {
@@ -698,6 +704,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             return null;
         }
 
+
+        private string _connectionString;
+
+        private bool _isSasCredential = false;// cloudBlobClient.Credentials.IsSAS;
         /// <summary>
         /// Returns the media container, creating a new one if none exists.
         /// </summary>
@@ -705,7 +715,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="containerName">The name of the container.</param>
         /// <param name="accessType"><see cref="BlobContainerPublicAccessType"/> indicating the access permissions.</param>
         /// <returns>The <see cref="CloudBlobContainer"/></returns>
-        public static CloudBlobContainer CreateContainer(CloudBlobClient cloudBlobClient, string containerName, BlobContainerPublicAccessType accessType)
+        public BlobContainerClient CreateContainer(string containerName, PublicAccessType accessType)
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"CreateContainer(cloudBlobClient, containerName, accessType) method executed with containerName:{containerName}");
 
@@ -718,45 +728,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 throw new ArgumentException($"The container name {containerName} is not valid, see https://msdn.microsoft.com/en-us/library/azure/dd135715.aspx for the restrtictions for container names.");
             }
 
-            CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName.ToLowerInvariant());
-
-            if (cloudBlobClient.Credentials.IsSAS)
+            BlobContainerClient container = new BlobContainerClient(_connectionString,containerName.ToLowerInvariant());
+            if (_isSasCredential)
             {
-                // Shared access signatures (SAS) have some limitations compared to shared access keys
-                // read more on: https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1
-                string[] sasTokenProperties = cloudBlobClient.Credentials.SASToken.Split("&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                bool isAccountSas = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("ss=")).FirstOrDefault() != null;
-                string allowedServices = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("ss=")).FirstOrDefault();
-                if (allowedServices != null)
-                {
-                    allowedServices = allowedServices.Split('=')[1].ToLower();
-                }
-                else
-                {
-                    allowedServices = string.Empty;
-                }
-
-                string resourceTypes = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("srt=")).FirstOrDefault();
-                if (resourceTypes != null)
-                {
-                    resourceTypes = resourceTypes.Split('=')[1].ToLower();
-                }
-                else
-                {
-                    resourceTypes = string.Empty;
-                }
-
-                string permissions = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("sp=")).FirstOrDefault();
-                if (permissions != null)
-                {
-                    permissions = permissions.Split('=')[1].ToLower();
-                }
-                else
-                {
-                    permissions = string.Empty;
-                }
-
-                bool canCreateContainer = allowedServices.Contains('b') && resourceTypes.Contains('c') && permissions.Contains('c');
+                bool canCreateContainer = SasCredentialHasContainerCreatePermission();
                 if (canCreateContainer)
                 {
                     container.CreateIfNotExists(accessType);
@@ -765,12 +740,51 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             else if (!container.Exists())
             {
                 container.CreateIfNotExists();
-                BlobContainerPermissions newPermissions = container.GetPermissions();
-                newPermissions.PublicAccess = accessType;
-                container.SetPermissions(newPermissions);
+                container.SetAccessPolicy(accessType);
             }
 
             return container;
+        }
+
+        private static bool SasCredentialHasContainerCreatePermission()
+        {
+            throw new NotImplementedException();
+            //// Shared access signatures (SAS) have some limitations compared to shared access keys
+            //// read more on: https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1
+            //string[] sasTokenProperties = cloudBlobClient.Credentials.SASToken.Split("&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            //bool isAccountSas = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("ss=")).FirstOrDefault() != null;
+            //string allowedServices = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("ss=")).FirstOrDefault();
+            //if (allowedServices != null)
+            //{
+            //    allowedServices = allowedServices.Split('=')[1].ToLower();
+            //}
+            //else
+            //{
+            //    allowedServices = string.Empty;
+            //}
+
+            //string resourceTypes = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("srt=")).FirstOrDefault();
+            //if (resourceTypes != null)
+            //{
+            //    resourceTypes = resourceTypes.Split('=')[1].ToLower();
+            //}
+            //else
+            //{
+            //    resourceTypes = string.Empty;
+            //}
+
+            //string permissions = sasTokenProperties.Where(k => k.ToLowerInvariant().StartsWith("sp=")).FirstOrDefault();
+            //if (permissions != null)
+            //{
+            //    permissions = permissions.Split('=')[1].ToLower();
+            //}
+            //else
+            //{
+            //    permissions = string.Empty;
+            //}
+
+            //bool canCreateContainer = allowedServices.Contains('b') && resourceTypes.Contains('c') && permissions.Contains('c');
+            //return canCreateContainer;
         }
 
         /// <summary>
@@ -778,9 +792,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         /// <param name="path">The path to the blob.</param>
         /// <returns>
-        /// The <see cref="CloudBlockBlob"/> reference.
+        /// The <see cref="BlobClient"/> reference.
         /// </returns>
-        private CloudBlockBlob GetBlockBlobReference(string path)
+        private BlobClient GetBlockBlobReference(string path)
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetBlockBlobReference(path) method executed with path:{path}");
 
@@ -795,26 +809,16 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             try
             {
-                var blobReference = this.cloudBlobContainer.GetBlobReferenceFromServer(blobPath);
-                if (blobReference.BlobType == BlobType.BlockBlob)
-                {
-                    return blobReference as CloudBlockBlob;
-                }
-                else
-                {
-                    Current.Logger.Error<AzureBlobFileSystem>(
-                        $"A media item '{path}' was requested but it's blob type was {blobReference.BlobType} when it should be BlockBlob");
-                    return null;
-                }
+                return this.cloudBlobContainer.GetBlobClient(blobPath);
             }
-            catch (StorageException ex) when (ex.RequestInformation.ErrorCode == BlobErrorCodeStrings.BlobNotFound)
+            catch (RequestFailedException ex) when (ex.ErrorCode == BlobErrorCode.BlobNotFound)
             {
                 // blob doesn't exist yet
-                var blobReference = this.cloudBlobContainer.GetBlockBlobReference(blobPath);
+                var blobReference = this.cloudBlobContainer.GetBlobClient(blobPath);
                 return blobReference;
 
             }
-            catch (StorageException ex)
+            catch (RequestFailedException ex)
             {
                 Current.Logger.Error<AzureBlobFileSystem>(
                     $"GetBlockBlobReference exception {ex}");
@@ -827,14 +831,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </summary>
         /// <param name="path">The path to the directory.</param>
         /// <returns>
-        /// The <see cref="CloudBlockBlob"/> reference.
+        /// The <see cref="BlobClient"/> reference.
         /// </returns>
-        private CloudBlobDirectory GetDirectoryReference(string path)
+        private AzureBlobDirectory GetDirectoryReference(string path)
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetDirectoryReference(path) method executed with path:{path}");
 
             string blobPath = this.FixPath(path);
-            return this.cloudBlobContainer.GetDirectoryReference(blobPath);
+            return new AzureBlobDirectory(cloudBlobContainer,blobPath);
         }
 
         /// <summary>
@@ -885,7 +889,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             path = path.Replace("\\", Delimiter);
 
             string appVirtualPath = this.ApplicationVirtualPath;
-            if (appVirtualPath != null && path.StartsWith(appVirtualPath))
+            if (!string.IsNullOrWhiteSpace(appVirtualPath) && path.StartsWith(appVirtualPath))
             {
                 path = path.Substring(appVirtualPath.Length);
             }
