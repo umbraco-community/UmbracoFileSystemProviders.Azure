@@ -69,17 +69,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="pathPrefix">
         /// The path prefix.
         /// </param>
+        /// <param name="fileSystem">
+        /// The file system.
+        /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="pathPrefix"/> is null.
         /// </exception>
-        public static void Configure(string pathPrefix = Constants.DefaultMediaRoute)
+        public static void Configure(string pathPrefix, Lazy<IFileSystem> fileSystem)
         {
             if (string.IsNullOrEmpty(pathPrefix))
             {
                 throw new ArgumentNullException(nameof(pathPrefix));
             }
 
-            Lazy<IFileSystem> fileSystem = new Lazy<IFileSystem>(() => Current.MediaFileSystem.Unwrap());
             FileSystemVirtualPathProvider provider = new FileSystemVirtualPathProvider(pathPrefix, fileSystem);
 
             // The standard HostingEnvironment.RegisterVirtualPathProvider(virtualPathProvider) method is ignored when
@@ -114,6 +116,21 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         }
 
         /// <summary>
+        /// Configures the virtual path provider.
+        /// </summary>
+        /// <param name="pathPrefix">
+        /// The path prefix.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="pathPrefix"/> is null.
+        /// </exception>
+        [Obsolete("Use ConfigureMedia to set the media path, or pass a provider to set the path for any file system")]
+        public static void Configure(string pathPrefix = Constants.DefaultMediaRoute)
+        {
+            ConfigureMedia(pathPrefix);
+        }
+
+        /// <summary>
         /// Configures the virtual path provider for media.
         /// </summary>
         /// <param name="pathPrefix">
@@ -122,7 +139,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Resharper seems drunk.")]
         public static void ConfigureMedia(string pathPrefix = Constants.DefaultMediaRoute)
         {
-            Configure(pathPrefix);
+            if (string.IsNullOrEmpty(pathPrefix))
+            {
+                throw new ArgumentNullException(nameof(pathPrefix));
+            }
+
+            Lazy<IFileSystem> fileSystem = new Lazy<IFileSystem>(() => Current.MediaFileSystem.Unwrap());
+
+            Configure(pathPrefix, fileSystem);
         }
 
         /// <summary>
@@ -142,6 +166,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             string fileSystemPath = this.RemovePathPrefix(path);
+
             return this.fileSystem.Value.FileExists(fileSystemPath);
         }
 
@@ -156,6 +181,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public override VirtualFile GetFile(string virtualPath)
         {
             string path = this.FormatVirtualPath(virtualPath);
+
             if (!path.StartsWith(this.pathPrefix, StringComparison.InvariantCultureIgnoreCase))
             {
                 return base.GetFile(virtualPath);
