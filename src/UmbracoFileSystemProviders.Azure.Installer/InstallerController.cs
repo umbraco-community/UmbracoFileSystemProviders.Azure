@@ -447,8 +447,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
         private static bool TestAzureCredentials(string connectionString, string containerName, BlobContainerPublicAccessType accessType)
         {
-            bool useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
-                               && ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey]
+            bool useEmulator = ConfigurationHelper.GetAppSetting(Azure.Constants.Configuration.UseStorageEmulatorKey) != null
+                               && ConfigurationHelper.GetAppSetting(Azure.Constants.Configuration.UseStorageEmulatorKey)
                                                       .Equals("true", StringComparison.InvariantCultureIgnoreCase);
             try
             {
