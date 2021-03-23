@@ -780,7 +780,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <returns>
         /// The <see cref="CloudBlockBlob"/> reference.
         /// </returns>
-        private CloudBlockBlob GetBlockBlobReference(string path)
+        public CloudBlockBlob GetBlockBlobReference(string path)
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetBlockBlobReference(path) method executed with path:{path}");
 
