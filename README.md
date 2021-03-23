@@ -1,6 +1,6 @@
 # UmbracoFileSystemProviders.Azure v2
 
-**This version is for Umbraco v8 only**. For the v1 package for **Umbraco v7** please visit the [main branch](https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure/tree/develop)
+**This version is for Umbraco v8 only**. For the v1 package for **Umbraco v7** please visit the [develop branch](https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure/tree/develop)
 
 ![Image Alt](build/assets/logo/azure-logo-256.png)
 
@@ -23,9 +23,9 @@ From **v2.0.0-alpha3** onwards this package was split into 2 NuGet packages and 
 
 |NuGet Packages    |Version           |
 |:-----------------|:-----------------|
-|**Pre-Release Core**|[![NuGet download](http://img.shields.io/nuget/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|
-|**Pre-Release Media**|[![NuGet download](http://img.shields.io/nuget/vpre/UmbracoFileSystemProviders.Azure.Media.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure.Media/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.Media.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure.Media/)|
-|**Pre-Release Forms**|[![NuGet download](http://img.shields.io/nuget/vpre/UmbracoFileSystemProviders.Azure.Forms.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure.Forms/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.Forms.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure.Forms/)|
+|**Release Core**|[![NuGet download](http://img.shields.io/nuget/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure/)|
+|**Release Media**|[![NuGet download](http://img.shields.io/nuget/vpre/UmbracoFileSystemProviders.Azure.Media.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure.Media/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.Media.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure.Media/)|
+|**Release Forms**|[![NuGet download](http://img.shields.io/nuget/vpre/UmbracoFileSystemProviders.Azure.Forms.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure.Forms/)|[![NuGet count](https://img.shields.io/nuget/dt/UmbracoFileSystemProviders.Azure.Forms.svg)](https://www.nuget.org/packages/UmbracoFileSystemProviders.Azure.Forms/)|
 |**Bleeding edge Core**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure)|
 |**Bleeding edge Media**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.Media.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure.Media)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.Media.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure.Media)|
 |**Bleeding edge Forms**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/UmbracoFileSystemProviders.Azure.Forms.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure.Forms)|[![MyGet count](https://img.shields.io/myget/umbraco-packages/dt/UmbracoFileSystemProviders.Azure.Forms.svg)](https://www.myget.org/feed/umbraco-packages/package/nuget/UmbracoFileSystemProviders.Azure.Forms)|
@@ -33,7 +33,7 @@ From **v2.0.0-alpha3** onwards this package was split into 2 NuGet packages and 
 |Umbraco Packages  |                  |
 |:-----------------|:-----------------|
 |**Release**|[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/collaboration/umbracofilesystemprovidersazure/) 
-|**Pre-release**| [![AppVeyor Artifacts](https://img.shields.io/badge/appveyor-umbraco-orange.svg)](https://ci.appveyor.com/project/Umbraco-Community/umbracofilesystemproviders-azure/build/artifacts)
+|**Bleeding edge**| [![AppVeyor Artifacts](https://img.shields.io/badge/appveyor-umbraco-orange.svg)](https://ci.appveyor.com/project/Umbraco-Community/umbracofilesystemproviders-azure/build/artifacts)
 
 ## Manual build
 
@@ -147,7 +147,7 @@ Optionally install the [AzureBlobCache](http://imageprocessor.org/imageprocessor
 
 Currently this package is available only via NuGet
 
-    Install-Package UmbracoFileSystemProviders.Azure.Forms -pre
+    Install-Package UmbracoFileSystemProviders.Azure.Forms
 
 ### Configuration via Web.Config
 
