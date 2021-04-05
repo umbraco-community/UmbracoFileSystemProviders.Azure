@@ -6,6 +6,9 @@
 // <summary>
 // A singleton class for communicating with Azure Blob Storage.
 // </summary>
+
+using Our.Umbraco.FileSystemProviders.Azure.Helpers;
+
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -93,12 +96,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 throw new ArgumentNullException(nameof(containerName));
             }
 
-            this.DisableVirtualPathProvider = ConfigurationManager.AppSettings[DisableVirtualPathProviderKey] != null
-                                              && ConfigurationManager.AppSettings[DisableVirtualPathProviderKey]
+            this.DisableVirtualPathProvider = ConfigurationHelper.GetAppSetting(DisableVirtualPathProviderKey) != null
+                                              && ConfigurationHelper.GetAppSetting(DisableVirtualPathProviderKey)
                                              .Equals("true", StringComparison.InvariantCultureIgnoreCase);
 
-            bool useEmulator = ConfigurationManager.AppSettings[UseStorageEmulatorKey] != null
-                               && ConfigurationManager.AppSettings[UseStorageEmulatorKey]
+            bool useEmulator = ConfigurationHelper.GetAppSetting(UseStorageEmulatorKey) != null
+                               && ConfigurationHelper.GetAppSetting(UseStorageEmulatorKey)
                                                       .Equals("true", StringComparison.InvariantCultureIgnoreCase);
 
             CloudStorageAccount cloudStorageAccount;

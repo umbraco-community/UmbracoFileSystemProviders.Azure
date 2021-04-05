@@ -265,6 +265,7 @@
     <Compile Include="AzureBlobFileSystem.cs" />
     <Compile Include="AzureFileSystem.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Helpers\IMimeTypeResolver.cs" />
     <Compile Include="Helpers\MimeTypeResolver.cs" />
     <Compile Include="Helpers\WrappedLogHelper.cs" />

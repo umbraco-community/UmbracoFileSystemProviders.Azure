@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using Our.Umbraco.FileSystemProviders.Azure.Helpers;
+
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -29,8 +31,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="applicationContext">The Umbraco <see cref="ApplicationContext"/> for the current application.</param>
         protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
-            bool disable = ConfigurationManager.AppSettings[DisableVirtualPathProviderKey] != null
-                           && ConfigurationManager.AppSettings[DisableVirtualPathProviderKey]
+            bool disable = ConfigurationHelper.GetAppSetting(DisableVirtualPathProviderKey) != null
+                           && ConfigurationHelper.GetAppSetting(DisableVirtualPathProviderKey)
                                                   .Equals("true", StringComparison.InvariantCultureIgnoreCase);
 
             IFileSystem fileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider(Constants.DefaultMediaRoute);
