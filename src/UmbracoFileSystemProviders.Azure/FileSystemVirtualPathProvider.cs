@@ -6,12 +6,10 @@
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.Web;
     using System.Web.Compilation;
     using System.Web.Hosting;
-    using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.IO;
 
     /// <summary>
@@ -113,40 +111,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 // Invoke RegisterVirtualPathProviderInternal method with one argument which is the instance of our own provider.
                 methodInfo.Invoke(hostingEnvironmentInstance, new object[] { provider });
             }
-        }
-
-        /// <summary>
-        /// Configures the virtual path provider.
-        /// </summary>
-        /// <param name="pathPrefix">
-        /// The path prefix.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="pathPrefix"/> is null.
-        /// </exception>
-        [Obsolete("Use ConfigureMedia to set the media path, or pass a provider to set the path for any file system")]
-        public static void Configure(string pathPrefix = Constants.DefaultMediaRoute)
-        {
-            ConfigureMedia(pathPrefix);
-        }
-
-        /// <summary>
-        /// Configures the virtual path provider for media.
-        /// </summary>
-        /// <param name="pathPrefix">
-        /// The path prefix.
-        /// </param>
-        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Resharper seems drunk.")]
-        public static void ConfigureMedia(string pathPrefix = Constants.DefaultMediaRoute)
-        {
-            if (string.IsNullOrEmpty(pathPrefix))
-            {
-                throw new ArgumentNullException(nameof(pathPrefix));
-            }
-
-            Lazy<IFileSystem> fileSystem = new Lazy<IFileSystem>(() => Current.MediaFileSystem.Unwrap());
-
-            Configure(pathPrefix, fileSystem);
         }
 
         /// <summary>
