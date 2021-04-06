@@ -305,6 +305,8 @@
     <Compile Include="AzureBlobFileSystemConfig.cs" />
     <Compile Include="AzureFileSystem.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="FileSystemVirtualFile.cs" />
+    <Compile Include="FileSystemVirtualPathProvider.cs" />
     <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Helpers\IMimeTypeResolver.cs" />
     <Compile Include="Helpers\MimeTypeResolver.cs" />

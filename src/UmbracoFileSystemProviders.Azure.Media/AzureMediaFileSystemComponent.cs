@@ -4,12 +4,12 @@
 // </copyright>
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
+    using System;
     using global:: Umbraco.Core.Composing;
     using global::Umbraco.Core.IO;
 
     public class AzureMediaFileSystemComponent : IComponent
     {
-
         private readonly SupportingFileSystems supportingFileSystems;
         private readonly AzureBlobFileSystemConfig config;
 
@@ -22,19 +22,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public void Initialize()
         {
             var azureFs = this.supportingFileSystems.For<IMediaFileSystem>() as AzureBlobFileSystem;
+
             if (!this.config.DisableVirtualPathProvider && azureFs != null)
             {
                 AzureFileSystem azureFileSystem = azureFs.FileSystem;
 
-                // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-                if (azureFileSystem.UseDefaultRoute)
-                {
-                    FileSystemVirtualPathProvider.ConfigureMedia(Constants.DefaultMediaRoute);
-                }
-                else
-                {
-                    FileSystemVirtualPathProvider.ConfigureMedia(azureFileSystem.ContainerName);
-                }
+                var route = azureFileSystem.UseDefaultRoute ? Constants.DefaultMediaRoute : azureFileSystem.ContainerName;
+
+                FileSystemVirtualPathProvider.Configure(route, new Lazy<IFileSystem>(() => azureFileSystem));
             }
         }
 
