@@ -6,12 +6,10 @@
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.Web;
     using System.Web.Compilation;
     using System.Web.Hosting;
-    using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.IO;
 
     /// <summary>
@@ -69,17 +67,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="pathPrefix">
         /// The path prefix.
         /// </param>
+        /// <param name="fileSystem">
+        /// The file system.
+        /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="pathPrefix"/> is null.
         /// </exception>
-        public static void Configure(string pathPrefix = Constants.DefaultMediaRoute)
+        public static void Configure(string pathPrefix, Lazy<IFileSystem> fileSystem)
         {
             if (string.IsNullOrEmpty(pathPrefix))
             {
                 throw new ArgumentNullException(nameof(pathPrefix));
             }
 
-            Lazy<IFileSystem> fileSystem = new Lazy<IFileSystem>(() => Current.MediaFileSystem.Unwrap());
             FileSystemVirtualPathProvider provider = new FileSystemVirtualPathProvider(pathPrefix, fileSystem);
 
             // The standard HostingEnvironment.RegisterVirtualPathProvider(virtualPathProvider) method is ignored when
@@ -114,18 +114,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         }
 
         /// <summary>
-        /// Configures the virtual path provider for media.
-        /// </summary>
-        /// <param name="pathPrefix">
-        /// The path prefix.
-        /// </param>
-        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Resharper seems drunk.")]
-        public static void ConfigureMedia(string pathPrefix = Constants.DefaultMediaRoute)
-        {
-            Configure(pathPrefix);
-        }
-
-        /// <summary>
         /// Gets a value that indicates whether a file exists in the virtual file system.
         /// </summary>
         /// <returns>
@@ -142,6 +130,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             }
 
             string fileSystemPath = this.RemovePathPrefix(path);
+
             return this.fileSystem.Value.FileExists(fileSystemPath);
         }
 
@@ -156,6 +145,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public override VirtualFile GetFile(string virtualPath)
         {
             string path = this.FormatVirtualPath(virtualPath);
+
             if (!path.StartsWith(this.pathPrefix, StringComparison.InvariantCultureIgnoreCase))
             {
                 return base.GetFile(virtualPath);

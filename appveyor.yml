@@ -1,4 +1,4 @@
-version: 2.0.1.{build}
+version: 2.1.0.{build}
 
 os: Visual Studio 2019
 
@@ -44,7 +44,7 @@ build_script:
     cd..
 
 before_test:
-- cmd: '"%programfiles(x86)%\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start'
+- cmd: '"%programfiles(x86)%\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start'
 # Turn tests off just now
 test: on
 
