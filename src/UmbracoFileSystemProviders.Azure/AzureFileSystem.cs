@@ -705,6 +705,20 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             return null;
         }
 
+        public string GetETag(string path,string format = "G")
+        {
+            Current.Logger.Debug<AzureBlobFileSystem>($"GetSize(path) method executed with path:{path}");
+
+            var blockBlob = this.GetBlockBlobReference(path);
+
+            if (blockBlob != null)
+            {
+                var properties = blockBlob.GetProperties().Value;
+                return properties.ETag.ToString(format);
+            }
+
+            return null;
+        }
 
         private string _connectionString;
 
