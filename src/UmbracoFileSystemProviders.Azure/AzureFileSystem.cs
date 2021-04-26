@@ -114,7 +114,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 _connectionString = connectionString;
             }
 
-            
+            ValidateSasToken(connectionString);
 
             this.cloudBlobContainer = CreateContainer(containerName, accessType);
 
@@ -135,9 +135,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             this.MimeTypeResolver = new MimeTypeResolver();
         }
 
-        private static void ValidateSasToken(string cloudStorageAccount)
+        private static void ValidateSasToken(string connectionString)
         {
-            throw new NotImplementedException();
+            //TODO: Validate SAS
+
             //bool isValidSas = true;
             //var sasTokenParts = cloudStorageAccount.Credentials.SASToken.Split('&');
             //var si = sasTokenParts.Where(t => t.StartsWith("si=")).FirstOrDefault();
