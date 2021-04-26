@@ -75,6 +75,12 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 cache.SetExpires(DateTime.Now.ToUniversalTime().AddDays(maxDays));
                 cache.SetMaxAge(new TimeSpan(maxDays, 0, 0, 0));
                 cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+                cache.SetLastModified(azureBlobFileSystem.GetLastModified(VirtualPath).DateTime);
+                var etag = ((AzureBlobFileSystem)azureBlobFileSystem).FileSystem.GetETag(VirtualPath);
+                if (!string.IsNullOrWhiteSpace(etag))
+                {
+                    cache.SetETag(etag);
+                }
             }
 
             return this.stream();
