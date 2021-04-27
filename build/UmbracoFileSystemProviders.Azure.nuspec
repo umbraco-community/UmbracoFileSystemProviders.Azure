@@ -18,7 +18,9 @@
         <dependencies>
             <dependency id="UmbracoCms.Core" version="0.0.0" />
             <dependency id="UmbracoCms.Web" version="0.0.0" />
-            <dependency id="Microsoft.Azure.Storage.Blob" version="11.1.2" />
+            <dependency id="Azure.Storage.Blobs" version="12.7.0" />
+            <dependency id="Azure.Storage.Common" version="12.6.0" />
+            <dependency id="Azure.Core" version="1.6.0" />
             <dependency id="Microsoft.Azure.ConfigurationManager" version="4.0.0" />
             <dependency id="Microsoft.Azure.KeyVault.Core" version="3.0.3" />
             <dependency id="Microsoft.Data.Services.Client" version="5.8.4" />
