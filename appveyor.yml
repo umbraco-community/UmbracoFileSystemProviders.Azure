@@ -73,6 +73,16 @@ deploy:
     on:
       branch: develop-umbraco-version-8
 
+  # Umbraco MyGet community feed
+  - provider: NuGet
+    server: https://www.myget.org/F/umbraco-packages/api/v2/package
+    symbol_server: https://www.myget.org/F/umbraco-packages/symbols/api/v2/package
+    api_key:
+      secure: yvlnQEq6tmxGOdbtTuKyAhcdY1GCD98/sG9+Qo7y7SNb89GAbjLXxueOMspkjvUh
+    artifact: /.*\.nupkg/
+    on:
+      branch: feature/sdk12
+
     # GitHub Deployment for releases
   - provider: GitHub
     auth_token:
