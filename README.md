@@ -13,6 +13,8 @@ This package allows the storage and retrieval of media items using Azure Blob St
 
 **v2 requires Umbraco v8.1.0+**
 
+
+
 ## Installation
 
 Both NuGet and Umbraco packages are available. If you use NuGet but would like the benefit of the Umbraco configuration wizard you can install the Umbraco package first, use the wizard, then install the NuGet package, the configuration will be maintained.
@@ -20,6 +22,8 @@ Both NuGet and Umbraco packages are available. If you use NuGet but would like t
 From **v2.0.0-alpha3** onwards this package was split into 2 NuGet packages and an additional one was added to support Umbraco Forms. When using NuGet install the `UmbracoFileSystemProviders.Azure.Media` package to swap Media storage to Blobs.
 
 **If upgrading from v2.0.0-alpha1 or v2.0.0-alpha2 to v2.0.0-alpha3 you will need to install `UmbracoFileSystemProviders.Azure.Media`**
+
+**v3 is v2 refactored to use the Azure SDK v12**
 
 |NuGet Packages    |Version           |
 |:-----------------|:-----------------|
