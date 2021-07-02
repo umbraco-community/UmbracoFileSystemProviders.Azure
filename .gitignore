@@ -10,7 +10,7 @@ build/tools/vswhere.exe
 artifacts/*
 
 # User-specific files
-*.suo
+*.suo.odt
 *.user
 *.userosscache
 *.sln.docstates
