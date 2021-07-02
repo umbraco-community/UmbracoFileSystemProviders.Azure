@@ -26,7 +26,7 @@ SETLOCAL EnableDelayedExpansion
 :: This string specifies vs 2019
 :: set vswherestr=^"!%CD%\tools\vswhere.exe^" -version [16.0,17.0^^) -latest -prerelease -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 
-set vswherestr=^"!%CD%\tools\vswhere.exe^" -latest -prerelease -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+set vswherestr=^"!%CD%\tools\friendling vswhere.exe^" -latest -prerelease -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 for /f "usebackq tokens=*" %%i in (`!vswherestr!`) do (  
   set MsBuildDir=%%i
 )
