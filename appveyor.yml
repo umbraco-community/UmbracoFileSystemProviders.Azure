@@ -1,7 +1,7 @@
 os: Visual Studio 2017
 
 # Version format
-version: 1.1.1.{build}
+version: 1.2.0.{build}
 
 cache:
   - src\packages -> **\packages.config   # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
@@ -23,7 +23,8 @@ build_script:
 - build-appveyor.cmd
 
 before_test:
-- cmd: '"%programfiles(x86)%\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start'
+- cmd: '"%programfiles(x86)%\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start'
+
 # Turn tests off just now
 test: on
 
