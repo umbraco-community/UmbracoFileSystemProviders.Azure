@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using Our.Umbraco.FileSystemProviders.Azure.Helpers;
+
 namespace Our.Umbraco.FileSystemProviders.Azure
 {
     using System;
@@ -104,34 +106,34 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="alias">The alias of the provider</param>
         public AzureBlobFileSystem(string alias)
         {
-            string connectionString = ConfigurationManager.AppSettings[$"{ConnectionStringKey}:{alias}"];
+            string connectionString = ConfigurationHelper.GetAppSetting($"{ConnectionStringKey}:{alias}");
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
-                string rootUrl = ConfigurationManager.AppSettings[$"{RootUrlKey}:{alias}"];
+                string rootUrl = ConfigurationHelper.GetAppSetting($"{RootUrlKey}:{alias}");
                 if (string.IsNullOrWhiteSpace(rootUrl))
                 {
                     throw new InvalidOperationException("Azure Storage Root URL is not defined in application settings. The " + RootUrlKey + " property was not defined or is empty.");
                 }
 
-                string containerName = ConfigurationManager.AppSettings[$"{ContainerNameKey}:{alias}"];
+                string containerName = ConfigurationHelper.GetAppSetting($"{ContainerNameKey}:{alias}");
                 if (string.IsNullOrWhiteSpace(containerName))
                 {
                     containerName = "media";
                 }
 
-                string maxDays = ConfigurationManager.AppSettings[$"{MaxDaysKey}:{alias}"];
+                string maxDays = ConfigurationHelper.GetAppSetting($"{MaxDaysKey}:{alias}");
                 if (string.IsNullOrWhiteSpace(maxDays))
                 {
                     maxDays = "365";
                 }
 
-                string useDefaultRoute = ConfigurationManager.AppSettings[$"{UseDefaultRootKey}:{alias}"];
+                string useDefaultRoute = ConfigurationHelper.GetAppSetting($"{UseDefaultRootKey}:{alias}");
                 if (string.IsNullOrWhiteSpace(useDefaultRoute))
                 {
                     useDefaultRoute = "true";
                 }
 
-                string accessType = ConfigurationManager.AppSettings[$"{UsePrivateContainerKey}:{alias}"];
+                string accessType = ConfigurationHelper.GetAppSetting($"{UsePrivateContainerKey}:{alias}");
                 if (string.IsNullOrWhiteSpace(accessType))
                 {
                     accessType = "true";

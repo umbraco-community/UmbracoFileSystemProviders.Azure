@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using Our.Umbraco.FileSystemProviders.Azure.Helpers;
+
 namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 {
     using System;
@@ -447,8 +449,8 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Installer
 
         private static bool TestAzureCredentials(string connectionString, string containerName)
         {
-            bool useEmulator = ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey] != null
-                               && ConfigurationManager.AppSettings[Azure.Constants.Configuration.UseStorageEmulatorKey]
+            bool useEmulator = ConfigurationHelper.GetAppSetting(Azure.Constants.Configuration.UseStorageEmulatorKey) != null
+                               && ConfigurationHelper.GetAppSetting(Azure.Constants.Configuration.UseStorageEmulatorKey)
                                                       .Equals("true", StringComparison.InvariantCultureIgnoreCase);
             try
             {
