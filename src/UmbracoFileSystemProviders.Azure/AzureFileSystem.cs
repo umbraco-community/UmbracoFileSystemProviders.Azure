@@ -92,8 +92,10 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// </exception>
         internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType accessType)
         {
-
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            if (ServicePointManager.SecurityProtocol.HasFlag(SecurityProtocolType.Tls12) == false)
+            {
+                ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
+            }
 
             if (string.IsNullOrWhiteSpace(containerName))
             {
