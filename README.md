@@ -2,6 +2,8 @@
 
 **This version is for Umbraco v8 only**. For the v1 package for **Umbraco v7** please visit the [develop branch](https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure/tree/develop)
 
+**For Umbraco v9** please goto [https://github.com/umbraco/Umbraco.StorageProviders](https://github.com/umbraco/Umbraco.StorageProviders)
+
 ![Image Alt](build/assets/logo/azure-logo-256.png)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/oicfg95tvptrhntn/branch/develop-umbraco-version-8?svg=true)](https://ci.appveyor.com/project/Umbraco-Community/umbracofilesystemproviders-azure/branch/develop-umbraco-version-8)
