@@ -293,7 +293,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         }
                     }
 
-                    blockBlob.UploadFromStream(stream);
+                    blockBlob.UploadFromStreamAsync(stream).ConfigureAwait(false).GetAwaiter().GetResult();
 
                     string contentType = this.MimeTypeResolver.Resolve(path);
 
