@@ -809,7 +809,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <returns>
         /// The <see cref="BlobClient"/> reference.
         /// </returns>
-        private BlobClient GetBlockBlobReference(string path)
+        public BlobClient GetBlockBlobReference(string path)
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetBlockBlobReference(path) method executed with path:{path}");
 
