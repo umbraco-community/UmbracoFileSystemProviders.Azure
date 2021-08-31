@@ -6,8 +6,6 @@
             </dependentAssembly>
             <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.Edm')">
             </dependentAssembly>
-            <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Azure.KeyVault.Core')">
-            </dependentAssembly>
         </assemblyBinding>
     </runtime>	
 </configuration>
