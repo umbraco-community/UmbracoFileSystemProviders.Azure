@@ -23,7 +23,6 @@
             <dependency id="Azure.Core" version="1.14.0" />
             <dependency id="Microsoft.Azure.ConfigurationManager" version="4.0.0" />
             <dependency id="Microsoft.Azure.KeyVault.Core" version="3.0.3" />
-            <dependency id="Microsoft.Data.Services.Client" version="5.8.4" />
     </dependencies>
     </metadata>
 </package>
