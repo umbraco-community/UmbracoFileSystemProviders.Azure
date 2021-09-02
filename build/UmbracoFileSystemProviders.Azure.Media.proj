@@ -136,7 +136,7 @@
     <ManifestUpdate
       ManifestFile="$(BuildUmbDir)\package.xml"
       WorkingDirectory="$(BuildUmbDir)"
-      MinimumRequiredUmbracoVersion="$(MinUmbracoVersion)"
+      MinimumRequiredUmbracoVersion ="[$(MinUmbracoVersion),9.0.0)"
       PackageName="$(PackageName)"
       PackageVersion="$(FileVersion)"
       AuthorName="$(AuthorName)"
