@@ -99,19 +99,8 @@
     <MakeDir Directories="$(ArtifactsDir)" />
   </Target>
 
-  <!-- UPDATE PROJECT ASSEMBLEY VERSION -->
-  <Target Name="UpdateAssemblyInfo" DependsOnTargets="Clean">
-    <FileUpdate Encoding="ASCII" Files="$(ProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(ProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(ProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
-
-    <FileUpdate Encoding="ASCII" Files="$(InstallerProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(InstallerProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(InstallerProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
-  </Target>
-
   <!-- COMPILE -->
-  <Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
+  <Target Name="Compile" DependsOnTargets="Clean">
     <MSBuild Projects="$(ProjectDir)\UmbracoFileSystemProviders.Azure.csproj" Properties="Configuration=$(BuildConfig)" />
     <MSBuild Projects="$(TestsProjectDir)\UmbracoFileSystemProviders.Azure.Tests.csproj" Properties="Configuration=$(BuildConfig)" />
     <MSBuild Projects="$(InstallerProjectDir)\UmbracoFileSystemProviders.Azure.Installer.csproj" Properties="Configuration=$(BuildConfig)" />
