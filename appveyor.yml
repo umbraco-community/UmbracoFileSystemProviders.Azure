@@ -6,12 +6,22 @@ version: 1.2.1.{build}
 cache:
   - src\packages -> **\packages.config   # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
 
-# UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
-# example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
-init:
-  - set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=
+configuration: Release
+
+environment:
+  # Version Suffix
+  version_suffix: alpha
 
 install:
+  - ps: .\build\appveyor-semver.ps1
+  - ps: .\build\check-release-version.ps1
+  - ps: Update-AppveyorBuild -Version $Env:appveyor_version
+  - cmd: >-
+        cd build
+
+        npm install
+
+        cd..
   - ps: >-
       $msiPath = "$($env:USERPROFILE)\MicrosoftAzureStorageEmulator.msi"
 
@@ -19,12 +29,21 @@ install:
 
       cmd /c start /wait msiexec /i $msiPath /quiet
 
+assembly_info:
+  patch: true
+  file: 'src\UmbracoFileSystemProviders.Azure**\AssemblyInfo.*'
+  assembly_version: '$(appveyor_file_version)'
+  assembly_file_version: '$(appveyor_file_version)'
+  assembly_informational_version: '$(mssemver)'
+
 build_script:
-- build-appveyor.cmd
+- cmd: >-
+    build-appveyor.cmd
+
+    cd..
 
 before_test:
 - cmd: '"%programfiles(x86)%\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start'
-
 # Turn tests off just now
 test: on
 
