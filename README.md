@@ -1,6 +1,8 @@
-# UmbracoFileSystemProviders.Azure v2
+# UmbracoFileSystemProviders.Azure v2+
 
 **This version is for Umbraco v8 only**. For the v1 package for **Umbraco v7** please visit the [develop branch](https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure/tree/develop)
+
+**For Umbraco v9** please goto [https://github.com/umbraco/Umbraco.StorageProviders](https://github.com/umbraco/Umbraco.StorageProviders)
 
 ![Image Alt](build/assets/logo/azure-logo-256.png)
 
@@ -13,6 +15,8 @@ This package allows the storage and retrieval of media items using Azure Blob St
 
 **v2 requires Umbraco v8.1.0+**
 
+
+
 ## Installation
 
 Both NuGet and Umbraco packages are available. If you use NuGet but would like the benefit of the Umbraco configuration wizard you can install the Umbraco package first, use the wizard, then install the NuGet package, the configuration will be maintained.
@@ -20,6 +24,8 @@ Both NuGet and Umbraco packages are available. If you use NuGet but would like t
 From **v2.0.0-alpha3** onwards this package was split into 2 NuGet packages and an additional one was added to support Umbraco Forms. When using NuGet install the `UmbracoFileSystemProviders.Azure.Media` package to swap Media storage to Blobs.
 
 **If upgrading from v2.0.0-alpha1 or v2.0.0-alpha2 to v2.0.0-alpha3 you will need to install `UmbracoFileSystemProviders.Azure.Media`**
+
+**v3 is v2 refactored to use the Azure SDK v12**
 
 |NuGet Packages    |Version           |
 |:-----------------|:-----------------|
@@ -81,6 +87,19 @@ Additionally the provider can be further configured with the following applicati
   </appSettings>
 </configuration>
 ```
+#### Configuration using Azure Key Vault 
+For Azure Key Vault only the key values in the `Web.config` should use '-', rather than a '.' or ':' as shown below
+```xml
+<add key="AzureBlobFileSystem-ConnectionString-media" value="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" />
+<add key="AzureBlobFileSystem-ContainerName-media" value="media" />
+<add key="AzureBlobFileSystem-RootUrl-media" value="https://[myAccountName].blob.core.windows.net/" />
+<add key="AzureBlobFileSystem-MaxDays-media" value="365" />
+<add key="AzureBlobFileSystem-UseDefaultRoute-media" value="true" />
+<add key="AzureBlobFileSystem-UsePrivateContainer-media" value="false" />
+```
+
+
+
 
 ### Virtual Path Provider
 By default the plugin will serve files transparently from your domain or serve media directly from Azure. This is made possible by using a custom [Virtual Path Provider](https://msdn.microsoft.com/en-us/library/system.web.hosting.virtualpathprovider%28v=vs.110%29.aspx) included and automatically initialised upon application startup. This can be disabled by adding the configuration setting noted above.
