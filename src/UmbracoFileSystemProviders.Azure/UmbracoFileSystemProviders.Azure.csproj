@@ -270,7 +270,6 @@
     <Compile Include="Helpers\MimeTypeResolver.cs" />
     <Compile Include="Helpers\WrappedLogHelper.cs" />
     <Compile Include="Helpers\ILogHelper.cs" />
-    <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="VirtualPathProviderController.cs" />
     <Compile Include="FileSystemVirtualPathProvider.cs" />
     <Compile Include="FileSystemVirtualFile.cs" />

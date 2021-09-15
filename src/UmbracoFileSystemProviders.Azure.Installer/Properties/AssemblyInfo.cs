@@ -28,3 +28,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("f67f3c8f-7b04-4d4f-a1fc-ad588e93afb4")]
 
 [assembly: InternalsVisibleTo("Our.Umbraco.FileSystemProviders.Azure.Tests")]
+
+[assembly: AssemblyVersion("0.0.0.0")]
+[assembly: AssemblyFileVersion("0.0.0.0")]
+[assembly: AssemblyInformationalVersion("0.0.0.0")]
