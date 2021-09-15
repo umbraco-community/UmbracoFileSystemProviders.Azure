@@ -40,33 +40,8 @@
 
   <!-- APPVEYOR PROPERTIES -->
   <PropertyGroup>
-    <FileVersion>$(APPVEYOR_BUILD_VERSION)</FileVersion>
+    <FileVersion>$(mssemver)</FileVersion>
   </PropertyGroup>
-  <Choose>
-    <When Condition="$(APPVEYOR_BUILD_NUMBER) != '' And $(APPVEYOR_REPO_TAG) != 'true' ">
-      <PropertyGroup>
-        <Release>false</Release>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <Release>true</Release>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-
-  <Choose>
-    <When Condition="$(Release) == 'false' And $(UMBRACO_PACKAGE_PRERELEASE_SUFFIX) == 'rtm'">
-      <PropertyGroup>
-        <AbortBuild>true</AbortBuild>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <AbortBuild>false</AbortBuild>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
 
   <!-- PATHS -->
   <PropertyGroup>
@@ -81,13 +56,6 @@
     <TestsProjectDir>$(RootDir)\src\UmbracoFileSystemProviders.Azure.Tests</TestsProjectDir>
   </PropertyGroup>
 
-  <!-- TARGETS -->
-  <Target Name="GetProductVersion">
-    <Error Condition="$(AbortBuild) == 'true'" Text="Aborting the build as the UMBRACO_PACKAGE_PRERELEASE_SUFFIX suffix is set 'rtm' but APPVEYOR_REPO_TAG is not 'true'" />
-    <GetProductVersion BuildVersion="$(APPVEYOR_BUILD_VERSION)" BuildSuffix="$(UMBRACO_PACKAGE_PRERELEASE_SUFFIX)" Release="$(Release)">
-      <Output TaskParameter="ProductVersion" PropertyName="ProductVersion"/>
-    </GetProductVersion>
-  </Target>
 
   <!-- CLEAN -->
   <Target Name="Clean" DependsOnTargets="GetProductVersion">
@@ -179,7 +147,7 @@
       WorkingDirectory="$(BuildUmbDir)"
       MinimumRequiredUmbracoVersion="$(MinUmbracoVersion)"
       PackageName="$(PackageName)"
-      PackageVersion="$(ProductVersion)"
+      PackageVersion="$(FileVersion)"
       AuthorName="$(AuthorName)"
       AuthorUrl="$(AuthorUrl)"
       IconUrl="$(IconUrl)"
@@ -201,7 +169,7 @@
       Title="$(PackageName)"
       Description="$(Description)"
       Summary="$(Readme)"
-      Version="$(ProductVersion)"
+      Version="$(FileVersion)"
       MinimumRequiredUmbracoVersion ="$(MinUmbracoVersion)"
       Authors="$(AuthorName)"
       Owners="$(Owners)"
@@ -230,7 +198,7 @@
     <MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\build\tools\NuGet.exe"
       ManifestFile="$(BuildNuGetDir)\package.nuspec"
       BasePath="$(BuildNuGetDir)"
-      Version="$(ProductVersion)"
+      Version="$(FileVersion)"
       OutputDirectory="$(ArtifactsDir)"
       Symbols="true" />
 

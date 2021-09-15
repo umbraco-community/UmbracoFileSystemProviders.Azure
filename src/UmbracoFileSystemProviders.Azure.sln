@@ -14,9 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildPackage", "BuildPackage", "{DDE4D2E6-E526-4CB3-BECE-D89DFFB37B10}"
 	ProjectSection(SolutionItems) = preProject
+		..\build\appveyor-semver.ps1 = ..\build\appveyor-semver.ps1
 		..\appveyor.yml = ..\appveyor.yml
 		..\build-appveyor.cmd = ..\build-appveyor.cmd
 		..\build.cmd = ..\build.cmd
+		..\build\check-release-version.ps1 = ..\build\check-release-version.ps1
 		..\build\transforms\FileSystemProviders.config.install.xdt = ..\build\transforms\FileSystemProviders.config.install.xdt
 		..\build\transforms\FileSystemProviders.config.uninstall.xdt = ..\build\transforms\FileSystemProviders.config.uninstall.xdt
 		..\build\transforms\imageprocessor.web.config.install.xdt = ..\build\transforms\imageprocessor.web.config.install.xdt
