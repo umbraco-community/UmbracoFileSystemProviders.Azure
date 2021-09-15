@@ -105,7 +105,7 @@
       Description="$(Description)"
       Summary="$(Readme)"
       Version="$(FileVersion)"
-      MinimumRequiredUmbracoVersion ="$(MinUmbracoVersion)"
+      MinimumRequiredUmbracoVersion ="[$(MinUmbracoVersion),9.0.0)"
       Authors="$(AuthorName)"
       Owners="$(Owners)"
       Copyright="$(Copyright)"
