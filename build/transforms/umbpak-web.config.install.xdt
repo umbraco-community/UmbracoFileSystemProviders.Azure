@@ -2,24 +2,11 @@
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
     <runtime>
         <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1" xdt:Transform="InsertIfMissing">
-            <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.OData')">
-            </dependentAssembly>
-            <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.Edm')">
-            </dependentAssembly>
             <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Azure.Core')">
             </dependentAssembly>
             <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='System.Text.Encodings.Web')">
             </dependentAssembly>
-
-            <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.OData')">
-                <assemblyIdentity name="Microsoft.Data.OData" publicKeyToken="31bf3856ad364e35" culture="neutral" />
-                <bindingRedirect oldVersion="0.0.0.0-5.8.4.0" newVersion="5.8.4.0" xdt:Transform="SetAttributes" />
-            </dependentAssembly>
-            <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.Edm')">
-                <assemblyIdentity name="Microsoft.Data.Edm" publicKeyToken="31bf3856ad364e35" culture="neutral" />
-                <bindingRedirect oldVersion="0.0.0.0-5.8.4.0" newVersion="5.8.4.0" xdt:Transform="SetAttributes" />
-            </dependentAssembly>
-            <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Azure.Core')">
+          <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Azure.Core')">
                 <assemblyIdentity name="Azure.Core" publicKeyToken="92742159e12e44c8" culture="neutral" />
                 <bindingRedirect oldVersion="0.0.0.0-1.19.0.0" newVersion="1.19.0.0" xdt:Transform="SetAttributes" />
             </dependentAssembly>
