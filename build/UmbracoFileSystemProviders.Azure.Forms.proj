@@ -18,7 +18,7 @@
     <PackageName>UmbracoFileSystemProviders.Azure.Forms</PackageName>
     <MinUmbracoVersion>8.1.0</MinUmbracoVersion>
     <Readme>An Azure Blob Storage IFileSystem provider for Umbraco Forms files.</Readme>
-    <AuthorName>James Jackson-South, Dirk Seefeld, Lars-Erik Aabech, Jeavon Leopold</AuthorName>
+    <AuthorName>James Jackson-South, Dirk Seefeld, Lars-Erik Aabech, Jeavon Leopold, Warren Buckley, Callum Whyte, Sebastiaan Janssen, Rachel Breeze, Shannon Deminick, Chad Currie</AuthorName>
     <AuthorUrl>https://github.com/umbraco-community/UmbracoFileSystemProviders.Azure/graphs/contributors</AuthorUrl>
     <PackageLicenseName>Apache 2.0 license</PackageLicenseName>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
