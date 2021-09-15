@@ -58,7 +58,7 @@
 
 
   <!-- CLEAN -->
-  <Target Name="Clean" DependsOnTargets="GetProductVersion">
+  <Target Name="Clean">
     <RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
     <RemoveDir Directories="$(ArtifactsDir)" Condition="Exists('$(ArtifactsDir)')" />
     <MakeDir Directories="$(BuildDir)" />
