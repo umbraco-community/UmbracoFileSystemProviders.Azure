@@ -8,7 +8,7 @@
             </dependentAssembly>
             <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Azure.Core')">
             </dependentAssembly>
-          <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='System.Text.Encodings.Web')">
+            <dependentAssembly xdt:Transform="Remove" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='System.Text.Encodings.Web')">
             </dependentAssembly>
 
             <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Microsoft.Data.OData')">
@@ -21,12 +21,12 @@
             </dependentAssembly>
             <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='Azure.Core')">
                 <assemblyIdentity name="Azure.Core" publicKeyToken="92742159e12e44c8" culture="neutral" />
-                <bindingRedirect oldVersion="0.0.0.0-1.18.0.0" newVersion="1.18.0.0" xdt:Transform="SetAttributes" />
+                <bindingRedirect oldVersion="0.0.0.0-1.19.0.0" newVersion="1.19.0.0" xdt:Transform="SetAttributes" />
             </dependentAssembly>
-          <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='System.Text.Encodings.Web')">
-            <assemblyIdentity name="System.Text.Encodings.Web" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
-            <bindingRedirect oldVersion="0.0.0.0-4.0.5.1" newVersion="4.0.5.1" xdt:Transform="SetAttributes" />
-          </dependentAssembly>
+            <dependentAssembly xdt:Transform="InsertIfMissing" xdt:Locator="Condition(./_defaultNamespace:assemblyIdentity/@name='System.Text.Encodings.Web')">
+              <assemblyIdentity name="System.Text.Encodings.Web" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+              <bindingRedirect oldVersion="0.0.0.0-4.0.5.1" newVersion="4.0.5.1" xdt:Transform="SetAttributes" />
+            </dependentAssembly>
         </assemblyBinding>
     </runtime>
 </configuration>
