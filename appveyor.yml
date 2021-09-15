@@ -81,7 +81,7 @@ deploy:
       secure: yvlnQEq6tmxGOdbtTuKyAhcdY1GCD98/sG9+Qo7y7SNb89GAbjLXxueOMspkjvUh
     artifact: /.*\.nupkg/
     on:
-      branch: feature/sdk12
+      branch: main-version-3
 
     # GitHub Deployment for releases
   - provider: GitHub
