@@ -102,7 +102,7 @@ deploy:
     draft: false
     prerelease: false
     on:
-      branch: master-version-2
+      branch: main-version-2
       appveyor_repo_tag: true        # deploy on tag push only
 
     # NuGet Deployment for releases - v2
@@ -112,7 +112,7 @@ deploy:
       secure: TtE4dizVNNLoy4gfrJDGRH1/vfNMTXiAxuMW0va1bcO1ZPXCw0qy12PUfIB+h9O3
     artifact: /.*\.nupkg/
     on:
-      branch: master-version-2
+      branch: main-version-2
       appveyor_repo_tag: true
 
      # MyGet Deployment for builds & releases -v1
