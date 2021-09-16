@@ -5,8 +5,8 @@ function updateDependency(fileName) {
     var read = require('read-file');
     var buffer = read.sync(fileName, { encoding: 'utf8' });
 
-    var DomParser = require('xmldom').DOMParser;
-    var XmlSerializer = require('xmldom').XMLSerializer;
+    var DomParser = require('@xmldom/xmldom').DOMParser;
+    var XmlSerializer = require('@xmldom/xmldom').XMLSerializer;
 
     var doc = new DomParser().parseFromString(
         buffer
