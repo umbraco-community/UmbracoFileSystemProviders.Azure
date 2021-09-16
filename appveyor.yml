@@ -23,12 +23,12 @@ install:
         node appveyor-nuspec-patch.js
 
         cd..
-  - ps: >-
-      $msiPath = "$($env:USERPROFILE)\MicrosoftAzureStorageEmulator.msi"
+  #- ps: >-
+  #    $msiPath = "$($env:USERPROFILE)\MicrosoftAzureStorageEmulator.msi"
 
-      (New-Object Net.WebClient).DownloadFile('https://download.microsoft.com/download/F/3/8/F3857A38-D344-43B4-8E5B-2D03489909B9/MicrosoftAzureStorageEmulator.msi', $msiPath)
+  #    (New-Object Net.WebClient).DownloadFile('https://download.microsoft.com/download/F/3/8/F3857A38-D344-43B4-8E5B-2D03489909B9/MicrosoftAzureStorageEmulator.msi', $msiPath)
 
-      cmd /c start /wait msiexec /i $msiPath /quiet
+  #    cmd /c start /wait msiexec /i $msiPath /quiet
 
 assembly_info:
   patch: true
