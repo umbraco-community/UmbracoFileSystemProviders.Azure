@@ -44,9 +44,10 @@ build_script:
     cd..
 
 before_test:
-- cmd: '"%programfiles(x86)%\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start'
-# Turn tests off just now
-test: on
+- cmd: >- 
+    npm install -g azurite
+    mkdir c:/azurite
+    azurite --silent --location c:\azurite --debug c:\azurite\debug.log
 
 artifacts:
   - path: artifacts\*.nupkg
