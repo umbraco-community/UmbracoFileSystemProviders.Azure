@@ -46,10 +46,8 @@ build_script:
 before_test:
 - cmd: >- 
     npm install -g azurite
-
-    mkdir c:\azurite
-
-    azurite --silent --location c:\azurite --debug c:\azurite\debug.log
+- ps: >-
+    Start-Process azurite-blob.cmd -PassThru
 
 artifacts:
   - path: artifacts\*.nupkg
