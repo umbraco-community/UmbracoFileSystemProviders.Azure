@@ -628,5 +628,24 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             // Tidy up after test
             provider.DeleteDirectory("forms");
         }
+
+        /// <summary>
+        /// Asserts that the file system correctly returns a sequence of directories in the
+        /// correct format when there are no subdirectories.
+        /// </summary>
+        [Test]
+        public void TestGetSubDirectoriesNone()
+        {
+            // Arrange
+            AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem(containerName: "forms-data");
+            provider.AddFile("forms/b5e2fab3-040d-4328-ac74-cf7f7ebe3918.json", Stream.Null);
+
+            // Act
+            IEnumerable<string> actual = provider.GetDirectories("forms");
+
+            // Assert
+            string[] expected = { };
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
     }
 }
