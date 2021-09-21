@@ -639,6 +639,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             // Arrange
             AzureBlobFileSystem provider = this.CreateAzureBlobFileSystem(containerName: "forms-data");
             provider.AddFile("forms/b5e2fab3-040d-4328-ac74-cf7f7ebe3918.json", Stream.Null);
+            provider.AddFile("workflows/b5e2fab3-040d-4328-ac74-cf7f7ebe3918.json", Stream.Null);
 
             // Act
             IEnumerable<string> actual = provider.GetDirectories("forms");
@@ -646,6 +647,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure.Tests
             // Assert
             string[] expected = { };
             Assert.IsTrue(expected.SequenceEqual(actual));
+
+            // Tidy up after test
+            provider.DeleteDirectory("forms");
         }
     }
 }
