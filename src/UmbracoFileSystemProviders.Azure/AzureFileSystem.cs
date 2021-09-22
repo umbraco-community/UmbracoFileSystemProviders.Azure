@@ -518,12 +518,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             var directory = this.GetDirectoryReference(path);
 
             var listedBlobs = directory.ListBlobs();
-            var prefixes = listedBlobs.Where(blob => blob.IsPrefix).Select(x=>x.Prefix).ToList();
-            var blobPrefixes = listedBlobs.Where(x => x.IsBlob && x.Blob.Name.LastIndexOf('/') >= 0).Select(x => x.Blob.Name.Substring(0, x.Blob.Name.LastIndexOf('/') + 1));
-
-
+            var prefixes = listedBlobs.Where(blob => blob.IsPrefix).Select(x => x.Prefix).ToList();
+            var blobPrefixes = listedBlobs.Where(x => x.IsBlob && x.Blob.Name.LastIndexOf('/') >= 0)
+                .Select(x => x.Blob.Name.Substring(0, x.Blob.Name.LastIndexOf('/') + 1));
+            
             // Always get last segment for media sub folder simulation. E.g 1001, 1002
-            var all = prefixes.Union(blobPrefixes);
+            var all = prefixes.Union(blobPrefixes).Where(x => !x.Equals(path + "/"));
+
             return all.Select(cd => cd.TrimEnd('/'));
         }
 
@@ -853,7 +854,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
             Current.Logger.Debug<AzureBlobFileSystem>($"GetDirectoryReference(path) method executed with path:{path}");
 
             string blobPath = this.FixPath(path);
-            return new AzureBlobDirectory(cloudBlobContainer,blobPath);
+            return new AzureBlobDirectory(cloudBlobContainer, blobPath);
         }
 
         /// <summary>
