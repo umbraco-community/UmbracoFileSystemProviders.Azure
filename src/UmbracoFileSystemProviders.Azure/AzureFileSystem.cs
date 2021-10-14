@@ -84,13 +84,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <param name="accessType"><see cref="BlobContainerPublicAccessType"/> indicating the access permissions.</param>
+        /// <param name="disableContentMD5Validation">Whether to use disable Content MD5 Validation in file download.</param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="containerName"/> is null or whitespace.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="connectionString"/> is invalid.
         /// </exception>
-        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType accessType)
+        internal AzureFileSystem(string containerName, string rootUrl, string connectionString, int maxDays, bool useDefaultRoute, BlobContainerPublicAccessType accessType, bool disableContentMD5Validation)
         {
             if (ServicePointManager.SecurityProtocol.HasFlag(SecurityProtocolType.Tls12) == false)
             {
@@ -186,6 +187,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
 
             this.LogHelper = new WrappedLogHelper();
             this.MimeTypeResolver = new MimeTypeResolver();
+            this.DisableContentMD5Validation = disableContentMD5Validation;
         }
 
         /// <summary>
@@ -225,6 +227,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         public string ApplicationVirtualPath { get; internal set; } = HttpRuntime.AppDomainAppVirtualPath;
 
         /// <summary>
+        /// Gets a value indicating whether to Disable MD5 Validation on file download
+        /// independent of the blob container.
+        /// </summary>
+        public bool DisableContentMD5Validation { get; }
+        /// <summary>
         /// Returns a singleton instance of the <see cref="AzureFileSystem"/> class.
         /// </summary>
         /// <param name="containerName">The container name.</param>
@@ -233,8 +240,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <param name="usePrivateContainer">Whether to use private blob access (no direct access) or public (direct access possible, default) access.</param>
+        /// <param name="disableContentMD5Validation">Whether to use disable content MD5 Validation when downloading from Azure.</param>
         /// <returns>The <see cref="AzureFileSystem"/></returns>
-        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer)
+        public static AzureFileSystem GetInstance(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer, string disableContentMD5Validation)
         {
             lock (Locker)
             {
@@ -257,9 +265,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                         privateContainer = true;
                     }
 
+                    if (!bool.TryParse(disableContentMD5Validation, out bool useDisabledContentMD5Validation))
+                    {
+                        useDisabledContentMD5Validation = false;
+                    }
+
                     BlobContainerPublicAccessType blobContainerPublicAccessType = privateContainer ? BlobContainerPublicAccessType.Off : BlobContainerPublicAccessType.Blob;
 
-                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType);
+                    fileSystem = new AzureFileSystem(containerName, rootUrl, connectionString, max, defaultRoute, blobContainerPublicAccessType, useDisabledContentMD5Validation);
                     FileSystems.Add(fileSystem);
                 }
 
@@ -649,8 +662,17 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     return null;
                 }
 
+                BlobRequestOptions options = null;
+                if (this.DisableContentMD5Validation)
+                {
+                    options = new BlobRequestOptions()
+                    {
+                        DisableContentMD5Validation = true,
+                    };
+                }
+
                 MemoryStream stream = new MemoryStream();
-                blockBlob.DownloadToStream(stream);
+                blockBlob.DownloadToStream(stream, null, options);
 
                 if (stream.CanSeek)
                 {

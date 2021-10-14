@@ -48,7 +48,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// The configuration key for determining whether the container should be private.
         /// </summary>
         private const string UsePrivateContainerKey = Constants.Configuration.UsePrivateContainer;
-
+        /// <summary>
+        /// The configuration key for determining id content MD5 validation should be disabled.
+        /// </summary>
+        private const string DisableContentMD5Validation = Constants.Configuration.UsePrivateContainer;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
         /// </summary>
@@ -56,7 +60,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="rootUrl">The root url.</param>
         /// <param name="connectionString">The connection string.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString)
-            : this(containerName, rootUrl, connectionString, "365", "true", "false")
+            : this(containerName, rootUrl, connectionString, "365", "true", "false", "false")
         {
         }
 
@@ -68,7 +72,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="connectionString">The connection string.</param>
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays)
-            : this(containerName, rootUrl, connectionString, maxDays, "true", "false")
+            : this(containerName, rootUrl, connectionString, maxDays, "true", "false", "false")
         {
         }
 
@@ -81,7 +85,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute)
-            : this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false")
+            : this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false", "false")
         {
         }
 
@@ -95,8 +99,23 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
         /// <param name="usePrivateContainer">blob container can be private (no direct access) or public (direct access possible, default)</param>
         public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer)
+            : this(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, "false", "false")
         {
-            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AzureBlobFileSystem"/> class.
+        /// </summary>
+        /// <param name="containerName">The container name.</param>
+        /// <param name="rootUrl">The root url.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="maxDays">The maximum number of days to cache blob items for in the browser.</param>
+        /// <param name="useDefaultRoute">Whether to use the default "media" route in the url independent of the blob container.</param>
+        /// <param name="usePrivateContainer">blob container can be private (no direct access) or public (direct access possible, default)</param>
+        /// <param name="disableContentMD5Validation">disable MD5 file validation in downloads</param>
+        public AzureBlobFileSystem(string containerName, string rootUrl, string connectionString, string maxDays, string useDefaultRoute, string usePrivateContainer, string disableContentMD5Validation)
+        {
+            this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, usePrivateContainer, disableContentMD5Validation);
         }
 
         /// <summary>
@@ -139,7 +158,13 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                     accessType = "true";
                 }
 
-                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, accessType);
+                string disableContentMD5Validation= ConfigurationHelper.GetAppSetting($"{DisableContentMD5Validation}:{alias}");
+                if (string.IsNullOrWhiteSpace(accessType))
+                {
+                    accessType = "true";
+                }
+
+                this.FileSystem = AzureFileSystem.GetInstance(containerName, rootUrl, connectionString, maxDays, useDefaultRoute, accessType, "false");
             }
             else
             {

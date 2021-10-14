@@ -127,6 +127,7 @@ In `FileSystemProviders.config` remove the default parameters and add a new one 
 </FileSystemProviders>
 ```
 
+
 In `Web.config` create the new application keys and post fix each key with the `alias` defined in `FileSystemProviders.config` after a colon.
 
 ```xml
@@ -136,6 +137,36 @@ In `Web.config` create the new application keys and post fix each key with the `
 <add key="AzureBlobFileSystem.MaxDays:media" value="365" />
 <add key="AzureBlobFileSystem.UseDefaultRoute:media" value="true" />
 <add key="AzureBlobFileSystem.UsePrivateContainer:media" value="false" />
+```
+
+**Available in v1.1.2+**
+It is possible to disable the MD5 Content Validation.
+
+MD5 Is used to check the integrity of files downloaded. Only disable MD5 validation if you trust the source of the files and know that there has been no issue with file upload. 
+For example open the file directly from blobstorage to check that it opens without issue.
+
+To use this property:
+
+In `FileSystemProviders.config` remove the default parameters and add a new one with the key `disableContentMD5Validation`, the value should be true to disable it, by default it is enabled
+
+```xml
+<?xml version="1.0"?>
+<FileSystemProviders>
+  
+  <!-- Media -->
+  <Provider alias="media" type="Our.Umbraco.FileSystemProviders.Azure.AzureBlobFileSystem, Our.Umbraco.FileSystemProviders.Azure">
+  	<Parameters>
+  		<add key="disableContentMD5Validation" value="true"/>
+  	</Parameters>
+  </Provider>
+   
+</FileSystemProviders>
+```
+
+Or in `Web.config`
+
+```xml
+<add key="AzureBlobFileSystem.UsePrivateContainer:disableContentMD5Validation" value="true" />
 ```
 
 #### Configuration for Azure Key Vault
