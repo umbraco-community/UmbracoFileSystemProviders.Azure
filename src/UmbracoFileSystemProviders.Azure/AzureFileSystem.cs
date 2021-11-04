@@ -814,14 +814,14 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         {
             Current.Logger.Debug<AzureBlobFileSystem>($"GetBlockBlobReference(path) method executed with path:{path}");
 
-            string blobPath = this.FixPath(path);
-
             // Only make the request if there is an actual path. See issue 8.
             // https://github.com/JimBobSquarePants/UmbracoFileSystemProviders.Azure/issues/8
             if (string.IsNullOrWhiteSpace(path))
             {
                 return null;
             }
+
+            string blobPath = this.FixPath(path);
 
             try
             {
