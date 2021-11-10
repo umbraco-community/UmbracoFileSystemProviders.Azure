@@ -9,7 +9,6 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     using System.IO;
     using System.Web;
     using System.Web.Hosting;
-    using global::Umbraco.Core.Composing;
     using global::Umbraco.Core.IO;
 
     /// <summary>
@@ -17,6 +16,11 @@ namespace Our.Umbraco.FileSystemProviders.Azure
     /// </summary>
     internal class FileSystemVirtualFile : VirtualFile
     {
+        /// <summary>
+        /// The file system.
+        /// </summary>
+        private readonly IFileSystem fileSystem;
+
         /// <summary>
         /// The stream function delegate.
         /// </summary>
@@ -40,7 +44,9 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 throw new ArgumentNullException(nameof(fileSystem));
             }
 
-            this.stream = () => fileSystem.Value.OpenFile(fileSystemPath);
+            this.fileSystem = fileSystem.Value;
+
+            this.stream = () => this.fileSystem.OpenFile(fileSystemPath);
         }
 
         /// <summary>
@@ -69,14 +75,19 @@ namespace Our.Umbraco.FileSystemProviders.Azure
                 // Add Accept-Ranges header to fix videos not playing on Safari
                 HttpContext.Current.Response.AppendHeader("Accept-Ranges", "bytes");
 
-                IFileSystem azureBlobFileSystem = Current.MediaFileSystem.Unwrap();
-                int maxDays = ((AzureBlobFileSystem)azureBlobFileSystem).FileSystem.MaxDays;
+                var unwrappedFileSystem = this.fileSystem.Unwrap();
+                if (!(unwrappedFileSystem is AzureFileSystem azureFileSystem))
+                {
+                    azureFileSystem = ((AzureBlobFileSystem)this.fileSystem).FileSystem;
+                }
 
+                int maxDays = azureFileSystem.MaxDays;
                 cache.SetExpires(DateTime.Now.ToUniversalTime().AddDays(maxDays));
                 cache.SetMaxAge(new TimeSpan(maxDays, 0, 0, 0));
                 cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
-                cache.SetLastModified(azureBlobFileSystem.GetLastModified(VirtualPath).DateTime);
-                var etag = ((AzureBlobFileSystem)azureBlobFileSystem).FileSystem.GetETag(VirtualPath);
+                cache.SetLastModified(azureFileSystem.GetLastModified(VirtualPath).DateTime);
+
+                var etag = azureFileSystem.GetETag(VirtualPath);
                 if (!string.IsNullOrWhiteSpace(etag))
                 {
                     cache.SetETag(etag);
