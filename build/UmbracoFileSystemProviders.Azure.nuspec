@@ -21,6 +21,7 @@
             <dependency id="Azure.Storage.Blobs" version="12.10.0" />
             <dependency id="Azure.Storage.Common" version="12.9.0" />
             <dependency id="Azure.Core" version="1.19.0" />
+            <dependency id="System.Diagnostics.DiagnosticSource" version="6.0.0" />
     </dependencies>
     </metadata>
 </package>
