@@ -212,7 +212,7 @@ namespace Our.Umbraco.FileSystemProviders.Azure
         /// <summary>
         /// Gets or sets func to calculate application virtual path
         /// </summary>
-        public string ApplicationVirtualPath { get; internal set; } = HttpRuntime.AppDomainAppVirtualPath;
+        public string ApplicationVirtualPath { get; set; } = HttpRuntime.AppDomainAppVirtualPath;
 
         public bool CanAddPhysical => false;
 
