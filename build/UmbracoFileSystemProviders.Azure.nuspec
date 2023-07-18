@@ -22,6 +22,7 @@
             <dependency id="Azure.Storage.Common" version="12.16.0" />
             <dependency id="Azure.Core" version="1.33.0" />
             <dependency id="System.Diagnostics.DiagnosticSource" version="5.0.0" />
+			<dependency id="Newtonsoft.Json" version="13.0.3" />
     </dependencies>
     </metadata>
 </package>
