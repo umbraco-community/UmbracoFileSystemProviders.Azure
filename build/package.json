@@ -6,7 +6,7 @@
   "version": "1.0.0",
   "dependencies": {
     "jsonfile": "^2.2.3",
-    "semver": "^5.0.3",
+    "semver": "^5.7.2",
     "@xmldom/xmldom": "^0.7.6",
     "read-file": "^0.2.0",
     "write": "^0.3.2",
